@@ -678,7 +678,7 @@ const reorderMenuItems = () => {
       setupClickEventForNodes([inbox, snoozed, done, drafts, sent, spam, trash, starred, important, chats]);
 
       // Close More menu
-      document.body.querySelector('.J-Ke.n4.ah9').click();
+      // document.body.querySelector('.J-Ke.n4.ah9').click();
       observer.disconnect();
     }
 
@@ -797,3 +797,148 @@ const init = () => {
 
 if (document.head) init();
 else document.addEventListener('DOMContentLoaded', init);
+
+
+//shank-eric start
+waitForIt(function(){
+		var loading = document.querySelector('#loading');
+		return loading && loading.style.display === 'none';
+}, afterLoad, 500);
+
+function hasClass(element, className){
+	return element && element.classList.contains(className);
+}
+
+function elAttr(el, attr){
+	return el && el.attributes && el.attributes[attr] && el.attributes[attr].value;
+}
+
+// function insertBefore(insertion, target){
+//     target.parentNode.insertBefore(insertion, target.nextSibling);
+// }
+
+function pixelsToInt(pixels){
+	return parseInt(pixels.replace('px'));
+}
+
+function afterLoad(){
+	var currentEmail;
+	var paneSelector = '.BltHke.nH.oy8Mbf[role="main"]';
+
+	var previewSelector = paneSelector + ' .nH.aNW.apk';
+	var mainSelector = paneSelector + ' .nH.age.apP';    
+	if (document.querySelector('.nH.aNW.apk')){
+			document.addEventListener('click', function(e){
+					var previewPane = document.querySelector(previewSelector);
+					var main = document.querySelector(mainSelector);
+					if (elAttr(e.target, 'role') === 'checkbox'){
+							checkSelection(previewPane, main);
+					} else {
+							var selectedEmail = findParentRow(e);
+							if (hasClass(selectedEmail, 'zA')){
+									var action = elAttr(e.target, 'jsaction');
+									var isAction = !!action || hasClass(e.target, 'T-KT');
+									var archiveOrDelete = ['JqEhuc', 'zM6fo'].includes(action);
+									var snooze = 'u4Fnue' === action;
+									if (!isAction || (archiveOrDelete && currentEmail)){
+											currentEmail = showHidePreview(currentEmail, selectedEmail, previewPane);
+									} else if (snooze){
+											var snoozeModal = document.querySelector('.J-M.brx.J-M.brx-ayU');
+											if (!snoozeModal){
+													waitForIt(function(){
+															return !!document.querySelector('.J-M.brx.J-M.brx-ayU');
+													}, function(){
+															waitForIt(function(){
+																	return !document.querySelector('.J-M.brx.J-M.brx-ayU');
+															}, function(){
+																	if (!selectedEmail || !selectedEmail.parentNode){
+																			hidePreviewPane(previewPane);
+																	}
+															}, 100);
+													}, 100);
+											}
+									}
+							}
+					}
+			});
+			var selectAllCheckbox = document.querySelector(paneSelector + ' .nH.aqK .T-Jo.J-J5-Ji');
+			selectAllCheckbox.addEventListener('click', function(){
+					var previewPane = document.querySelector(previewSelector);
+					var main = document.querySelector(mainSelector);
+					checkSelection(previewPane, main);
+			});
+	}
+}
+
+function findParentRow(e){
+	var row;
+	for (var i = 0; i < e.path.length; i++){
+			if(e.path[i].tagName === 'TR'){
+					row = e.path[i];
+					break;
+			}
+	}
+	return row;
+}
+
+function showHidePreview(currentEmail, selectedEmail, previewPane){
+	var selectedEmailPresent = selectedEmail && selectedEmail instanceof Node && selectedEmail.parentNode;
+	var clickedCurrentEmail = selectedEmail && currentEmail && currentEmail === selectedEmail;
+	if (!selectedEmailPresent || clickedCurrentEmail){
+			hidePreviewPane(previewPane);
+			return null;
+	} else {
+			selectedEmail.parentNode.insertBefore(previewPane, selectedEmail.nextSibling)
+			showPreviewPane(previewPane);
+			return selectedEmail;
+	}
+}
+
+function checkSelection(previewPane, main){
+	var checkedCount = document.querySelectorAll('.nH.age.apP [aria-checked="true"]').length;
+	if (checkedCount > 0){
+			main.insertBefore(previewPane, main.firstChild);
+			showPreviewPane(previewPane);
+	} else {
+			hidePreviewPane(previewPane);
+	}
+}
+
+function showPreviewPane(previewPane){
+	previewPane.classList.add('loading');
+	previewPane.style.height = '';
+	waitForIt(function(){
+			var height = window.getComputedStyle(previewPane).height;
+			return pixelsToInt(height) > 50
+	}, function(){
+			previewPane.classList.add('loaded');
+			previewPane.classList.remove('loading');
+	}, 100);
+}
+
+function hidePreviewPane(previewPane){
+	previewPane.classList.remove('loaded', 'loading');
+	previewPane.style.height = '0px';
+}
+
+function waitForIt(it, something, time){
+	var interval = setInterval(function(){
+			if (it()){
+					try {
+							something();
+					} catch (e){
+							console.error(e);
+					}
+					clearInterval(interval);
+			}
+	}, time);
+}
+
+
+/** Issues
+* can't deselect an email - not sure this is fixable
+* preview pane not working in snoozed page
+* preview pane shows in a weird spot when an email is checked
+* going back from a bundle to the main list shows the preview pane almost
+* labeling an email while it's in preview doesn't hide the preview
+**/

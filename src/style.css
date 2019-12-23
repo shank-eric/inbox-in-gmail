@@ -1375,3 +1375,47 @@ body.email-bundling-enabled.bundle-page .nH.ar4.B .yi {
 .Zs .zA > .xY {
 	order: 1 !important;
 }
+
+
+
+/* preview pane as expand */
+.nH.age.apP {
+    height: calc(100vh - 120px) !important;
+    overflow: auto !important;
+}
+
+.nH.age.apN.aZ6{
+    overflow-y: auto;
+}
+
+.aph {
+    display: none;
+}
+.nH.aNW.apk{
+    height: 0px;
+}
+.nH.aNW.apk.loading{
+    min-height: 50px;
+    height: auto;
+}
+.nH.aNW.apk.loaded{
+    height: auto;
+}
+.nH.aNW.apk.loading:after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  border-top-color: #333;
+  animation: spinner .8s linear infinite;
+}
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
