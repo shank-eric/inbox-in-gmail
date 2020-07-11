@@ -50,6 +50,29 @@ export default {
   movePreviewPane(selectedEmail, previewPane) {
     if (selectedEmail && previewPane) {
       selectedEmail.parentNode.insertBefore(previewPane, selectedEmail.nextSibling);
+
+      // this creates a space for the preview and uses absolute positioning
+      // to make it look like it's under the current email.  This did not work well with scrolling
+      // let previewPlaceholder = document.querySelector('.preview-placeholder');
+      // if (!previewPlaceholder) {
+      //   previewPlaceholder = document.createElement('div');
+      //   addClass(previewPlaceholder, 'preview-placeholder');
+      // }
+      // const selectedTop = selectedEmail.offsetTop;
+      // selectedEmail.parentNode.insertBefore(previewPlaceholder, selectedEmail.nextSibling);
+      // previewPane.style.position = 'absolute';
+      // previewPane.style.top = addPixels(selectedTop, selectedEmail.clientHeight);
+      // const adjustPreviewHeight = () => {
+      //   console.log('adjusting height');
+      //   const previewHeight = previewPane.offsetHeight;
+      //   previewPlaceholder.style.height = `${previewHeight}px`;
+      // };
+      // if (this.observer) {
+      //   this.observer.disconnect();
+      // }
+      // this.observer = new MutationObserver(adjustPreviewHeight);
+      // this.observer.observe(previewPane, { subtree: true, childList: true });
+      // adjustPreviewHeight();
     }
   },
   restorePreview(previewPane) {
@@ -76,6 +99,13 @@ export default {
     if (previewPane) {
       removeClass(previewPane, 'show-preview');
     }
+    // const previewPlaceholder = document.querySelector('.preview-placeholder');
+    // if (previewPlaceholder) {
+    //   previewPlaceholder.style.height = 0;
+    // }
+    // if (this.observer) {
+    //   this.observer.disconnect();
+    // }
     this.previewShowing = false;
   },
   hideIfCurrentEmailRemoved() {

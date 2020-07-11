@@ -1,5 +1,6 @@
 import { CLASSES, SELECTORS } from './constants';
 import emailPreview from './emailPreview';
+// import inbox from './inbox';
 import {
   addClass,
   checkImportantMarkers,
@@ -72,6 +73,20 @@ export default class Bundle {
         }
         openBundle(bundleId);
       }
+
+      // alternative implementation that navigates directly between bundles
+      // however, we have to reset the UI to the normal bundle display briefly,
+      // similar to what's done when navigating to other pages which causes a brief full page flash of gray
+      // const clickedOpen = bundleId === currentBundleId;
+      // if (clickedOpenBundle) {
+      //   openInbox();
+      // } else {
+      //   if (isInBundleFlag) {
+      //     inbox.replaceBundle();
+      //   }
+      //   emailPreview.hidePreview();
+      //   openBundle(bundleId);
+      // }
     };
 
     if (emailEl && emailEl.parentNode) {
