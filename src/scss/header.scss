@@ -37,6 +37,16 @@
 		}
 	}
 
+	.Yb, .Yb:not(.abs):focus {
+		border-color: transparent;
+	}
+	.Yb[aria-label="Status: Active"] .Yg { /* (Active) Icon */
+		background-color: #34d058;
+	}
+	.Yc { /* Text */
+		color: #FFF;
+	}
+
 	a[title="Gmail"] {
 		width: 120px;
 		overflow: hidden;

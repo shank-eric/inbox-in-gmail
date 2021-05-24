@@ -26,8 +26,11 @@ export default class Email {
   constructor(emailEl, prevDate) {
     this.emailEl = emailEl;
 
+    const options = getOptions();
     this.processIcon();
-    this.processBundle();
+    if (options.emailBundling === 'enabled') {
+      this.processBundle();
+    }
     this.processCalendar();
     this.processDate(prevDate);
     this.setupPreview();

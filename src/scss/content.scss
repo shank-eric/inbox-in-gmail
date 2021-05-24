@@ -1,3 +1,7 @@
+:root {
+	--email-max-width: 1200px;
+}
+
 @import 'avatar';
 @import 'bundle';
 @import 'calendar-event';
@@ -25,7 +29,7 @@
 }
 
 .ar4 { //main-container
-	max-width: 1200px;
+	max-width: var(--email-max-width);
 	margin: 0 auto;
 
 	.cf.TB { //no-emails-table

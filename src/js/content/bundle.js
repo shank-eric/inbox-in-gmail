@@ -13,6 +13,7 @@ import {
   removeClass,
   hasClass
 } from './utils';
+import { getOptions } from './options';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { EMAIL_CONTAINER } = SELECTORS;
@@ -36,6 +37,14 @@ export default class Bundle {
     const label = labels.find(lab => lab.title === this.bundleName);
     const encodedBundleId = encodeBundleId(this.bundleName);
     const { dateLabel, dateDisplay, rawDate } = email.dateInfo;
+    const options = getOptions();
+    const showEmail = this.stats.count === 1 && !options.bundleOne;
+    if (showEmail) {
+      document.querySelectorAll(`[data-inbox="bundled"][data-${encodedBundleId}]`).forEach(emailRow => {
+        emailRow.setAttribute('data-inbox', 'show-bundled');
+      });
+      return;
+    }
 
     const bundleWrapper = htmlToElements(`
         <div class="zA yO ${BUNDLE_WRAPPER_CLASS}" data-bundle-id="${this.bundleName}"
@@ -104,7 +113,9 @@ export default class Bundle {
   }
 
   updateStats() {
-    if (this.stats.count === 0) {
+    const options = getOptions();
+    const showEmail = this.stats.count === 1 && !options.bundleOne;
+    if (this.stats.count === 0 || showEmail) {
       return;
     }
     this.addCount();
