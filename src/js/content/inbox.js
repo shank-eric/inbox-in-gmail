@@ -7,7 +7,8 @@ import {
   getCurrentBundle,
   isInBundle,
   isInInbox,
-  observeForElement
+  observeForElement,
+  openInbox
 } from './utils';
 import dateLabels from './dateLabels';
 import { getOptions, reloadOptions } from './options';
@@ -136,6 +137,14 @@ export default {
       const bundlePane = document.querySelector(`${EMAIL_CONTAINER}[role="main"]:not([data-pane="inbox"])`);
 
       if (inboxPane && bundlePane && inboxPane !== bundlePane && !bundlePane.getAttribute('data-navigating')) {
+        const bundleEmails = bundlePane.querySelectorAll(`${EMAIL_ROW}`);
+        if (!bundleEmails.length) {
+          if (this.bundleObserver) {
+            this.bundleObserver.disconnect();
+          }
+          openInbox();
+          return;
+        }
         bundlePane.setAttribute('data-pane', 'bundle');
         const bundleId = getCurrentBundle();
         inboxPane.style.display = '';
