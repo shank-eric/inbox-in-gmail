@@ -6,6 +6,7 @@ import { CLASSES } from './constants';
 import calendar from './calendar';
 import { getOptions } from './options';
 import emailPreview from './emailPreview';
+
 import {
   addClass,
   encodeBundleId,
@@ -51,11 +52,8 @@ export default class Email {
   }
 
   getParticipants() {
-    return Array.from(this.emailEl.querySelectorAll('.yW span[email]'));
-  }
-
-  getParticipantNames() {
-    return this.isReminder() ? ['Reminder'] : this.getParticipants().map(node => node.getAttribute('name'));
+    const participantNodes = Array.from(this.emailEl.querySelectorAll('.yW span[email]'));
+    return participantNodes.map(node => ({ email: node.getAttribute('email'), name: node.getAttribute('name') }));
   }
 
   isBundled() {
@@ -69,9 +67,12 @@ export default class Email {
     if (options.reminderTreatment === 'none') {
       return false;
     }
+    if (hasClass(this.emailEl, CLASSES.REMINDER_EMAIL_CLASS) || this.emailEl.getAttribute('data-icon') === 'reminder') {
+      return true;
+    }
 
-    const participants = this.getParticipants().map(node => node.getAttribute('email'));
-    const allNamesMe = participants.length > 0 && participants.every(participant => participant === getMyEmailAddress());
+    const participants = this.getParticipants();
+    const allNamesMe = participants.length > 0 && participants.every(participant => participant.email === getMyEmailAddress());
     if (this.isCalendarReminder()) {
       return true;
     }
@@ -87,8 +88,8 @@ export default class Email {
   }
 
   isCalendarReminder() {
-    const emailBody = querySelectorText('.y2', this.emailEl).toLowerCase();
-    return emailBody.includes('calendar') && emailBody.includes('reminders');
+    const subjectText = querySelectorText('.y6', this.emailEl).toLowerCase();
+    return subjectText.includes('notification') && subjectText.includes('(reminders)');
   }
 
   isUnread() {
@@ -108,20 +109,19 @@ export default class Email {
   processAvatar() {
     const options = getOptions();
     if (options.showAvatar === 'enabled') {
-      const participants = Array.from(this.getParticipantNames()); // convert to array to filter
+      const participants = this.getParticipants();
       if (!participants.length) {
         return; // Prevents Drafts in Search or Drafts folder from causing errors
       }
       let firstParticipant = participants[0];
 
-      const excludingMe = participants.filter(participant => participant !== getMyEmailAddress());
+      const excludingMe = participants.filter(participant => participant.email !== getMyEmailAddress());
       // If there are others in the participants, use one of their initials instead
       if (excludingMe.length > 0) {
         [firstParticipant] = excludingMe;
       }
 
-      const firstLetter = (firstParticipant && firstParticipant.toUpperCase()[0]) || '-';
-      this.addAvatar(firstLetter);
+      this.addAvatar(firstParticipant);
     }
   }
 
@@ -217,11 +217,8 @@ export default class Email {
     addClass(this.emailEl, CLASSES.REMINDER_EMAIL_CLASS);
   }
 
-  addAvatar(firstLetter) {
-    const avatarWrapperEl = this.emailEl.querySelector('.oZ-x3');
-    if (avatarWrapperEl && avatarWrapperEl.getElementsByClassName(CLASSES.AVATAR_CLASS).length === 0) {
-      avatarWrapperEl.appendChild(buildAvatar(firstLetter));
-    }
+  addAvatar(participant) {
+    buildAvatar(this.emailEl.querySelector('.oZ-x3'), participant);
   }
 
   setupPreview() {

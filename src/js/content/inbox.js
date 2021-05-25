@@ -13,6 +13,7 @@ import dateLabels from './dateLabels';
 import { getOptions, reloadOptions } from './options';
 import { CLASSES, SELECTORS } from './constants';
 import emailPreview from './emailPreview';
+import profilePhoto from './profilePhoto';
 
 const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = SELECTORS;
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
@@ -53,6 +54,7 @@ export default {
 
     const currentTab = tabs.length && document.querySelector('.aAy[aria-selected="true"]');
     const labelStats = {};
+    const participantEmails = new Set();
     let prevDate;
 
     // Start from last email on page and head towards first
@@ -75,7 +77,7 @@ export default {
 
       // Collect senders, message count and unread stats for each label
       if (emailLabels.length && email.isBundled()) {
-        const firstParticipant = email.getParticipantNames()[0];
+        const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
         emailLabels.forEach(label => {
           if (!labelStats[label]) {
             labelStats[label] = {
@@ -100,7 +102,9 @@ export default {
           }
         });
       }
+      email.getParticipants().forEach(participant => participantEmails.add(participant.email));
     }
+    profilePhoto.fetchProfilePhotos([...participantEmails]);
 
     // Update bundle stats
     if (isInInboxFlag && !isInBundle() && options.emailBundling === 'enabled') {
