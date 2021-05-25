@@ -12,8 +12,7 @@ export default {
     { label: 'spam', selector: '.aHS-bnv' },
     { label: 'trash', selector: '.aHS-bnx' },
     { label: 'starred', selector: '.aHS-bnw' },
-    { label: 'important', selector: '.aHS-bns' },
-    { label: 'chats', selector: '.aHS-aHP' }
+    { label: 'important', selector: '.aHS-bns' }
   ],
   init() {
     const observer = new MutationObserver(() => {

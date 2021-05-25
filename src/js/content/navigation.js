@@ -1,6 +1,7 @@
 import {
   addClass,
   getMyEmailAddress,
+  hasClass,
   isInBundle,
   isInInbox,
   isTypable,
@@ -75,6 +76,14 @@ export default {
     }
   },
   async updateFloatingButtons() {
+    const menuButton = await observeForElement(document, '.gb_vc');
+    const navContainer = document.querySelector('[role=navigation]');
+    const navExpanded = !hasClass(navContainer, 'bhZ');
+    if (navExpanded) {
+      // nav is expanded, which uses a different compose button
+      // collapse it to get our compose button
+      menuButton.click();
+    }
     const composeContainer = await observeForElement(document, '.aic');
     const mainContainer = document.querySelector('.bkL');
     mainContainer.appendChild(composeContainer);
@@ -89,6 +98,10 @@ export default {
       }
     });
     composeContainer.querySelector('.z0').appendChild(addReminder);
+    if (navExpanded) {
+      // nav was originally expanded, re-open it
+      menuButton.click();
+    }
   },
   async openReminder() {
     const myEmail = getMyEmailAddress();
