@@ -1,10 +1,12 @@
 import {
   DATE_LABELS,
+  DEFAULT_PROFILE_URL,
   CLASSES,
   MONTHS,
   NAME_COLORS
 } from './constants';
 import profilePhoto from './profilePhoto';
+import { addClass } from './utils';
 
 export const buildDateLabel = date => {
   const now = new Date();
@@ -42,8 +44,9 @@ export const buildAvatar = (avatarWrapperEl, participant) => {
   if (participant) {
     const photoUrl = profilePhoto.getPhotoUrl(participant.email);
     const firstLetter = (participant && participant.name && participant.name.toUpperCase()[0]) || '-';
-    if (photoUrl) {
+    if (photoUrl && photoUrl !== DEFAULT_PROFILE_URL) {
       avatarElement.style.background = `url(${photoUrl})`;
+      addClass(avatarElement, 'profile-photo');
       avatarElement.innerText = '';
     } else if (firstLetter) {
       const firstLetterCode = firstLetter.charCodeAt(0);
@@ -59,4 +62,9 @@ export const buildAvatar = (avatarWrapperEl, participant) => {
       avatarElement.innerText = firstLetter;
     }
   }
+};
+
+export const getThreadId = (emailEl, threadAttr = 'data-thread-id') => {
+  const selectedThread = emailEl.querySelector(`[${threadAttr}]`);
+  return selectedThread && selectedThread.getAttribute(threadAttr);
 };

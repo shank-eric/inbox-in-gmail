@@ -20,6 +20,13 @@
         // add margin so screen doesn't jump while we're figuring out time-rows
         margin-top: 23px;
     }
+    .avatar {
+        left: -6px; //shift left to line up with the checkbox underneath it
+        flex: 32px 0 0;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+    }
     &:hover .avatar {
         display: none;
     }
@@ -90,6 +97,10 @@
         margin-right: 2px;
         .aXw { //pin-icon
             display: none;
+        }
+
+        > .T-KT::after {
+            transform: scale(1);
         }
     }
 

@@ -76,7 +76,7 @@ export default {
     }
   },
   async updateFloatingButtons() {
-    const menuButton = await observeForElement(document, '.gb_vc');
+    const menuButton = await observeForElement(document, '.gb_uc');
     const navContainer = document.querySelector('[role=navigation]');
     const navExpanded = !hasClass(navContainer, 'bhZ');
     if (navExpanded) {

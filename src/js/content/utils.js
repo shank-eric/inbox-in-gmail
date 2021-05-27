@@ -74,7 +74,7 @@ export const queryParentSelector = (el, selector) => {
 };
 
 // ---- Classes ---- \\
-export const hasClass = (element, className) => element && element.classList.contains(className);
+export const hasClass = (element, className) => element && element.classList && element.classList.contains(className);
 
 export const addClass = (element, className) => {
   if (element && !hasClass(element, className)) {
@@ -101,7 +101,7 @@ export const openBundle = bundleId => { window.location.href = `#search/in%3Ainb
 export const openInbox = () => { window.location.href = '#inbox'; };
 
 export const getMyEmailAddress = () => {
-  const emailContainer = document.querySelector('.gb_cb');
+  const emailContainer = document.querySelector('.gb_bb');
   if (emailContainer && emailContainer.children && emailContainer.children[1]) {
     return emailContainer.children[1].innerText;
   }

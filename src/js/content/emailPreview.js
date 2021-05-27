@@ -5,7 +5,12 @@ import {
   removeClass,
   startObserver
 } from './utils';
-import { SELECTORS } from './constants';
+import { buildAvatar, getThreadId } from './emailUtils';
+import {
+  CLASSES,
+  DEFAULT_PROFILE_URL,
+  SELECTORS
+} from './constants';
 
 const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = SELECTORS;
 
@@ -67,6 +72,7 @@ export default {
     };
     this.previewObserver = startObserver(this.previewObserver, previewPane, { subtree: true, attributes: true }, adjustPreviewHeight);
     adjustPreviewHeight();
+    this.setAvatars();
 
     const checkPreviewPosition = () => {
       this.rowObserver.disconnect();
@@ -83,6 +89,24 @@ export default {
       this.currentEmail.setAttribute('data-previewing', true);
       previewPane.scrollIntoView({ behavior: 'smooth' });
     }
+  },
+  async setAvatars() {
+    const previewPane = this.getPreviewPane();
+    const avatars = Array.from(previewPane.querySelectorAll('.aCi'));
+    avatars.forEach(avatarWrapperEl => {
+      const currentImage = avatarWrapperEl.querySelector('img');
+      if (currentImage.getAttribute('src') === DEFAULT_PROFILE_URL) {
+        const participant = { name: currentImage.getAttribute('data-name'), email: currentImage.getAttribute('data-hovercard-id') };
+        buildAvatar(avatarWrapperEl, participant);
+        currentImage.style.display = 'none';
+      } else {
+        currentImage.style.display = 'block';
+        const avatarElement = avatarWrapperEl.querySelector(`.${CLASSES.AVATAR_CLASS}`);
+        if (avatarElement) {
+          avatarElement.style.display = 'none';
+        }
+      }
+    });
   },
   hidePreviewPane(previewPane) {
     const previewingEmail = document.querySelector('[data-previewing]');
@@ -118,10 +142,8 @@ export default {
     }
   },
   previewMatchesSelected(previewPane, selectedEmail) {
-    const previewThread = previewPane.querySelector('[data-thread-perm-id]');
-    const selectedThread = selectedEmail.querySelector('[data-thread-id]');
-    const previewThreadId = previewThread && previewThread.getAttribute('data-thread-perm-id');
-    const selectedThreadId = selectedThread && selectedThread.getAttribute('data-thread-id');
+    const previewThreadId = getThreadId(previewPane, 'data-thread-perm-id');
+    const selectedThreadId = getThreadId(selectedEmail);
     return `#${previewThreadId}` === selectedThreadId;
   },
   checkPreview() {

@@ -29,3 +29,5 @@ export const SELECTORS = {
   EMAIL_CONTAINER: '.BltHke', // could add .nH.oy8Mbf
   PREVIEW_PANE: '.Nu.S3.aZ6'
 };
+
+export const DEFAULT_PROFILE_URL = '//ssl.gstatic.com/ui/v1/icons/mail/profile_mask2.png';
