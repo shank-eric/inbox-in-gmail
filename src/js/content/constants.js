@@ -21,11 +21,14 @@ export const CLASSES = {
   CALENDAR_ATTACHMENT_CLASS: 'calendar-attachment',
   REMINDER_EMAIL_CLASS: 'reminder',
   UNREAD_BUNDLE_CLASS: 'contains-unread',
-  UNBUNDLED_PARENT_LABEL: 'Unbundled'
+  UNBUNDLED_PARENT_LABEL: 'Unbundled',
+  EMAIL_ROW: 'zA',
+  SELECTED_EMAIL: 'btb'
 };
 
 export const SELECTORS = {
   EMAIL_ROW: '.zA',
+  SELECTED_EMAIL: '.zA.btb',
   EMAIL_CONTAINER: '.BltHke', // could add .nH.oy8Mbf
   PREVIEW_PANE: '.Nu.S3.aZ6'
 };
