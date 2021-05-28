@@ -3,12 +3,14 @@ import Bundle from './bundle';
 import {
   addClass,
   addPixels,
+  encodeBundleId,
   getTabs,
   getCurrentBundle,
   isInBundle,
   isInInbox,
   observeForElement,
-  openInbox
+  openInbox,
+  removeClass
 } from './utils';
 import dateLabels from './dateLabels';
 import { getOptions, reloadOptions } from './options';
@@ -16,7 +18,9 @@ import { CLASSES, SELECTORS } from './constants';
 import emailPreview from './emailPreview';
 import profilePhoto from './profilePhoto';
 
-const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = SELECTORS;
+const {
+  EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE, SELECTED_EMAIL
+} = SELECTORS;
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 
 // document.querySelectorAll('.v1') -- gmail's loading indicator
@@ -50,6 +54,14 @@ export default {
   processEmails() {
     const isInInboxFlag = isInInbox();
     const emailElements = document.querySelectorAll(`${EMAIL_CONTAINER}[role=main] ${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
+    let selectedEmail = document.querySelector(`[role="main"] ${EMAIL_ROW}[data-selected="true"]`);
+    if (!selectedEmail) {
+      selectedEmail = document.querySelector(`[role="main"] ${SELECTED_EMAIL}`);
+      if (selectedEmail) {
+        selectedEmail.setAttribute('data-selected', true);
+      }
+    }
+
     const tabs = getTabs();
     const options = getOptions();
 
@@ -80,9 +92,11 @@ export default {
       if (emailLabels.length && email.isBundled()) {
         const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
         emailLabels.forEach(label => {
-          if (!labelStats[label]) {
-            labelStats[label] = {
+          const encodedId = encodeBundleId(label);
+          if (!labelStats[encodedId]) {
+            labelStats[encodedId] = {
               title: label,
+              encodedId,
               count: 1,
               senders: [{
                 name: firstParticipant,
@@ -90,16 +104,16 @@ export default {
               }]
             };
           } else {
-            labelStats[label].count++;
-            labelStats[label].senders.push({
+            labelStats[encodedId].count++;
+            labelStats[encodedId].senders.push({
               name: firstParticipant,
               isUnread: email.isUnread()
             });
           }
-          labelStats[label].email = email;
-          labelStats[label].emailEl = email.emailEl;
+          labelStats[encodedId].email = email;
+          labelStats[encodedId].emailEl = email.emailEl;
           if (email.isUnread()) {
-            labelStats[label].containsUnread = true;
+            labelStats[encodedId].containsUnread = true;
           }
         });
       }
@@ -109,8 +123,8 @@ export default {
 
     // Update bundle stats
     if (isInInboxFlag && !isInBundle() && options.emailBundling === 'enabled') {
-      Object.entries(labelStats).forEach(([ label, stats ]) => {
-        const bundle = new Bundle(label, stats);
+      Object.values(labelStats).forEach(stats => {
+        const bundle = new Bundle(stats);
         bundle.updateStats();
       });
 
@@ -120,6 +134,7 @@ export default {
           el.remove();
         }
       });
+      this.setCurrentBundle();
     }
 
     dateLabels.addDateLabels();
@@ -127,9 +142,27 @@ export default {
   getBundledLabels() {
     const bundleRows = Array.from(document.querySelectorAll(`${EMAIL_CONTAINER}[role=main] .${BUNDLE_WRAPPER_CLASS}`));
     return bundleRows.reduce((bundles, el) => {
-      bundles[el.getAttribute('data-bundle-id')] = el;
+      bundles[el.getAttribute('data-inbox')] = el;
       return bundles;
     }, {});
+  },
+  setCurrentBundle() {
+    const currentBundle = document.querySelector(`.${BUNDLE_WRAPPER_CLASS}.btb`);
+    if (currentBundle) {
+      removeClass(currentBundle, 'btb');
+      removeClass(currentBundle.querySelector('.PF'), 'PE');
+    }
+
+    const selectedEmail = document.querySelector(`[role=main] ${SELECTED_EMAIL}:not(.${BUNDLE_WRAPPER_CLASS})`);
+    if (selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled') {
+      const [newBundle] = selectedEmail.getAttribute('data-bundles').split('||');
+      const selectedBundle = document.querySelector(`[data-inbox=${encodeBundleId(newBundle)}]`);
+      if (selectedBundle) {
+        addClass(selectedBundle, 'btb');
+        // add left border
+        addClass(selectedBundle.querySelector('.PF'), 'PE');
+      }
+    }
   },
   moveBundleElement() {
     if (isInBundle()) {

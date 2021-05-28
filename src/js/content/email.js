@@ -23,6 +23,7 @@ import {
   observeForRemoval
 } from './utils';
 
+const IGNORE_CLICK_COLUMNS = [ 'oZ-x3', 'apU', 'bq4' ];
 export default class Email {
   constructor(emailEl, prevDate) {
     this.emailEl = emailEl;
@@ -40,11 +41,13 @@ export default class Email {
   getLabels() {
     return Array.from(this.emailEl.querySelectorAll('.ar.as')).map(labelContainer => {
       const labelEl = labelContainer.querySelector('.at');
+      const labelTitle = labelEl.getAttribute('title');
       const labelText = labelContainer.querySelector('.av');
       const whiteText = labelText.style.color === 'rgb(255, 255, 255)';
 
       return {
-        title: labelEl.getAttribute('title'),
+        title: labelTitle,
+        encodedId: encodeBundleId(labelTitle),
         textColor: isDarkMode() || whiteText ? labelEl.style.backgroundColor : labelText.style.color,
         element: labelEl
       };
@@ -163,6 +166,7 @@ export default class Email {
         labels.forEach(label => {
           this.emailEl.setAttribute(`data-${encodeBundleId(label.title)}`, true);
         });
+        this.emailEl.setAttribute('data-bundles', labels.map(label => encodeBundleId(label.title)).join('||'));
       } else {
         this.emailEl.setAttribute('data-inbox', 'email');
         if (isUnbundled) {
@@ -224,31 +228,32 @@ export default class Email {
   setupPreview() {
     const previewProcessed = this.emailEl.getAttribute('data-preview-enabled');
     if (previewProcessed !== 'true') {
-      const ignoreColumns = [ 'oZ-x3', 'apU', 'bq4' ];
-      this.emailEl.addEventListener('click', async event => {
-        if (this.emailEl.getAttribute('data-inbox') && isInBundle()) {
-          openInbox();
-          emailPreview.hidePreview();
-          await observeForRemoval(document, '[data-pane="bundle"]');
-          const clickColumn = queryParentSelector(event.target, '.xY');
-          if (clickColumn && ignoreColumns.some(col => hasClass(clickColumn, col))) {
-            const clickSelector = `${event.target.tagName}.${Array.from(event.target.classList).join('.')}`;
-            const clickTarget = this.emailEl.querySelector(clickSelector);
-            if (clickTarget) {
-              clickTarget.click();
-            }
-          } else {
-            emailPreview.emailClicked(this.emailEl);
-          }
-        } else {
-          const clickColumn = queryParentSelector(event.target, '.xY');
-          if (clickColumn && ignoreColumns.some(col => hasClass(clickColumn, col))) {
-            return;
-          }
-          emailPreview.emailClicked(this.emailEl);
-        }
-      });
+      this.emailEl.addEventListener('click', e => this.emailClicked(e));
       this.emailEl.setAttribute('data-preview-enabled', true);
+    }
+  }
+
+  async emailClicked(event) {
+    if (this.emailEl.getAttribute('data-inbox') && isInBundle()) {
+      openInbox();
+      emailPreview.hidePreview();
+      await observeForRemoval(document, '[data-pane="bundle"]');
+      const clickColumn = queryParentSelector(event.target, '.xY');
+      if (clickColumn && IGNORE_CLICK_COLUMNS.some(col => hasClass(clickColumn, col))) {
+        const clickSelector = `${event.target.tagName}.${Array.from(event.target.classList).join('.')}`;
+        const clickTarget = this.emailEl.querySelector(clickSelector);
+        if (clickTarget) {
+          clickTarget.click();
+        }
+      } else {
+        emailPreview.emailClicked(this.emailEl);
+      }
+    } else {
+      const clickColumn = queryParentSelector(event.target, '.xY');
+      if (clickColumn && IGNORE_CLICK_COLUMNS.some(col => hasClass(clickColumn, col))) {
+        return;
+      }
+      emailPreview.emailClicked(this.emailEl);
     }
   }
 }

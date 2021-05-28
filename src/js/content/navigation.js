@@ -11,8 +11,12 @@ import {
 } from './utils';
 import leftNav from './leftNav';
 import inbox from './inbox';
+import emailPreview from './emailPreview';
 import { getOptions, reloadOptions } from './options';
-import { CLASSES } from './constants';
+import { CLASSES, SELECTORS } from './constants';
+
+const { EMAIL_ROW, SELECTED_EMAIL } = SELECTORS;
+const { BUNDLE_PAGE_CLASS, BUNDLE_WRAPPER_CLASS } = CLASSES;
 
 export default {
   init() {
@@ -23,6 +27,7 @@ export default {
       openInbox();
     }
     window.addEventListener('hashchange', this.handleHashChange);
+    window.addEventListener('keydown', this.handleKeyboardEvents);
   },
   async updateHeader() {
     if (document.querySelector('link[rel*="icon"]')) {
@@ -57,9 +62,9 @@ export default {
     if (isInBundle()) {
       hash = '#inbox';
       title = 'inbox';
-      addClass(document.body, CLASSES.BUNDLE_PAGE_CLASS);
+      addClass(document.body, BUNDLE_PAGE_CLASS);
     } else {
-      removeClass(document.body, CLASSES.BUNDLE_PAGE_CLASS);
+      removeClass(document.body, BUNDLE_PAGE_CLASS);
       if (!leftNav.menuItems.some(item => `#${item.label}` === hash)) {
         hash = '#inbox';
         title = 'gmail';
@@ -74,6 +79,86 @@ export default {
     if (titleNode) {
       titleNode.href = hash;
     }
+  },
+  handleKeyboardEvents(event) {
+    const navKeys = [ 'ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK' ];
+    const currentRow = document.querySelector(`[role="main"] ${SELECTED_EMAIL}:not(.${BUNDLE_WRAPPER_CLASS})`);
+    const currentBundle = document.querySelector(`[role="main"] ${SELECTED_EMAIL}.${BUNDLE_WRAPPER_CLASS}`);
+
+    if (event.code === 'Escape') {
+      if (emailPreview.previewShowing) {
+        emailPreview.emailClicked(currentRow);
+      } else if (isInBundle()) {
+        openInbox();
+      }
+    } else if (event.code === 'Enter') {
+      if (currentRow.getAttribute('data-inbox') === 'bundled') {
+        currentBundle.click();
+      } else {
+        currentRow.click();
+      }
+    } else if (navKeys.includes(event.code)) {
+      if (currentRow.getAttribute('data-inbox') === 'bundled') {
+        // gmail moved focus to a bundled email, we need to decide if we're going to focus that bundle or if we should ignore it?
+        // - if there's anything visible between the previously selected email and the one that is now selected, select that instead
+        // - if there's nothing visible between the previously selected email and the one that is now selected
+        //   find the next visible thing after the previous email and select that
+        // - if there's nothing visible after the previous email, stay focused on that one
+        const previousEmail = document.querySelector(`[role="main"] ${EMAIL_ROW}[data-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS})`);
+        const previousBundle = document.querySelector(`.${BUNDLE_WRAPPER_CLASS}[data-selected="true"]`);
+
+        const searchNext = event.code === 'ArrowDown' || event.code === 'KeyJ';
+        const navigator = searchNext ? 'nextSibling' : 'previousSibling';
+
+        let nextRow = previousEmail[navigator];
+        // skip rows that we shouldn't focus on
+        // - non emails (date labels, preview pane, etc)
+        // - bundled emails
+        // - the bundle row from the previously selected email
+        let isEmailRow = hasClass(nextRow, EMAIL_ROW);
+        let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
+        let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
+        while (nextRow && (!isEmailRow || isEmailBundled || isPreviousBundle)) {
+          nextRow = nextRow[navigator];
+          if (nextRow) {
+            isEmailRow = hasClass(nextRow, EMAIL_ROW);
+            isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
+            isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
+          }
+        }
+        if (nextRow) {
+          if (previousEmail) {
+            previousEmail.setAttribute('data-selected', null);
+          }
+          if (previousBundle) {
+            previousBundle.setAttribute('data-selected', null);
+          }
+        } else {
+          nextRow = previousEmail;
+        }
+
+        let emailToSelect;
+        if (hasClass(nextRow, BUNDLE_WRAPPER_CLASS)) {
+          const nextBundle = nextRow.getAttribute('data-inbox');
+          nextRow.setAttribute('data-selected', true);
+          // select the first email in the bundle
+          emailToSelect = document.querySelector(`[role="main"] ${EMAIL_ROW}[data-inbox="bundled"][data-${nextBundle}]`);
+        } else if (nextRow) {
+          emailToSelect = nextRow;
+        }
+        if (emailToSelect) {
+          emailToSelect.setAttribute('data-selected', true);
+          const checkbox = emailToSelect.querySelector('.aid');
+          // check the box to select the row
+          checkbox.click();
+          // check it again to uncheck the box, but leave it selected
+          checkbox.click();
+        }
+      } else {
+        currentRow.setAttribute('data-selected', true);
+      }
+    }
+    inbox.setCurrentBundle();
   },
   async updateFloatingButtons() {
     const menuButton = await observeForElement(document, '.gb_uc');

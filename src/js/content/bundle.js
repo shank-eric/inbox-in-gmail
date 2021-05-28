@@ -3,7 +3,6 @@ import emailPreview from './emailPreview';
 import {
   addClass,
   checkImportantMarkers,
-  encodeBundleId,
   getCurrentBundle,
   htmlToElements,
   isInBundle,
@@ -15,15 +14,14 @@ import {
 } from './utils';
 import { getOptions } from './options';
 
-const { BUNDLE_WRAPPER_CLASS } = CLASSES;
+const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW } = CLASSES;
 const { EMAIL_CONTAINER } = SELECTORS;
 
 export default class Bundle {
-  constructor(bundleName, stats) {
-    this.bundleName = bundleName;
-    this.stats = stats;
-    this.element = document.querySelector(`${EMAIL_CONTAINER}[role=main] .${BUNDLE_WRAPPER_CLASS}[data-bundle-id="${bundleName}"]`);
-    if (stats.count === 0 && this.element) {
+  constructor(attrs) {
+    this.attrs = attrs;
+    this.element = document.querySelector(`${EMAIL_CONTAINER}[role=main] .${BUNDLE_WRAPPER_CLASS}[data-inbox="${attrs.encodedId}"]`);
+    if (attrs.count === 0 && this.element) {
       this.element.remove();
     } else if (!this.element) {
       this.element = this.buildBundleWrapper();
@@ -32,27 +30,27 @@ export default class Bundle {
 
   buildBundleWrapper() {
     const importantMarkerClass = checkImportantMarkers() ? '' : 'hide-important-markers';
-    const { email, emailEl } = this.stats;
-    const labels = this.stats.email.getLabels();
-    const label = labels.find(lab => lab.title === this.bundleName);
-    const encodedBundleId = encodeBundleId(this.bundleName);
+    const {
+      email, emailEl, encodedId, title
+    } = this.attrs;
+    const labels = this.attrs.email.getLabels();
+    const label = labels.find(lab => lab.encodedId === encodedId);
     const { dateLabel, dateDisplay, rawDate } = email.dateInfo;
     const options = getOptions();
-    const showEmail = this.stats.count === 1 && !options.bundleOne;
+    const showEmail = this.attrs.count === 1 && !options.bundleOne;
     if (showEmail) {
-      document.querySelectorAll(`[data-inbox="bundled"][data-${encodedBundleId}]`).forEach(emailRow => {
+      document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`).forEach(emailRow => {
         emailRow.setAttribute('data-inbox', 'show-bundled');
       });
       return;
     }
 
     const bundleWrapper = htmlToElements(`
-        <div class="zA yO ${BUNDLE_WRAPPER_CLASS}" data-bundle-id="${this.bundleName}"
-            data-inbox=${encodedBundleId} data-date-label="${dateLabel}" data-show-emails="false">
+        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox=${encodedId} data-date-label="${dateLabel}" data-show-emails="false">
           <div class="PF xY"></div>
           <div class="apU xY"></div>
           <div class="WA xY ${importantMarkerClass}"></div>
-          <div class="yX xY label-link .yW" style="color: ${label.textColor}">${this.bundleName}</div>
+          <div class="yX xY label-link .yW" style="color: ${label.textColor}">${title}</div>
           <div class="xY a4W">
             <div class="xS">
               <div class="xT">
@@ -80,16 +78,16 @@ export default class Bundle {
   }
 
   async handleBundleClick(e) {
-    const bundleId = encodeBundleId(this.bundleName);
+    const { encodedId } = this.attrs;
     if (hasClass(e.target, 'show-emails')) {
       const bundleRow = e.currentTarget;
       const currentlyShowing = bundleRow.getAttribute('data-show-emails') === 'true';
       if (currentlyShowing) {
-        document.querySelectorAll(`[data-inbox="show-bundled"][data-${bundleId}]`).forEach(emailRow => {
+        document.querySelectorAll(`[data-inbox="show-bundled"][data-${encodedId}]`).forEach(emailRow => {
           emailRow.setAttribute('data-inbox', 'bundled');
         });
       } else {
-        document.querySelectorAll(`[data-inbox="bundled"][data-${bundleId}]`).forEach(emailRow => {
+        document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`).forEach(emailRow => {
           emailRow.setAttribute('data-inbox', 'show-bundled');
         });
       }
@@ -97,7 +95,7 @@ export default class Bundle {
     } else {
       const currentBundleId = getCurrentBundle(); // will be null when in inbox
       const isInBundleFlag = isInBundle();
-      const clickedClosedBundle = bundleId !== currentBundleId;
+      const clickedClosedBundle = encodedId !== currentBundleId;
 
       emailPreview.hidePreview();
       if (isInBundleFlag) {
@@ -107,15 +105,15 @@ export default class Bundle {
         if (isInBundleFlag) {
           await observeForRemoval(document, '[data-pane="bundle"]');
         }
-        openBundle(bundleId);
+        openBundle(encodedId);
       }
     }
   }
 
   updateStats() {
     const options = getOptions();
-    const showEmail = this.stats.count === 1 && !options.bundleOne;
-    if (this.stats.count === 0 || showEmail) {
+    const showEmail = this.attrs.count === 1 && !options.bundleOne;
+    if (this.attrs.count === 0 || showEmail) {
       return;
     }
     this.addCount();
@@ -124,12 +122,12 @@ export default class Bundle {
   }
 
   addCount() {
-    const replacementHTML = `<span>${this.bundleName}</span><span class="bundle-count">(${this.stats.count})</span>`;
+    const replacementHTML = `<span>${this.attrs.title}</span><span class="bundle-count">(${this.attrs.count})</span>`;
     this.replaceHtml('.label-link', replacementHTML);
   }
 
   addSenders() {
-    const uniqueSenders = this.stats.senders.reverse().filter((sender, index, self) => {
+    const uniqueSenders = this.attrs.senders.reverse().filter((sender, index, self) => {
       if (self.findIndex(s => s.name === sender.name && s.isUnread === sender.isUnread) === index) {
         if (!sender.isUnread && self.findIndex(s => s.name === sender.name && s.isUnread) >= 0) {
           return false;
@@ -144,7 +142,7 @@ export default class Bundle {
   }
 
   checkUnread() {
-    if (this.stats.containsUnread) {
+    if (this.attrs.containsUnread) {
       addClass(this.element, 'zE');
       removeClass(this.element, 'yO');
     } else {
