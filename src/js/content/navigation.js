@@ -16,7 +16,7 @@ import { getOptions, reloadOptions } from './options';
 import { CLASSES, SELECTORS } from './constants';
 
 const { EMAIL_ROW, SELECTED_EMAIL } = SELECTORS;
-const { BUNDLE_PAGE_CLASS, BUNDLE_WRAPPER_CLASS } = CLASSES;
+const { BUNDLE_PAGE_CLASS, BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;
 
 export default {
   init() {
@@ -84,6 +84,7 @@ export default {
     const navKeys = [ 'ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK' ];
     const currentRow = document.querySelector(`[role="main"] ${SELECTED_EMAIL}:not(.${BUNDLE_WRAPPER_CLASS})`);
     const currentBundle = document.querySelector(`[role="main"] ${SELECTED_EMAIL}.${BUNDLE_WRAPPER_CLASS}`);
+    const mainContainer = document.querySelector('.AO');
 
     if (event.code === 'Escape') {
       if (emailPreview.previewShowing) {
@@ -115,13 +116,13 @@ export default {
         // - non emails (date labels, preview pane, etc)
         // - bundled emails
         // - the bundle row from the previously selected email
-        let isEmailRow = hasClass(nextRow, EMAIL_ROW);
+        let isEmailRow = hasClass(nextRow, EMAIL_ROW_CLASS);
         let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
         let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
         while (nextRow && (!isEmailRow || isEmailBundled || isPreviousBundle)) {
           nextRow = nextRow[navigator];
           if (nextRow) {
-            isEmailRow = hasClass(nextRow, EMAIL_ROW);
+            isEmailRow = hasClass(nextRow, EMAIL_ROW_CLASS);
             isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
             isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
           }
@@ -157,6 +158,12 @@ export default {
       } else {
         currentRow.setAttribute('data-selected', true);
       }
+    } else if (event.code === 'Semicolon') {
+      mainContainer.scrollBy(0, event.shiftKey ? 250 : 25);
+    } else if (event.code === 'Quote') {
+      mainContainer.scrollBy(0, event.shiftKey ? -250 : -25);
+    // } else {
+    //   console.log(event);
     }
     inbox.setCurrentBundle();
   },
