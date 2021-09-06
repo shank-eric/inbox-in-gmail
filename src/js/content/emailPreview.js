@@ -95,15 +95,17 @@ export default {
     const avatars = Array.from(previewPane.querySelectorAll('.aCi'));
     avatars.forEach(avatarWrapperEl => {
       const currentImage = avatarWrapperEl.querySelector('img');
-      if (currentImage.getAttribute('src') === DEFAULT_PROFILE_URL) {
-        const participant = { name: currentImage.getAttribute('data-name'), email: currentImage.getAttribute('data-hovercard-id') };
-        buildAvatar(avatarWrapperEl, participant);
-        currentImage.style.display = 'none';
-      } else {
-        currentImage.style.display = 'block';
-        const avatarElement = avatarWrapperEl.querySelector(`.${CLASSES.AVATAR_CLASS}`);
-        if (avatarElement) {
-          avatarElement.style.display = 'none';
+      if (currentImage) {
+        if (currentImage.getAttribute('src') === DEFAULT_PROFILE_URL) {
+          const participant = { name: currentImage.getAttribute('data-name'), email: currentImage.getAttribute('data-hovercard-id') };
+          buildAvatar(avatarWrapperEl, participant);
+          currentImage.style.display = 'none';
+        } else {
+          currentImage.style.display = 'block';
+          const avatarElement = avatarWrapperEl.querySelector(`.${CLASSES.AVATAR_CLASS}`);
+          if (avatarElement) {
+            avatarElement.style.display = 'none';
+          }
         }
       }
     });

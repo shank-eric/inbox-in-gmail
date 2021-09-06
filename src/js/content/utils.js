@@ -101,9 +101,9 @@ export const openBundle = bundleId => { window.location.href = `#search/in%3Ainb
 export const openInbox = () => { window.location.href = '#inbox'; };
 
 export const getMyEmailAddress = () => {
-  const emailContainer = document.querySelector('.gb_bb');
-  if (emailContainer && emailContainer.children && emailContainer.children[1]) {
-    return emailContainer.children[1].innerText;
+  const emailAddress = document.querySelector('.gb_bb');
+  if (emailAddress && emailAddress.children && emailAddress.children[1]) {
+    return emailAddress.children[1].innerText;
   }
 };
 
