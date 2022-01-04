@@ -11,12 +11,10 @@ import {
 } from './utils';
 import leftNav from './leftNav';
 import inbox from './inbox';
-import emailPreview from './emailPreview';
 import { getOptions, reloadOptions } from './options';
-import { CLASSES, SELECTORS } from './constants';
+import { CLASSES } from './constants';
 
-const { EMAIL_ROW, SELECTED_EMAIL } = SELECTORS;
-const { BUNDLE_PAGE_CLASS, BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;
+const { BUNDLE_PAGE_CLASS } = CLASSES;
 
 export default {
   init() {
@@ -25,9 +23,10 @@ export default {
     this.updateHeader();
     if (!isInInbox()) { // always make sure we start on the main inbox page so we can find the right email container
       openInbox();
+    } else {
+      this.handleHashChange();
     }
     window.addEventListener('hashchange', this.handleHashChange);
-    window.addEventListener('keydown', this.handleKeyboardEvents);
   },
   async updateHeader() {
     if (document.querySelector('link[rel*="icon"]')) {
@@ -70,102 +69,12 @@ export default {
         title = 'gmail';
       }
     }
-    const headerElement = document.querySelector('header') && document.querySelector('header').parentElement.parentElement;
-    if (headerElement) {
-      headerElement.setAttribute('pageTitle', title);
+    document.body.setAttribute('data-page', title);
+
+    const titleNodes = document.querySelectorAll('a[title="Gmail"]');
+    if (titleNodes) {
+      titleNodes.forEach(titleNode => { titleNode.href = hash; });
     }
-
-    const titleNode = document.querySelector('a[title="Gmail"]:not([aria-label])');
-    if (titleNode) {
-      titleNode.href = hash;
-    }
-  },
-  handleKeyboardEvents(event) {
-    const navKeys = [ 'ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK' ];
-    const currentRow = document.querySelector(`[role="main"] ${SELECTED_EMAIL}:not(.${BUNDLE_WRAPPER_CLASS})`);
-    const currentBundle = document.querySelector(`[role="main"] ${SELECTED_EMAIL}.${BUNDLE_WRAPPER_CLASS}`);
-    const mainContainer = document.querySelector('.AO');
-
-    if (event.code === 'Escape') {
-      if (emailPreview.previewShowing) {
-        emailPreview.emailClicked(currentRow);
-      } else if (isInBundle()) {
-        openInbox();
-      }
-    } else if (event.code === 'Enter') {
-      if (currentRow.getAttribute('data-inbox') === 'bundled') {
-        currentBundle.click();
-      } else {
-        currentRow.click();
-      }
-    } else if (navKeys.includes(event.code)) {
-      if (currentRow.getAttribute('data-inbox') === 'bundled') {
-        // gmail moved focus to a bundled email, we need to decide if we're going to focus that bundle or if we should ignore it?
-        // - if there's anything visible between the previously selected email and the one that is now selected, select that instead
-        // - if there's nothing visible between the previously selected email and the one that is now selected
-        //   find the next visible thing after the previous email and select that
-        // - if there's nothing visible after the previous email, stay focused on that one
-        const previousEmail = document.querySelector(`[role="main"] ${EMAIL_ROW}[data-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS})`);
-        const previousBundle = document.querySelector(`.${BUNDLE_WRAPPER_CLASS}[data-selected="true"]`);
-
-        const searchNext = event.code === 'ArrowDown' || event.code === 'KeyJ';
-        const navigator = searchNext ? 'nextSibling' : 'previousSibling';
-
-        let nextRow = previousEmail[navigator];
-        // skip rows that we shouldn't focus on
-        // - non emails (date labels, preview pane, etc)
-        // - bundled emails
-        // - the bundle row from the previously selected email
-        let isEmailRow = hasClass(nextRow, EMAIL_ROW_CLASS);
-        let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
-        let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
-        while (nextRow && (!isEmailRow || isEmailBundled || isPreviousBundle)) {
-          nextRow = nextRow[navigator];
-          if (nextRow) {
-            isEmailRow = hasClass(nextRow, EMAIL_ROW_CLASS);
-            isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
-            isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
-          }
-        }
-        if (nextRow) {
-          if (previousEmail) {
-            previousEmail.setAttribute('data-selected', null);
-          }
-          if (previousBundle) {
-            previousBundle.setAttribute('data-selected', null);
-          }
-        } else {
-          nextRow = previousEmail;
-        }
-
-        let emailToSelect;
-        if (hasClass(nextRow, BUNDLE_WRAPPER_CLASS)) {
-          const nextBundle = nextRow.getAttribute('data-inbox');
-          nextRow.setAttribute('data-selected', true);
-          // select the first email in the bundle
-          emailToSelect = document.querySelector(`[role="main"] ${EMAIL_ROW}[data-inbox="bundled"][data-${nextBundle}]`);
-        } else if (nextRow) {
-          emailToSelect = nextRow;
-        }
-        if (emailToSelect) {
-          emailToSelect.setAttribute('data-selected', true);
-          const checkbox = emailToSelect.querySelector('.aid');
-          // check the box to select the row
-          checkbox.click();
-          // check it again to uncheck the box, but leave it selected
-          checkbox.click();
-        }
-      } else {
-        currentRow.setAttribute('data-selected', true);
-      }
-    } else if (event.code === 'Semicolon') {
-      mainContainer.scrollBy(0, event.shiftKey ? 250 : 25);
-    } else if (event.code === 'Quote') {
-      mainContainer.scrollBy(0, event.shiftKey ? -250 : -25);
-    // } else {
-    //   console.log(event);
-    }
-    inbox.setCurrentBundle();
   },
   async updateFloatingButtons() {
     const menuButton = await observeForElement(document, '.gb_uc');
@@ -198,26 +107,31 @@ export default {
   async openReminder() {
     const myEmail = getMyEmailAddress();
 
-    // TODO: Replace all of the below with gmail.compose.start_compose() via the Gmail.js lib
     const composeButton = document.querySelector('.T-I.T-I-KE.L3');
     composeButton.click();
 
-    // TODO: Delete waitForElement() function, replace with gmail.observe.on('compose') via the Gmail.js lib
     const composeContainer = await observeForElement(document, '.AD');
     addClass(composeContainer, 'compose-reminder');
-    const to = composeContainer.querySelector('textarea[name=to]');
-    const title = composeContainer.querySelector('input[name=subjectbox]');
-    const body = composeContainer.querySelector('div[aria-label="Message Body"]');
-    const from = composeContainer.querySelector('input[name="from"]');
 
-    from.value = myEmail;
-    to.value = myEmail;
-    const options = getOptions();
-    if (options.reminderTreatment === 'all') {
-      to.addEventListener('focus', () => title.focus());
-    } else {
-      title.value = 'Reminder';
-      to.addEventListener('focus', () => body.focus());
-    }
+    const focusListener = () => {
+      composeContainer.removeEventListener('focus', focusListener, true);
+
+      // wait for focus to move before setting value
+      setTimeout(() => {
+        const options = getOptions();
+        const title = composeContainer.querySelector('input[name=subjectbox]');
+        const body = composeContainer.querySelector('div[aria-label="Message Body"]');
+        if (options.reminderTreatment === 'all') {
+          title.focus();
+        } else {
+          title.value = 'Reminder';
+          body.focus();
+        }
+
+        const to = composeContainer.querySelector('textarea[name=to]') || composeContainer.querySelector('[name=to] input');
+        to.value = myEmail;
+      });
+    };
+    composeContainer.addEventListener('focus', focusListener, true);
   }
 };

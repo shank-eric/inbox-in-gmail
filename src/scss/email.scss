@@ -6,9 +6,7 @@
 	height: auto !important;  //need !important to override inline styles
 
 	&:not(.show-preview) {
-		//need !important to override inline styles
-		flex-grow: 0 !important;
-		height: 0 !important;
+		display: none;
 	}
 	.ao8 { //preview-pane-container
 		width: auto !important;

@@ -151,7 +151,7 @@ export default {
   checkPreview() {
     this.hideIfCurrentEmailRemoved();
 
-    const selectedEmail = document.querySelector(`${EMAIL_CONTAINER}[role="main"]  ${EMAIL_ROW}.btb`);
+    const selectedEmail = document.querySelector(`${EMAIL_CONTAINER}[role="main"]  ${EMAIL_ROW}.aps`);
     if (selectedEmail) {
       const previewPane = this.getPreviewPane();
       const selectedEmailIsBundled = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled';
