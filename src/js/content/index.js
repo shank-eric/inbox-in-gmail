@@ -2,6 +2,7 @@ import leftNav from './leftNav';
 import navigation from './navigation';
 import inbox from './inbox';
 import { addClass, observeForElement } from './utils';
+import keyboard from './keyboard';
 
 async function checkForDarkMode() {
   const backgroundEl = await observeForElement(document, '.wl');
@@ -23,6 +24,7 @@ function initInboxReborn() {
   checkForDarkMode();
   inbox.observeEmails();
   navigation.init();
+  keyboard.init();
   leftNav.init();
 }
 

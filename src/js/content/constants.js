@@ -22,8 +22,7 @@ export const CLASSES = {
   REMINDER_EMAIL_CLASS: 'reminder',
   UNREAD_BUNDLE_CLASS: 'contains-unread',
   UNBUNDLED_PARENT_LABEL: 'Unbundled',
-  EMAIL_ROW: 'zA',
-  SELECTED_EMAIL: 'btb'
+  EMAIL_ROW_CLASS: 'zA'
 };
 
 export const SELECTORS = {

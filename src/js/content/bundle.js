@@ -14,7 +14,7 @@ import {
 } from './utils';
 import { getOptions } from './options';
 
-const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW } = CLASSES;
+const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;
 const { EMAIL_CONTAINER } = SELECTORS;
 
 export default class Bundle {
@@ -46,7 +46,7 @@ export default class Bundle {
     }
 
     const bundleWrapper = htmlToElements(`
-        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox=${encodedId} data-date-label="${dateLabel}" data-show-emails="false">
+        <div class="${EMAIL_ROW_CLASS} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox=${encodedId} data-date-label="${dateLabel}" data-show-emails="false">
           <div class="PF xY"></div>
           <div class="apU xY"></div>
           <div class="WA xY ${importantMarkerClass}"></div>

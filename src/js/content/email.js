@@ -255,5 +255,6 @@ export default class Email {
       }
       emailPreview.emailClicked(this.emailEl);
     }
+    this.emailEl.focus();
   }
 }
