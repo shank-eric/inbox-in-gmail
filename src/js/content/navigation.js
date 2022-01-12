@@ -128,8 +128,12 @@ export default {
           body.focus();
         }
 
-        const to = composeContainer.querySelector('textarea[name=to]') || composeContainer.querySelector('[name=to] input');
-        to.value = myEmail;
+        if (myEmail) {
+          const to = composeContainer.querySelector('textarea[name=to]') || composeContainer.querySelector('[name=to] input');
+          to.value = myEmail;
+        } else {
+          addClass(composeContainer, 'show-to-address');
+        }
       });
     };
     composeContainer.addEventListener('focus', focusListener, true);

@@ -101,10 +101,16 @@ export const openBundle = bundleId => { window.location.href = `#search/in%3Ainb
 export const openInbox = () => { window.location.href = '#inbox'; };
 
 export const getMyEmailAddress = () => {
-  const emailAddress = document.querySelector('.gb_bb');
-  if (emailAddress && emailAddress.children && emailAddress.children[1]) {
-    return emailAddress.children[1].innerText;
-  }
+  const emailSelectors = [ '.gb_0b', '.gb_lb' ];
+  let emailAddress;
+  emailSelectors.some(selector => {
+    const emailEl = document.querySelector(selector);
+    if (emailEl) {
+      emailAddress = emailEl.innerText;
+    }
+    return emailAddress;
+  });
+  return emailAddress;
 };
 
 export const isDarkMode = () => hasClass(document.querySelector('body'), 'dark-mode');
