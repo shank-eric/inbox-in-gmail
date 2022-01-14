@@ -4,9 +4,9 @@ import {
   CLASSES,
   MONTHS,
   NAME_COLORS
-} from './constants';
-import profilePhoto from './profilePhoto';
-import { addClass } from './utils';
+} from './constants.js';
+import profilePhoto from './profilePhoto.js';
+import { addClass } from './utils.js';
 
 export const buildDateLabel = date => {
   const now = new Date();

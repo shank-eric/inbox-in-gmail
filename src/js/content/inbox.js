@@ -1,5 +1,5 @@
-import Email from './email';
-import Bundle from './bundle';
+import Email from './email.js';
+import Bundle from './bundle.js';
 import {
   addClass,
   addPixels,
@@ -11,12 +11,12 @@ import {
   observeForElement,
   openInbox,
   removeClass
-} from './utils';
-import dateLabels from './dateLabels';
-import { getOptions, reloadOptions } from './options';
-import { CLASSES, SELECTORS } from './constants';
-import emailPreview from './emailPreview';
-import profilePhoto from './profilePhoto';
+} from './utils.js';
+import dateLabels from './dateLabels.js';
+import { getOptions, reloadOptions } from './options.js';
+import { CLASSES, SELECTORS } from './constants.js';
+import emailPreview from './emailPreview.js';
+import profilePhoto from './profilePhoto.js';
 
 const {
   EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE, SELECTED_EMAIL

@@ -85,8 +85,8 @@ const profilePhoto = {
         Origin: origin,
         Referer: `https://mail.google.com/mail/u/${X_Goog_AuthUser}/`, // eslint-disable-line camelcase
         'User-Agent': navigator.userAgent,
-        'X-ClientDetails': X_ClientDetails,
-        'X-Goog-AuthUser': X_Goog_AuthUser,
+        'X-ClientDetails': X_ClientDetails, // eslint-disable-line camelcase
+        'X-Goog-AuthUser': X_Goog_AuthUser, // eslint-disable-line camelcase
         'X-Goog-Encode-Response-If-Executable': 'base64',
         'X-JavaScript-User-Agent': 'google-api-javascript-client/1.1.0',
         'X-Requested-With': 'XMLHttpRequest'

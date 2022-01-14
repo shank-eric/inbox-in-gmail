@@ -6,3 +6,4 @@ build/
 
 .yarn/*
 !.yarn/releases
+src/css/

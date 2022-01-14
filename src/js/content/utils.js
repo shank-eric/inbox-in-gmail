@@ -1,4 +1,4 @@
-import { CLASSES, SELECTORS } from './constants';
+import { CLASSES, SELECTORS } from './constants.js';
 
 // ---- HTML Elements ---- \\
 export const observeForCondition = (el, condition) => new Promise(

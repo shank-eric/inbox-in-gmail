@@ -1,5 +1,5 @@
-import { addClass, queryParentSelector, removeClass } from './utils';
-import inbox from './inbox';
+import { addClass, queryParentSelector, removeClass } from './utils.js';
+import inbox from './inbox.js';
 
 export default {
   loadedMenu: false,

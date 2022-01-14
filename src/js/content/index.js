@@ -1,13 +1,15 @@
-import leftNav from './leftNav';
-import navigation from './navigation';
-import inbox from './inbox';
-import { addClass, observeForElement } from './utils';
-import keyboard from './keyboard';
+import leftNav from './leftNav.js';
+import navigation from './navigation.js';
+import inbox from './inbox.js';
+import { addClass, observeForElement } from './utils.js';
+import keyboard from './keyboard.js';
 
 async function checkForDarkMode() {
   const backgroundEl = await observeForElement(document, '.wl');
-  const darkMode = getComputedStyle(backgroundEl).getPropertyValue('background-color') === 'rgb(17, 17, 17)';
-  if (darkMode) {
+  const backgroundColor = getComputedStyle(backgroundEl).getPropertyValue('background-color');
+  const darkThemeColors = [ 'rgb(17, 17, 17)', 'rgb(13, 14, 14)' ];
+  const gmailDarkTheme = darkThemeColors.includes(backgroundColor);
+  if (gmailDarkTheme) {
     addClass(document.body, 'dark-mode');
   }
 }
