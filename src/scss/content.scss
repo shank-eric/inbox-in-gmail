@@ -734,7 +734,7 @@ a[title="Gmail"]::after {
 	padding-left: 7px;
 }
 
-a[title="Gmail"][href="#inbox"]::after {
+a[title="Gmail"][href="#inbox"]::after, a[title="Gmail"][href="#settings"]::after {
 	content: 'Inbox';
 }
 a[title="Gmail"][href="#snoozed"]::after {
@@ -948,6 +948,7 @@ header form input {
 /* Fix bug that would expand the message area if giant image in message */
 .Bs.nH.iY.bAt img {
 	max-width: 100%;
+	height: auto !important; /* Now ft. actual image proportions! */
 }
 
 /* Fixed border on email */

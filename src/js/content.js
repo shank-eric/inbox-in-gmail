@@ -40,7 +40,8 @@ let select = {
     composeButton:       ()=>select.composeButtonOld() || select.composeButtonNew(),
     menuParent:          ()=>document.querySelector('.wT .byl'),
     menuRefer:           ()=>document.querySelector('.wT .byl>.TK'),
-    titleNode:           ()=>document.querySelector('a[title="Gmail"]:not([aria-label])'),
+    titleNode:           ()=>document.querySelectorAll('a[title="Gmail"]')[1],
+    headerElement:       ()=>document.querySelector('.nH.w-asV.aiw'),
     messageBody:         ()=>document.querySelector('div[aria-label="Message Body"]'),
     messageFrom:         ()=>document.querySelector('input[name="from"]'),
     messageSubjectBox:   ()=>document.querySelector('input[name=subjectbox]'),
@@ -314,22 +315,20 @@ const addSendersToBundle = (label, senders) => {
 };
 
 const getBundleImageForLabel = (label) => {
-	switch (label) {
-		case 'Promotions':
+	switch (true) {
+		case label=='Promotions':
 			return chrome.runtime.getURL('images/ic_offers_24px_clr_r3_2x.png');
-		case 'Finance':
+		case !!label.match(/\b(finance|finances|banking|bank|tax|taxes)\b/gi):
 			return chrome.runtime.getURL('images/ic_finance_24px_clr_r3_2x.png');
-		case 'Purchases':
-		case 'Orders':
+		case ['Orders', 'Purchases'].includes(label):
 			return chrome.runtime.getURL('images/ic_purchases_24px_clr_r3_2x.png');
-		case 'Trips':
-		case 'Travel':
+		case !!label.match(/\b(trip|trips|travel)\b/gi):
 			return chrome.runtime.getURL('images/ic_travel_clr_24dp_r1_2x.png');
-		case 'Updates':
+		case label=='Updates':
 			return chrome.runtime.getURL('images/ic_updates_24px_clr_r3_2x.png');
-		case 'Forums':
+		case label=='Forums':
 			return chrome.runtime.getURL('images/ic_forums_24px_clr_r3_2x.png');
-		case 'Social':
+		case label=='Social':
 			return chrome.runtime.getURL('images/ic_social_24px_clr_r3_2x.png');
 		default:
 			return chrome.runtime.getURL('images/ic_custom-cluster_24px_g60_r3_2x.png');
@@ -794,7 +793,7 @@ const handleHashChange = () => {
   let hash = window.location.hash;
   if (isInBundle()) hash = '#inbox';
   else hash = hash.split('/')[0].split('?')[0];
-  const headerElement = document.querySelector('header').parentElement.parentElement;
+  const headerElement = select.headerElement();
   const titleNode = select.titleNode();
 
   if (!titleNode || !headerElement) return;
@@ -830,8 +829,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.body.appendChild(addReminder);
 
 
-  waitForElement('a[title="Gmail"]:not([aria-label])', handleHashChange);
-  waitForElement('a[title="Gmail"]:not([aria-label])', addFloatingComposeButton);
+  waitForElement('a[title="Gmail"]', handleHashChange);
+  waitForElement('a[title="Gmail"]', addFloatingComposeButton);
 
   setInterval(updateReminders, 250);
 
@@ -854,13 +853,11 @@ const addFloatingComposeButton = () => {
 
 const moveFloatersLeft = () => {
 	document.querySelector('.add-reminder').classList.add('moved');
-	// document.querySelector('.floating-compose').classList.add('moved');
-	document.querySelector('.Yh.akV[type="button"]').classList.add('moved');
+	document.querySelector('.floating-compose').classList.add('moved');
 }
 const moveFloatersRight = () => {
 	document.querySelector('.add-reminder').classList.remove('moved');
-	// document.querySelector('.floating-compose').classList.remove('moved');
-	document.querySelector('.Yh.akV[type="button"]').classList.remove('moved');
+	document.querySelector('.floating-compose').classList.remove('moved');
 
 	addOnsObserver.disconnect();
 }
