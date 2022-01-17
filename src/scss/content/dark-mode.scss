@@ -1,4 +1,5 @@
-body.dark-mode {
+body.dark-mode,
+html[data-darkreader-scheme="dark"] {
   .vI8oZc.yL { //background-container
     .wl { //background
       background: #222;
@@ -27,7 +28,7 @@ body.dark-mode {
       color: rgba(255, 255, 255, 0.7);
     }
   }
-
+  
   .AO .BltHke.nH.oy8Mbf[data-pane="bundle"] {
     background-color: rgb(75, 75, 75);
   }
