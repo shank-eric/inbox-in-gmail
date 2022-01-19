@@ -101,7 +101,7 @@ export const openBundle = bundleId => { window.location.href = `#search/in%3Ainb
 export const openInbox = () => { window.location.href = '#inbox'; };
 
 export const getMyEmailAddress = () => {
-  const emailSelectors = [ '.gb_0b', '.gb_lb' ];
+  const emailSelectors = [ '.gb_lb', '.gb_0b' ];
   let emailAddress;
   emailSelectors.some(selector => {
     const emailEl = document.querySelector(selector);
