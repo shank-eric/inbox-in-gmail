@@ -100,17 +100,25 @@ export const checkImportantMarkers = () => document.querySelector(`${SELECTORS.E
 export const openBundle = bundleId => { window.location.href = `#search/in%3Ainbox+label%3A${bundleId}+-in%3Astarred`; };
 export const openInbox = () => { window.location.href = '#inbox'; };
 
-export const getMyEmailAddress = () => {
-  const emailSelectors = [ '.gb_lb', '.gb_0b' ];
+function findAnEmail(elements) {
   let emailAddress;
-  emailSelectors.some(selector => {
-    const emailEl = document.querySelector(selector);
-    if (emailEl) {
-      emailAddress = emailEl.innerText;
+  Array.from(elements).some(element => {
+    if (element.innerText && element.innerText.indexOf('@') >= 0 && element.innerText.indexOf(' ') === -1) {
+      emailAddress = element.innerText;
+    } else if (element.childNodes) {
+      emailAddress = findAnEmail(element.childNodes);
     }
     return emailAddress;
   });
   return emailAddress;
+}
+
+let foundEmail;
+export const getMyEmailAddress = () => {
+  if (!foundEmail) {
+    foundEmail = findAnEmail(document.querySelectorAll('.gb_eb'));
+  }
+  return foundEmail;
 };
 
 export const isDarkMode = () => hasClass(document.querySelector('body'), 'dark-mode');
