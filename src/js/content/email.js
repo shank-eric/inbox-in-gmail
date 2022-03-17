@@ -1,11 +1,11 @@
 import {
   buildAvatar,
   buildDateLabel
-} from './emailUtils';
-import { CLASSES } from './constants';
-import calendar from './calendar';
-import { getOptions } from './options';
-import emailPreview from './emailPreview';
+} from './emailUtils.js';
+import { CLASSES } from './constants.js';
+import calendar from './calendar.js';
+import { getOptions } from './options.js';
+import emailPreview from './emailPreview.js';
 
 import {
   addClass,
@@ -21,7 +21,7 @@ import {
   openInbox,
   queryParentSelector,
   observeForRemoval
-} from './utils';
+} from './utils.js';
 
 const IGNORE_CLICK_COLUMNS = [ 'oZ-x3', 'apU', 'bq4' ];
 export default class Email {

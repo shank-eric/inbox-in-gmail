@@ -4,13 +4,13 @@ import {
   observeForElement,
   removeClass,
   startObserver
-} from './utils';
-import { buildAvatar, getThreadId } from './emailUtils';
+} from './utils.js';
+import { buildAvatar, getThreadId } from './emailUtils.js';
 import {
   CLASSES,
   DEFAULT_PROFILE_URL,
   SELECTORS
-} from './constants';
+} from './constants.js';
 
 const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = SELECTORS;
 

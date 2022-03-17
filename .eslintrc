@@ -1,5 +1,14 @@
 {
-  "extends": "airbnb-base",
+  "extends": [
+    "airbnb-base"
+  ],
+  "plugins": [
+    "eslint-plugin-import"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
   "rules": {
     "array-bracket-spacing": [
       "error",
@@ -17,6 +26,12 @@
       "never"
     ],
     "consistent-return": "off",
+    "import/extensions": [
+      "error",
+      {
+        "js": "always"
+      }
+    ],
     "max-len": [
       "warn",
       150

@@ -1,5 +1,5 @@
-import { CLASSES } from './constants';
-import { addClass, removeClass } from './utils';
+import { CLASSES } from './constants.js';
+import { addClass, removeClass } from './utils.js';
 
 let options = {};
 export const getOptions = () => options;

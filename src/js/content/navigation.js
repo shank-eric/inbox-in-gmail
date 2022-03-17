@@ -8,11 +8,11 @@ import {
   observeForElement,
   openInbox,
   removeClass
-} from './utils';
-import leftNav from './leftNav';
-import inbox from './inbox';
-import { getOptions, reloadOptions } from './options';
-import { CLASSES } from './constants';
+} from './utils.js';
+import leftNav from './leftNav.js';
+import inbox from './inbox.js';
+import { getOptions, reloadOptions } from './options.js';
+import { CLASSES } from './constants.js';
 
 const { BUNDLE_PAGE_CLASS } = CLASSES;
 
@@ -77,7 +77,7 @@ export default {
     }
   },
   async updateFloatingButtons() {
-    const menuButton = await observeForElement(document, '.gb_uc');
+    const menuButton = await observeForElement(document, '.gb_xc');
     const navContainer = document.querySelector('[role=navigation]');
     const navExpanded = !hasClass(navContainer, 'bhZ');
     if (navExpanded) {

@@ -1,5 +1,5 @@
-import { CLASSES, SELECTORS } from './constants';
-import emailPreview from './emailPreview';
+import { CLASSES, SELECTORS } from './constants.js';
+import emailPreview from './emailPreview.js';
 import {
   addClass,
   checkImportantMarkers,
@@ -11,8 +11,8 @@ import {
   openInbox,
   removeClass,
   hasClass
-} from './utils';
-import { getOptions } from './options';
+} from './utils.js';
+import { getOptions } from './options.js';
 
 const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;
 const { EMAIL_CONTAINER } = SELECTORS;

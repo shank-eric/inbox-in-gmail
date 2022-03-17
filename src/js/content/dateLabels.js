@@ -1,5 +1,5 @@
-import { addClass } from './utils';
-import { SELECTORS } from './constants';
+import { addClass } from './utils.js';
+import { SELECTORS } from './constants.js';
 
 const { EMAIL_CONTAINER, EMAIL_ROW } = SELECTORS;
 

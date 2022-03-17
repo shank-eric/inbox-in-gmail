@@ -3,10 +3,10 @@ import {
   isInBundle,
   isTypable,
   openInbox
-} from './utils';
-import inbox from './inbox';
-import emailPreview from './emailPreview';
-import { CLASSES, SELECTORS } from './constants';
+} from './utils.js';
+import inbox from './inbox.js';
+import emailPreview from './emailPreview.js';
+import { CLASSES, SELECTORS } from './constants.js';
 
 const { EMAIL_ROW, SELECTED_EMAIL } = SELECTORS;
 const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;

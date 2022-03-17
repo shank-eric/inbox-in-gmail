@@ -4,21 +4,16 @@
   "manifest_version": 2,
   "description": "Adds features like reminders, email bundling and Inbox's minimalistic style to Gmail™",
   "homepage_url": "https://github.com/team-inbox/inbox-reborn",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "inbox-reborn@team-inbox.github.io"
-    }
-  },
   "browser_action": {
-    "default_popup": "options.html"
+    "default_popup": "html/options.html"
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "html/options.html",
     "open_in_tab": false
   },
   "background": {
     "scripts": [
-      "background.bundle.js"
+      "js/background.js"
     ],
     "persistent": false
   },
@@ -36,15 +31,16 @@
         "https://mail.google.com/*"
       ],
       "css": [
-        "content.css"
+        "css/content.css"
       ],
       "js": [
-        "content.bundle.js"
+        "js/content.js"
       ],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
-    "images/*"
+    "images/*",
+    "js/**/*"
   ]
 }
