@@ -1,1 +1,1 @@
-(() => import(chrome.extension.getURL('js/content/index.js')))();
+(() => import('./content/index.js'))();

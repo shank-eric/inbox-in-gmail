@@ -28,16 +28,15 @@ function saveOptions() {
     reminderTreatment, emailBundling, showAvatar, bundleOne
   };
 
-  localStorage.setItem('options', JSON.stringify(options));
+  chrome.storage.local.set({ options });
 }
 
-function restoreOptions() {
-  chrome.runtime.sendMessage({ method: 'getOptions' }, options => {
-    selectRadioWithValue(REMINDER_TREATMENT_SELECTOR, options.reminderTreatment);
-    selectRadioWithValue(BUNDLED_EMAIL_SELECTOR, options.emailBundling);
-    selectRadioWithValue(AVATAR_SELECTOR, options.showAvatar);
-    setCheckbox(BUNDLE_ONE_SELECTOR, options.bundleOne);
-  });
+async function restoreOptions() {
+  const { options } = await chrome.storage.local.get('options') || {};
+  selectRadioWithValue(REMINDER_TREATMENT_SELECTOR, options.reminderTreatment);
+  selectRadioWithValue(BUNDLED_EMAIL_SELECTOR, options.emailBundling);
+  selectRadioWithValue(AVATAR_SELECTOR, options.showAvatar);
+  setCheckbox(BUNDLE_ONE_SELECTOR, options.bundleOne);
 }
 
 const monitorChange = element => element.addEventListener('click', saveOptions);
