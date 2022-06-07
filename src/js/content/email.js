@@ -234,6 +234,8 @@ export default class Email {
   }
 
   async emailClicked(event) {
+    this.emailEl.setAttribute('data-selected', true);
+
     if (this.emailEl.getAttribute('data-inbox') && isInBundle()) {
       openInbox();
       emailPreview.hidePreview();
