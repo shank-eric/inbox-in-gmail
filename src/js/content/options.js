@@ -3,10 +3,13 @@ import { addClass, removeClass } from './utils.js';
 
 let options = {};
 export const getOptions = () => options;
-export const reloadOptions = () => {
-  chrome.runtime.sendMessage({ method: 'getOptions' }, ops => {
-    options = ops || {};
-  });
+export const reloadOptions = async () => {
+  const storage = await chrome.storage.local.get('options') || {};
+  options = storage.options;
+  options.reminderTreatment = options.reminderTreatment || 'containing-word';
+  options.emailBundling = options.emailBundling || 'enabled';
+  options.showAvatar = options.showAvatar || 'enabled';
+  options.bundleOne = options.bundleOne || false;
 
   // Add option classes to body for css styling, removes avatars when disabled
   if (options.showAvatar === 'enabled') {

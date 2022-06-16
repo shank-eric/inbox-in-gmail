@@ -29,10 +29,6 @@ export default {
     window.addEventListener('hashchange', this.handleHashChange);
   },
   async updateHeader() {
-    if (document.querySelector('link[rel*="icon"]')) {
-      document.querySelector('link[rel*="icon"]').href = chrome.runtime.getURL('images/favicon.png');
-    }
-
     await observeForElement(document, 'a[title="Gmail"]:not([aria-label])');
     const gSuiteLogo = document.querySelector('.gb_ua.gb_ra.gb_va');
     if (gSuiteLogo) {
@@ -77,7 +73,7 @@ export default {
     }
   },
   async updateFloatingButtons() {
-    const menuButton = await observeForElement(document, '.gb_xc');
+    const menuButton = await observeForElement(document, '.gb_Ac');
     const navContainer = document.querySelector('[role=navigation]');
     const navExpanded = !hasClass(navContainer, 'bhZ');
     if (navExpanded) {
