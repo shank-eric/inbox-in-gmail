@@ -1,25 +1,32 @@
-.D.E.G-atb { //toolbar
-	padding: 0;
+//toolbar
+.D.E.G-atb {
+  padding: 0;
 
-	&::before {
-		box-shadow: none;
-		-webkit-box-shadow: none;
-	}
+  &::before {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
 
-	&.PY { //with-filter-bar
-		height: 48px;
-		display: flex;
-	}
+  //with-filter-bar
+  &.PY {
+    height: 48px;
+    display: flex;
+  }
 
-	.G6 { //filter-bar
-		display: none;
-	}
-	.Cq.aqL { //toolbar-left
-		margin-left: auto;
-		margin-right: -24px;
-	}
-	.Cr.aqJ { //toolbar-right
-		margin-left: 0px;
-		margin-right: 0px;
-	}
+  //filter-bar
+  .G6 {
+    display: none;
+  }
+
+  //toolbar-left
+  .Cq.aqL {
+    margin-left: auto;
+    margin-right: -24px;
+  }
+
+  //toolbar-right
+  .Cr.aqJ {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
 }

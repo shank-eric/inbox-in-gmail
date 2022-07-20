@@ -1,53 +1,75 @@
-.aeN { //left-sidebar
-  &.bhZ { //collapsed
+//left-sidebar
+.aeN {
+
+  //collapsed
+  &.bhZ {
+
     // below will hide the collapsed left-hand nav entirel
     // transform: translateX(-80px) !important;
     // transition: transform 0.2s ease;
-    .aic { //compose-container
+    //compose-container
+    .aic {
       // expanding the left nav regenerates the compose button
       // we move it in the DOM, so hide this extra one if it somehow comes back
       display: none;
     }
   }
 
-  .V6.CL.W9 { //mail button
+  //mail button
+  .V6.CL.W9 {
     display: none;
   }
-  .ajl.aib .wT { //left-container
-    .n3 { //inner-container
-      .TK { //menu-grouping
+
+  //left-container
+  .ajl.aib .wT {
+
+    //inner-container
+    .n3 {
+
+      //menu-grouping
+      .TK {
         padding: 8px 0;
         border-bottom: 1px solid rgb(221, 221, 221);
 
-        .aim { //menu-item-container
-          .TO { //menu-item
+        //menu-item-container
+        .aim {
+
+          //menu-item
+          .TO {
             border-radius: 2px;
 
-            .TN { //item-container
+            //item-container
+            .TN {
               height: 40px;
 
-              .nU { //item-text
-                .n0 { //item-link
+              //item-text
+              .nU {
+
+                //item-link
+                .n0 {
                   font-weight: normal;
                 }
+
                 [href="#archive"] {
                   background-image: url('chrome-extension://__MSG_@@extension_id__/images/ic_done_clr_24dp_r4_2x.png') !important;
                 }
               }
-              .bsU { //item-counts
+
+              //item-counts
+              .bsU {
                 display: none;
               }
             }
 
-            &.nZ { //active-item
+            //active-item
+            &.nZ {
 
-              .TN .nU .n0 { //item-link
+              //item-link
+              .TN .nU .n0 {
                 font-weight: bold;
               }
             }
-
           }
-
         }
 
         &.main-menu .aim .TO .TN {

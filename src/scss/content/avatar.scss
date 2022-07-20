@@ -14,10 +14,12 @@
   background-size: 75% 75% !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
+
   &.profile-photo {
     background-size: 100% 100% !important;
   }
 }
+
 @-moz-document url-prefix() {
   .avatar {
     background: url("moz-extension://__MSG_@@extension_id__/images/ic_reminder_blue_24dp_r2_2x.png");
