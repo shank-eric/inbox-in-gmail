@@ -1,26 +1,28 @@
 import Email from './email.js';
 import Bundle from './bundle.js';
 import {
-  addClass,
-  addPixels,
-  encodeBundleId,
   getTabs,
   getCurrentBundle,
   isInBundle,
   isInInbox,
+  openInbox
+} from './emailUtils.js';
+import {
+  addClass,
+  addPixels,
+  encodeBundleId,
   observeForElement,
-  openInbox,
   removeClass
 } from './utils.js';
 import dateLabels from './dateLabels.js';
 import { getOptions, reloadOptions } from './options.js';
-import { CLASSES, SELECTORS } from './constants.js';
+import { CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
 import profilePhoto from './profilePhoto.js';
 
 const {
   EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE, SELECTED_EMAIL
-} = SELECTORS;
+} = GMAIL_SELECTORS;
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 
 // document.querySelectorAll('.v1') -- gmail's loading indicator

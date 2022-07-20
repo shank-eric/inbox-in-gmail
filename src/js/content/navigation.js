@@ -1,17 +1,18 @@
 import {
   addClass,
-  getMyEmailAddress,
   hasClass,
-  isInBundle,
-  isInInbox,
-  isTypable,
   observeForElement,
-  openInbox,
   removeClass
 } from './utils.js';
+import {
+  isInBundle,
+  isInInbox,
+  openInbox,
+  openReminder
+} from './emailUtils.js';
 import leftNav from './leftNav.js';
 import inbox from './inbox.js';
-import { getOptions, reloadOptions } from './options.js';
+import { reloadOptions } from './options.js';
 import { CLASSES } from './constants.js';
 
 const { BUNDLE_PAGE_CLASS } = CLASSES;
@@ -86,52 +87,11 @@ export default {
     mainContainer.appendChild(composeContainer);
     const addReminder = document.createElement('div');
     addReminder.className = 'add-reminder';
-    addReminder.addEventListener('click', this.openReminder);
-    window.addEventListener('keydown', event => {
-      const inInput = event.target && isTypable(event.target);
-
-      if (event.code === 'KeyT' && !inInput) {
-        this.openReminder();
-      }
-    });
+    addReminder.addEventListener('click', openReminder);
     composeContainer.querySelector('.z0').appendChild(addReminder);
     if (navExpanded) {
       // nav was originally expanded, re-open it
       menuButton.click();
     }
-  },
-  async openReminder() {
-    const myEmail = getMyEmailAddress();
-
-    const composeButton = document.querySelector('.T-I.T-I-KE.L3');
-    composeButton.click();
-
-    const composeContainer = await observeForElement(document, '.AD');
-    addClass(composeContainer, 'compose-reminder');
-
-    const focusListener = () => {
-      composeContainer.removeEventListener('focus', focusListener, true);
-
-      // wait for focus to move before setting value
-      setTimeout(() => {
-        const options = getOptions();
-        const title = composeContainer.querySelector('input[name=subjectbox]');
-        const body = composeContainer.querySelector('div[aria-label="Message Body"]');
-        if (options.reminderTreatment === 'all') {
-          title.focus();
-        } else {
-          title.value = 'Reminder';
-          body.focus();
-        }
-
-        if (myEmail) {
-          const to = composeContainer.querySelector('textarea[name=to]') || composeContainer.querySelector('[name=to] input');
-          to.value = myEmail;
-        } else {
-          addClass(composeContainer, 'show-to-address');
-        }
-      });
-    };
-    composeContainer.addEventListener('focus', focusListener, true);
   }
 };

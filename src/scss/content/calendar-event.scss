@@ -13,7 +13,7 @@
 		background-color: #f7f7f7;
 		padding: 0 6px;
 		color: #212121;
-		box-shadow: 0 0 1px rgba(0,0,0,.11), 0 1px 2px rgba(0,0,0,.22);
+		box-shadow: 0 0 1px rgba(0, 0, 0, .11), 0 1px 2px rgba(0, 0, 0, .22);
 
 		.brg { //calendar-message
 			display: flex;
@@ -22,7 +22,9 @@
 			overflow: visible;
 		}
 	}
-	.event-title, .event-time {
+
+	.event-title,
+	.event-time {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -31,6 +33,7 @@
 	.event-title {
 		font-weight: normal;
 	}
+
 	.event-time {
 		color: #757575;
 	}
@@ -39,8 +42,11 @@
 		position: relative;
 		top: 0;
 		margin-top: 4px;
+		display: flex !important;
+
 		.aOd.T-I-awv { //rsvp-button
 			border-radius: 2px;
+			color: #212121;
 		}
 	}
 }
@@ -53,6 +59,7 @@
 	background-size: 200%;
 	margin-right: 16px;
 }
+
 @-moz-document url-prefix() {
 	.calendar-image {
 		background-image: url('moz-extension://__MSG_@@extension_id__/images/calendar_event_attachment.png');

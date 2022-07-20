@@ -1,5 +1,3 @@
-import { CLASSES, SELECTORS } from './constants.js';
-
 // ---- HTML Elements ---- \\
 export const observeForCondition = (el, condition) => new Promise(
   resolve => {
@@ -73,6 +71,8 @@ export const queryParentSelector = (el, selector) => {
   return parent;
 };
 
+export const objectMap = (obj, fn) => Object.fromEntries(Object.entries(obj).map(fn));
+
 // ---- Classes ---- \\
 export const hasClass = (element, className) => element && element.classList && element.classList.contains(className);
 
@@ -88,63 +88,10 @@ export const removeClass = (element, className) => {
   }
 };
 
-// ---- Gmail ---- \\
-export const getTabs = () => Array.from(document.querySelectorAll('.aKz')).map(el => el.innerText);
-export const isInInbox = () => document.location.hash.match(/#inbox/g) !== null;
-export const isInBundle = () => document.location.hash.match(/#search\/in%3Ainbox\+label%3A/g) !== null;
-export const getCurrentBundle = () => {
-  const matches = document.location.hash.match(/#search\/in%3Ainbox\+label%3A(.*)\+-in%3Astarred/);
-  return matches && matches[1];
-};
-export const checkImportantMarkers = () => document.querySelector(`${SELECTORS.EMAIL_ROW}:not(.${CLASSES.BUNDLE_WRAPPER_CLASS}) td.WA.xY`);
-export const openBundle = bundleId => { window.location.href = `#search/in%3Ainbox+label%3A${bundleId}+-in%3Astarred`; };
-export const openInbox = () => { window.location.href = '#inbox'; };
-
-let foundEmail;
-const isAnEmail = text => text.indexOf('@') >= 0 && text.indexOf(' ') === -1;
-const findEmailInArray = array => Array.isArray(array) && array.find(item => isAnEmail(item));
-
-const findEmailInElements = elements => {
-  let emailAddress;
-  Array.from(elements).some(element => {
-    if (element.innerText && isAnEmail(element.innerText)) {
-      emailAddress = element.innerText;
-    } else if (element.childNodes) {
-      emailAddress = findEmailInElements(element.childNodes);
-    }
-    return emailAddress;
-  });
-  return emailAddress;
-};
-
-const findEmailInTitle = () => {
-  const title = document.querySelector('title');
-  if (title) {
-    const titleArray = title.innerText.split('-').map(item => item.trim());
-    return findEmailInArray(titleArray);
+export const addRemoveClass = (element, classToAdd, classToRemove) => {
+  if (classToAdd === classToRemove) {
+    return;
   }
+  addClass(element, classToAdd);
+  removeClass(element, classToRemove);
 };
-
-const findEmailInAttribute = () => {
-  const signOutLink = document.querySelector('[href^="https://accounts.google.com/SignOutOptions"]');
-  if (signOutLink) {
-    const label = signOutLink.getAttribute('aria-label');
-    const labelArray = label.split(' ').map(item => item.replace('(', '').replace(')', '').trim());
-    return findEmailInArray(labelArray);
-  }
-};
-
-export const getMyEmailAddress = () => {
-  if (!foundEmail) {
-    foundEmail = findEmailInTitle();
-  }
-  if (!foundEmail) {
-    foundEmail = findEmailInElements(document.querySelectorAll('.gb_be'));
-  }
-  if (!foundEmail) {
-    foundEmail = findEmailInAttribute();
-  }
-  return foundEmail;
-};
-
-export const isDarkMode = () => hasClass(document.querySelector('body'), 'dark-mode');

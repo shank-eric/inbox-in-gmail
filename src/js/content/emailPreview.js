@@ -9,10 +9,10 @@ import { buildAvatar, getThreadId } from './emailUtils.js';
 import {
   CLASSES,
   DEFAULT_PROFILE_URL,
-  SELECTORS
+  GMAIL_SELECTORS
 } from './constants.js';
 
-const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = SELECTORS;
+const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = GMAIL_SELECTORS;
 
 /* Issues
 * navigating quickly between two bundles can cause weird things
@@ -133,10 +133,9 @@ export default {
       previewPane.style['padding-top'] = 0;
     }
   },
-  hideIfCurrentEmailRemoved() {
+  hideIfCurrentEmailRemoved(previewPane) {
     if (this.currentEmail) {
       const currentEmailEl = document.getElementById(this.currentEmail.getAttribute('id'));
-      const previewPane = this.getPreviewPane();
       if (!currentEmailEl) {
         this.currentEmail = null;
         this.hidePreviewPane(previewPane);
@@ -149,11 +148,11 @@ export default {
     return `#${previewThreadId}` === selectedThreadId;
   },
   checkPreview() {
-    this.hideIfCurrentEmailRemoved();
+    const previewPane = this.getPreviewPane();
+    this.hideIfCurrentEmailRemoved(previewPane);
 
     const selectedEmail = document.querySelector(`${EMAIL_CONTAINER}[role="main"]  ${EMAIL_ROW}.aps`);
     if (selectedEmail) {
-      const previewPane = this.getPreviewPane();
       const selectedEmailIsBundled = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled';
       const currentEmailChanged = this.currentEmail !== selectedEmail;
       const emailPreviewing = previewPane && previewPane.querySelector('.UG');
@@ -169,6 +168,8 @@ export default {
       } else {
         this.showPreviewPane(previewPane);
       }
+    } else {
+      this.hidePreviewPane(previewPane);
     }
   }
 };
