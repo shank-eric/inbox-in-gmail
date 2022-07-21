@@ -1,4 +1,4 @@
-import { addClass } from './utils.js';
+import { addClass, hasClass } from './utils.js';
 import {
   CLASSES, DATE_LABELS, GMAIL_SELECTORS, MONTHS
 } from './constants.js';
@@ -75,7 +75,7 @@ export default {
     if (!sibling) {
       return true;
     }
-    if (sibling.className === TIME_ROW) {
+    if (hasClass(sibling, TIME_ROW)) {
       return true;
     }
     if (sibling.getAttribute('data-inbox') !== 'bundled') {
