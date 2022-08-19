@@ -17,6 +17,14 @@ html[data-darkreader-scheme="dark"] {
   .zA {
     color: rgba(255, 255, 255, 1);
 
+    &.yO {
+      background-color: rgba(25, 25, 25, 1);
+    }
+
+    &.zE {
+      background-color: rgba(0, 0, 0, 1);
+    }
+
     .avatar {
       background: url("chrome-extension://__MSG_@@extension_id__/images/btw_ic_speeddial_reminders_white_24dp_2x.png");
     }

@@ -26,8 +26,11 @@
 .ar4 {
   //main-container
   max-width: 2400px;
-  padding: 0 100px;
   margin: 0 auto;
+
+  @media (min-width: 1200px) {
+    padding: 0 100px;
+  }
 
   //no-emails-table
   .cf.TB {

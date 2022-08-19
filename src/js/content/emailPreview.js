@@ -86,6 +86,7 @@ export default {
     };
     this.rowObserver = startObserver(this.rowObserver, this.currentEmail, { attributes: true }, checkPreviewPosition);
     if (!this.currentEmail.getAttribute('data-previewing')) {
+      document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
       this.currentEmail.setAttribute('data-previewing', true);
       previewPane.scrollIntoView({ behavior: 'smooth' });
     }
