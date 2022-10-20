@@ -1,12 +1,18 @@
 import {
-  DEFAULT_PROFILE_URL,
   CLASSES,
-  NAME_COLORS,
-  GMAIL_SELECTORS
-} from './constants.js';
+  NAME_COLORS
+} from '../shared/constants.js';
+
+import {
+  DEFAULT_PROFILE_URL,
+  OUTLOOK_SELECTORS
+} from '../outlook/constants.js';
 import profilePhoto from './profilePhoto.js';
-import { getOptions } from './options.js';
-import { addClass, hasClass, observeForElement } from './utils.js';
+import {
+  addClass, hasClass, observeForElement
+} from '../shared/utils.js';
+
+const { EMAIL_ROW, PREVIEW_COMPOSE } = OUTLOOK_SELECTORS;
 
 export const buildAvatar = (avatarWrapperEl, participant) => {
   let avatarElement = avatarWrapperEl.querySelector(`.${CLASSES.AVATAR_CLASS}`);
@@ -40,59 +46,44 @@ export const buildAvatar = (avatarWrapperEl, participant) => {
 };
 
 let foundEmail;
-const isAnEmail = text => text.indexOf('@') >= 0 && text.indexOf(' ') === -1;
-const findEmailInArray = array => Array.isArray(array) && array.find(item => isAnEmail(item));
-
-const findEmailInElements = elements => {
-  let emailAddress;
-  Array.from(elements).some(element => {
-    if (element.innerText && isAnEmail(element.innerText)) {
-      emailAddress = element.innerText;
-    } else if (element.childNodes) {
-      emailAddress = findEmailInElements(element.childNodes);
-    }
-    return emailAddress;
-  });
-  return emailAddress;
-};
-
-const findEmailInTitle = () => {
-  const title = document.querySelector('title');
-  if (title) {
-    const titleArray = title.innerText.split('-').map(item => item.trim());
-    return findEmailInArray(titleArray);
-  }
-};
-
-const findEmailInAttribute = () => {
-  const signOutLink = document.querySelector('[href^="https://accounts.google.com/SignOutOptions"]');
-  if (signOutLink) {
-    const label = signOutLink.getAttribute('aria-label');
-    const labelArray = label.split(' ').map(item => item.replace('(', '').replace(')', '').trim());
-    return findEmailInArray(labelArray);
+const findEmailInLink = () => {
+  const brandLink = document.querySelector('#O365_AppName');
+  if (brandLink) {
+    const brandUrl = new URL(brandLink.getAttribute('href'));
+    return brandUrl.searchParams.get('login_hint');
   }
 };
 
 export const getMyEmailAddress = () => {
   if (!foundEmail) {
-    foundEmail = findEmailInTitle();
-  }
-  if (!foundEmail) {
-    foundEmail = findEmailInElements(document.querySelectorAll('.gb_be'));
-  }
-  if (!foundEmail) {
-    foundEmail = findEmailInAttribute();
+    foundEmail = findEmailInLink();
   }
   return foundEmail;
+};
+
+const deconstructEmail = email => {
+  const [ address, fullDomain ] = email.split('@');
+  const [ domain, tld ] = fullDomain.split('.');
+  return { address, domain, tld };
+};
+
+export const matchesMyEmail = email => {
+  const myEmail = getMyEmailAddress();
+  if (!myEmail || !email) {
+    return false;
+  }
+  const { address: myAddress, domain: myDomain } = deconstructEmail(myEmail);
+  const { address, domain } = deconstructEmail(email);
+  return myAddress === address && myDomain === domain;
 };
 
 export const openReminder = async () => {
   const myEmail = getMyEmailAddress();
 
-  const composeButton = document.querySelector('.T-I.T-I-KE.L3');
+  const composeButton = document.querySelector('.m2Lea');
   composeButton.click();
 
-  const composeContainer = await observeForElement(document, '.AD');
+  const composeContainer = await observeForElement(document, PREVIEW_COMPOSE);
   addClass(composeContainer, 'compose-reminder');
 
   const focusListener = () => {
@@ -100,19 +91,20 @@ export const openReminder = async () => {
 
     // wait for focus to move before setting value
     setTimeout(() => {
-      const options = getOptions();
-      const title = composeContainer.querySelector('input[name=subjectbox]');
-      const body = composeContainer.querySelector('div[aria-label="Message Body"]');
-      if (options.reminderTreatment === 'all') {
-        title.focus();
-      } else {
-        title.value = 'Reminder';
-        body.focus();
-      }
+      // const options = getOptions();
+      // const title = composeContainer.querySelector('.FN9jN input');
+      // // const body = composeContainer.querySelector('div[aria-label="Message Body"]');
+      // if (options.reminderTreatment === 'all') {
+      //   title.focus();
+      // // } else {
+      // //   title.value = 'Reminder';
+      // //   body.focus();
+      // }
 
       if (myEmail) {
-        const to = composeContainer.querySelector('textarea[name=to]') || composeContainer.querySelector('[name=to] input');
+        const to = composeContainer.querySelector('.UvnRr input');
         to.value = myEmail;
+        to.focus();
       } else {
         addClass(composeContainer, 'show-to-address');
       }
@@ -126,7 +118,7 @@ export const getThreadId = (emailEl, threadAttr = 'data-thread-id') => {
   return selectedThread && selectedThread.getAttribute(threadAttr);
 };
 
-export const checkImportantMarkers = () => document.querySelector(`${GMAIL_SELECTORS.EMAIL_ROW}:not(.${CLASSES.BUNDLE_WRAPPER_CLASS}) td.WA.xY`);
+export const checkImportantMarkers = () => document.querySelector(`${EMAIL_ROW}:not(.${CLASSES.BUNDLE_WRAPPER_CLASS}) td.WA.xY`);
 export const getTabs = () => Array.from(document.querySelectorAll('.aKz')).map(el => el.innerText);
 export const isInInbox = () => document.location.hash.match(/#inbox/g) !== null;
 export const isInBundle = () => document.location.hash.match(/#search\/in%3Ainbox\+label%3A/g) !== null;

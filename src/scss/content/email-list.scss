@@ -1,108 +1,560 @@
-//main-center-container
-.AO {
-  overflow-y: scroll;
+html[dir=ltr] {
+  body {
 
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
+    // .pz2Jt.Ls_Em._7CFY2 > div {
+    //   border-left: 1px solid white;
+    //   border-right: 1px solid white;
+    // }
+    // .Gpi6F {
+    // width: calc(100% - 49px);
+    // margin: 0 auto;
+    //main inbox element, has data-max-width on it
+    .q9iRC {
+      background-color: var(--neutralLighterAlt);
 
-  &::-webkit-scrollbar-button {
-    width: 0;
-    height: 0;
-    display: none;
-  }
+      // padding: 0 100px;
+      // for scrolling preview
+      &.preview-showing {
 
-  &::-webkit-scrollbar-corner {
-    background-color: transparent;
-  }
+        // element right above data-app-section=MessageList
+        .G8_Dc {
+          overflow-y: auto;
+          height: auto;
 
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.10), inset 0 -1px 0 rgba(0, 0, 0, 0.07);
-  }
+          // conversation threads / still wrong
+          .mKBmm > .oQNug {
+            padding-right: 18px;
+            background-color: var(--neutralLighter)
+          }
 
-  //main-email-container
-  .BltHke.nH.oy8Mbf {
-    @import 'toolbar';
+          // overflow-x: hidden;
+          // scrollbar element around messages
+          .jEpCF {
+            overflow: unset;
 
-    &[data-navigating]::after {
-      content: '';
-      height: 100%;
-      width: 100%;
-      background: #F2F2F2;
-      position: absolute;
-      padding-top: 10px;
-      z-index: 3;
-    }
-
-    &[data-navigating]::before {
-      content: '';
-      box-sizing: border-box;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 40px;
-      height: 40px;
-      margin-top: -20px;
-      margin-left: -20px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      border-top-color: #333;
-      animation: spinner .8s linear infinite;
-      z-index: 4;
-    }
-
-    &[data-pane="bundle"] {
-      padding: 0 16px;
-      height: auto;
-      background-color: rgb(240, 240, 240);
-      width: calc(100% - 34px);
-      margin-left: 1px;
-      z-index: 1;
-
-      //bottom-border
-      .Nt {
-        display: none;
-      }
-
-      .email-bundling-enabled & {
-
-        //label-indicator-container
-        .yi {
-          display: none;
-        }
-      }
-    }
-
-    //another-email-container
-    .Nr.UI.Nf.vy {
-      overflow-y: initial;
-
-      //default-scroll-container
-      .Nu.tf.aZ6 {
-        overflow-y: initial;
-
-        //email-list-container
-        .ae4 {
-          margin-bottom: 40px;
-
-          //email-table-container
-          .Cp {
-            padding: 0 1px;
-
-            //email-list-table-body
-            .F.cf.zt tbody {
-              @import 'partials/email-row';
+            // element directly inside the scrollbar
+            .zXLz3 {
+              width: calc(100% - 18px);
             }
+          }
+
+          // shared class on several containers in the message list
+          .Cz7T5 {
+            overflow: unset;
+            // overflow-y: visible;
+            // overflow-x: hidden;
+          }
+
+          // class in between some of the shared one above
+          .ONAp_ {
+            // overflow-x: hidden;
+            overflow: unset;
+            // .oQNug {
+            //   // overflow-x: hidden;
+            //   overflow: unset;
+            // }
           }
         }
       }
+
+      // element directly inside of data-max-width
+      .HOVUa {
+        max-width: 2400px;
+        width: calc(100% - 80px);
+        margin: 0 auto;
+
+        //wrapper around email list and preview pane
+        .G8_Dc {
+
+          //main email list
+          .XW2m0 {
+            min-height: calc(100% - 41px);
+            border: none;
+            display: flex;
+            background-color: var(--neutralLighterAlt);
+
+            // &.inbox-inited {
+            //email list scroll container
+            .jEpCF {
+              padding-left: 18px;
+
+              //email rows container
+              .zXLz3 {
+                display: flex;
+                flex-direction: column;
+                position: initial;
+                background-color: var(--neutralLight);
+                // width: calc(100% - 40px);
+              }
+            }
+
+            // }
+            // column headers row
+            > div:nth-child(2) {
+              background-color: var(--neutralQuaternary);
+              border-bottom: 1px solid black;
+              margin: 0 18px;
+              padding: 0 !important;
+              // display: none;
+            }
+
+            //time rows
+            [id^="groupHeader"] {
+              padding-left: 16px;
+              font-size: 12px;
+            }
+          }
+
+          //selected email row wrapper
+          // .fWXdQRYAE60H3JOjyiFH,
+          // .fWXdQ {
+          // .s93_XCYBPlIFwyUuLPd5,
+          // .s93_X {
+          //   background-color: var(--themeLighter);
+          // }
+          // }
+          //email row
+          .hcptT {
+            &[data-previewing="true"] {
+              position: sticky;
+              top: 0;
+              z-index: 10;
+            }
+
+            &[data-inbox="bundled"] {
+              display: none;
+            }
+
+            &[data-inbox="show-bundled"] {
+              width: calc(100% - 24px);
+              margin: 0 auto;
+
+              &[data-previewing="true"] {
+                top: 40px;
+              }
+            }
+
+            &[data-icon="reminder"] {
+              .ms-Persona-coin {
+                background: url(https://res.cdn.office.net/todo/publicIcons/todo-metaos-32.png);
+                background-size: 28px;
+
+                .ms-Persona-initials {
+                  display: none;
+                }
+              }
+
+              // email subject
+              .FqgPc {
+                display: none;
+              }
+            }
+
+            &.bundle-last-email:not([data-previewing="true"]) {
+              margin-bottom: 20px;
+            }
+
+            // inner container
+            // .pz2Jt_8jXFcXuxljSdz2,
+            .nloVY {
+              position: relative;
+
+              //from column
+              > :nth-child(1) {
+                position: initial;
+              }
+
+              //inline actions container
+              // .s93_XCYBPlIFwyUuLPd5,
+              // .s93_X {
+              // .sajcR,
+              // .bx9dt {
+              // .Yl1FN .s93_X {
+              //   position: absolute;
+              //   right: 0;
+              // }
+              .bundle-senders {
+                text-overflow: ellipsis;
+                overflow: auto;
+                white-space: nowrap;
+              }
+            }
+
+            // .P7Ydh.jYIx5 {
+            //   padding-left: 52px;
+            // }
+            // &:hover {
+            //   .Yl1FN .s93_X {
+            //     display: none;
+            //   }
+            // }
+          }
+
+          // .bx9dt {
+          //   padding: 8px 0 8px 0;
+          //   .BxJ64 {
+          //     height: 24px;
+          //     width: 24px;
+          //     color: var(--neutralSecondary);
+          //     background-color: transparent;
+          //     &:hover {
+          //       background-color: var(--neutralLight) !important
+          //     }
+          //     i.ms-Icon {
+          //       margin: 4px 2px;
+          //     }
+          //   }
+          // }
+          .bundle-wrapper {
+            .ms-Persona-imageArea {
+              width: 28px;
+              height: 28px;
+
+              .ms-Persona-initials {
+                text-align: center;
+                border-radius: 50%;
+                border-style: solid;
+                border-width: 1px;
+                font-size: 10px;
+                font-weight: 600;
+                line-height: 28px;
+                height: 28px;
+              }
+            }
+
+            [aria-checked="false"] .ms-Check {
+              display: none;
+            }
+
+            &:hover, [aria-checked="true"] {
+              .ms-Persona-coin {
+                display: none;
+              }
+
+              .ms-Check {
+                display: block;
+              }
+            }
+
+            &[data-show-emails="true"] {
+              position: sticky;
+              top: 0;
+              z-index: 10;
+            }
+
+            &.bundle-unread {
+
+              .gMkyO,
+              .bundle-senders {
+                font-weight: 600;
+              }
+            }
+
+            .label-link {
+              border: 1px solid;
+              padding: 2px 12px;
+              display: inline-block;
+            }
+          }
+
+          // email-preview
+          .Mq3cC {
+            //preview elements have margin-left: 8px and margin-right: 19px
+            //make this preview container wider so that the right margin looks like it's 8px
+            left: 0;
+            right: 0;
+            position: static;
+            background-color: var(--neutralLighter);
+
+            //menu when multiple items selected
+            .DPXAn {
+              height: 48px;
+              flex-direction: row;
+              position: fixed;
+              top: 48px;
+              width: auto;
+              left: unset;
+              right: 120px;
+
+              img {
+                display: none;
+              }
+
+              .w1MGJ {
+                display: flex;
+                flex-direction: row;
+
+                // count of selected conversations
+                .ksePc {
+                  padding: 0;
+                }
+              }
+
+              .QICup {
+                display: none;
+                margin: 0;
+
+                button {
+                  border-top: none;
+                }
+              }
+            }
+
+            #ReadingPaneContainerId {
+              position: absolute;
+
+              &:not(.show-preview):not(.preview-compose) {
+                display: none;
+              }
+
+              &.show-preview {
+                width: calc(100% - 48px); // left(18) + main container's padding-left(18)
+                left: 18px;
+                // &.preview-options {
+                //   height: 0 !important;
+                // }
+              }
+
+              // message header
+              .XV5zJ {
+                margin-right: 8px;
+                border-bottom: 0;
+              }
+
+              // message container
+              ._xWdq {
+                margin: 0 8px !important;
+                border-radius: 0 0 4px 4px;
+                border-color: var(--neutralLight);
+                // border-top: none;
+                display: block;
+                width: auto !important;
+              }
+
+              &.preview-compose {
+                display: flex;
+                flex: initial;
+                align-items: flex-end;
+                bottom: 41px;
+                left: unset;
+                right: 0;
+                border: 1px solid;
+                z-index: 15;
+                max-height: calc(100% - 41px);
+
+                .soZTT {
+                  position: initial;
+                  max-width: 50vw;
+                  max-height: calc(100vh - 200px);
+
+                  // top: initial;
+                  &.compose-reminder {
+                    top: calc(50vh - 150px);
+                    left: calc(50vw - 400px);
+                    position: fixed !important;
+                    width: 800px;
+
+                    .iZH92 {
+                      margin-top: 0;
+                    }
+
+                    // formatting bar
+                    .h04ZZ,
+                    // body
+                    .JpOD6 // to/cc container
+
+                    // .XoYXS
+                      {
+                      display: none;
+                    }
+                  }
+                }
+
+                .pvlo9 {
+                  height: 20px;
+                }
+              }
+
+              &.bundle-preview {
+                &:not(.preview-compose) {
+                  left: 30px; //18px padding-left on main + 12px margin on bundle
+                  width: calc(100% - 72px); // left(36) + main container's padding-left(24)
+                }
+
+                .DLFwp {
+                  background-color: var(--neutralLight);
+                }
+              }
+            }
+
+            .Z5zc7 {
+              position: fixed;
+              bottom: 0;
+            }
+
+            // preview container
+            .c2xp6 {
+              height: auto;
+              background-color: var(--themeLighter);
+              // width: calc(100% - 11px);
+              padding-bottom: 8px;
+
+              .rNszf {
+                overflow: visible;
+                height: auto;
+
+                // width: calc(100% + 11px);
+                // conversation container
+                .Q8TCC {
+                  overflow: visible;
+                  height: auto;
+
+                  // collapsed thread of preview
+                  .jblWR {
+                    width: auto !important;
+                    margin-right: 8px !important;
+                    border-radius: 0;
+                  }
+
+                  .body-155 {
+                    background-color: unset;
+                  }
+
+                  //expand multiple collapsed threads
+                  .GBXUq {
+                    margin-right: 8px !important;
+                  }
+                }
+              }
+            }
+
+            //padding at the bottom of the preview pane
+            // .fl_RDhZMQYmLq5IGBt0B,
+            .W5F8i {
+              height: 0px;
+            }
+          }
+
+          //archived notification
+          .ipE13 {
+            position: fixed;
+            background: transparent;
+          }
+
+          // .re9g6,
+          .tllem {
+            // display: none;
+            // position: fixed;
+            // width: 100px;
+            // background: transparent;
+            // pointer-events: none;
+            // // left: calc(50vw - 50px);
+            // height: 0;
+            // top: calc(100vh + 400px);
+            // order: 5000; // 50 emails * 100 order per, puts this at the bottom of the first page
+          }
+
+          .ms-Spinner {
+            position: fixed;
+            background: transparent;
+            left: calc(50vw - 30px);
+          }
+        }
+      }
+
+      // }
     }
   }
 }
 
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
-}
+// .AO {
+//   //main-center-container
+//   overflow-y: scroll;
+//   &::-webkit-scrollbar {
+//     width: 10px;
+//   }
+//   &::-webkit-scrollbar-button {
+//     width: 0;
+//     height: 0;
+//     display: none;
+//   }
+//   &::-webkit-scrollbar-corner {
+//     background-color: transparent;
+//   }
+//   &::-webkit-scrollbar-thumb {
+//     background-color: rgba(0, 0, 0, 0.2);
+//     box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.10), inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+//   }
+//   .BltHke.nH.oy8Mbf {
+//     //main-email-container
+//     @import 'toolbar';
+//     &[data-navigating]::after {
+//       content: '';
+//       height: 100%;
+//       width: 100%;
+//       background: #F2F2F2;
+//       position: absolute;
+//       padding-top: 10px;
+//       z-index: 3;
+//     }
+//     &[data-navigating]::before {
+//       content: '';
+//       box-sizing: border-box;
+//       position: absolute;
+//       top: 50%;
+//       left: 50%;
+//       width: 40px;
+//       height: 40px;
+//       margin-top: -20px;
+//       margin-left: -20px;
+//       border-radius: 50%;
+//       border: 2px solid #fff;
+//       border-top-color: #333;
+//       animation: spinner .8s linear infinite;
+//       z-index: 4;
+//     }
+//     &[data-pane="bundle"] {
+//       padding: 0 16px;
+//       height: auto;
+//       background-color: rgb(240, 240, 240);
+//       width: calc(100% - 34px);
+//       margin-left: 1px;
+//       z-index: 1;
+//       .Nt {
+//         //bottom-border
+//         display: none;
+//       }
+//       .email-bundling-enabled & {
+//         .yi {
+//           //label-indicator-container
+//           display: none;
+//         }
+//       }
+//     }
+//     .Nr.UI.Nf.vy {
+//       //another-email-container
+//       overflow-y: initial;
+//       .Nu.tf.aZ6 {
+//         //default-scroll-container
+//         overflow-y: initial;
+//         .ae4 {
+//           //email-list-container
+//           margin-bottom: 40px;
+//           .Cp {
+//             //email-table-container
+//             padding: 0 1px;
+//             .F.cf.zt tbody {
+//               //email-list-table-body
+//               @import 'partials/email-row';
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+// @keyframes spinner {
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }

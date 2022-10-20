@@ -1,112 +1,219 @@
-@import 'avatar';
-@import 'bundle';
-@import 'calendar-event';
 @import 'email-list';
-@import 'email-list-skinny';
-@import 'email';
-@import 'reminder';
-@import 'floating-buttons';
-@import 'header';
-@import 'left-nav';
-@import 'dark-mode';
 
-//email-grouping-headers
-.Wg.aAr {
-  display: none;
-}
-
-.left-hand-chat, .g-suite {
-
-  //popup-container (holds hangouts chats and email compose)
-  .dw {
-    left: -40px;
-  }
-}
-
-.ar4 {
-  //main-container
-  max-width: 2400px;
-  margin: 0 auto;
-
-  @media (min-width: 1200px) {
-    padding: 0 100px;
+#app {
+  #LeftRail {
+    display: none;
   }
 
-  //no-emails-table
-  .cf.TB {
-    // add padding to no results message to reduce jumping
-    // doesn't fully prevent jumping, revisit after the setInterval is removed
-    margin-top: 23px;
-    border-bottom: none;
-  }
+  // same level as #LeftRail
+  .DAZwg {
+    width: 100%;
 
-  //inbox-tab-container
-  .aKh {
-    margin-bottom: 20px;
+    //wrapper around the TopBar with file menu and the ribbon
+    .UAnq8 {
+      height: 43px;
 
-    //inbox-tab-table
-    .aKk {
-      justify-content: center;
+      #TopBar {
+        display: none;
+      }
+    }
 
-      //inbox-tab-row
-      .aAA {
-        justify-content: center;
+    .top-bar {
+      display: flex;
+      background-color: var(--neutralLighter);
 
-        // max-width: 1200px;
-        //tab-cell
-        .aRz.J-KU {
-          justify-content: center;
-          flex-grow: 1;
+      > div:nth-child(1) {
+        flex-grow: 1;
+      }
 
-          //tab-container
-          .aAy {
-            justify-content: center;
-            flex-grow: 1;
+      // moved bar with filter and select all
+      .V2uYM {
+        border-bottom: none;
+
+        // inner container in Inbox bar
+        .rEzfP {
+          padding: 0;
+
+          // Inbox span
+          .vlQVl {
+            display: none;
+          }
+
+          // select all container
+          .ZYym6 {
+            margin-bottom: 3px;
+            margin-right: 4px;
+
+            [role="checkbox"] {
+              margin-left: 0;
+              height: 34px;
+
+              &:hover {
+                background-color: var(--neutralLight);
+              }
+            }
+
+            [role="button"] {
+              height: 34px;
+              border-radius: 0;
+              margin-right: 0;
+
+              &:hover {
+                background-color: var(--neutralLight);
+              }
+            }
           }
         }
       }
     }
-  }
 
-  //main-inbox
-  &.z {
+    // may not be needed with outlook updates
+    .ms-CommandBar:not(.bsTYb) {
+      padding: 0;
+      min-width: 200px;
 
-    //no-emails-table
-    .cf.TB {
-      .TD {
-        background-color: transparent;
+      // border-bottom: 1px solid var(--neutralLight);
+      .ms-CommandBar-primaryCommand {
+        flex-grow: 0;
+        margin-right: 4px;
 
-        .TC {
-          background-image: url('chrome-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
-          background-repeat: no-repeat;
-          background-position: center;
-          height: calc(100vh - 200px);
-          color: transparent;
+        .TAtn8 {
+          width: auto;
+          height: 44px;
+
+          button {
+            height: 34px;
+            margin-top: 5px;
+            margin-right: 0;
+            border-radius: 0;
+          }
+        }
+
+        .UhijP {
+          position: fixed;
+          bottom: 12px;
+          right: 12px;
+          z-index: 1000;
+          padding: 8px;
+          height: auto;
+
+          .ms-Button-textContainer {
+            display: none;
+          }
+
+          i {
+            font-size: 36px;
+          }
         }
       }
 
-      @-moz-document url-prefix() {
-        .TC {
-          background-image: url('moz-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
+      .ms-CommandBar-secondaryCommand {
+        .ms-OverflowSet-item {
+          display: none;
         }
       }
     }
+
+    .Gpi6F {
+      padding-top: 0px;
+      background-color: var(--neutralLighterAlt);
+    }
   }
-
-  //account-usage-info
-  .pfiaof {
-    display: none;
-  }
 }
 
-/* Inbox tips, Unsubscribe/other alerts shown on top */
-.S4 .X3 {
-  margin-left: 9px;
-  margin-right: 9px;
-}
-
-.G4, .GR, div[aria-label="Inbox tip"] {
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24) !important;
-}
+// :root {
+//   --email-max-width: 1200px;
+// }
+// @import 'avatar';
+// @import 'bundle';
+// @import 'calendar-event';
+// @import 'email-list-skinny';
+// @import 'email';
+// @import 'reminder';
+// @import 'floating-buttons';
+// @import 'header';
+// @import 'left-nav';
+// @import 'dark-mode';
+// .Wg.aAr {
+//   //email-grouping-headers
+//   display: none;
+// }
+// .left-hand-chat,
+// .g-suite {
+//   .dw {
+//     //popup-container (holds hangouts chats and email compose)
+//     left: -40px;
+//   }
+// }
+// .ar4 {
+//   //main-container
+//   max-width: var(--email-max-width);
+//   margin: 0 auto;
+//   .cf.TB {
+//     //no-emails-table
+//     // add padding to no results message to reduce jumping
+//     // doesn't fully prevent jumping, revisit after the setInterval is removed
+//     margin-top: 23px;
+//     border-bottom: none;
+//   }
+//   .aKh {
+//     //inbox-tab-container
+//     margin-bottom: 20px;
+//     .aKk {
+//       //inbox-tab-table
+//       justify-content: center;
+//       .aAA {
+//         //inbox-tab-row
+//         justify-content: center;
+//         // max-width: 1200px;
+//         .aRz.J-KU {
+//           //tab-cell
+//           justify-content: center;
+//           flex-grow: 1;
+//           .aAy {
+//             //tab-container
+//             justify-content: center;
+//             flex-grow: 1;
+//           }
+//         }
+//       }
+//     }
+//   }
+//   &.z {
+//     //main-inbox
+//     .cf.TB {
+//       //no-emails-table
+//       .TD {
+//         background-color: transparent;
+//         .TC {
+//           background-image: url('chrome-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
+//           background-repeat: no-repeat;
+//           background-position: center;
+//           height: calc(100vh - 200px);
+//           color: transparent;
+//         }
+//       }
+//       @-moz-document url-prefix() {
+//         .TC {
+//           background-image: url('moz-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
+//         }
+//       }
+//     }
+//   }
+//   .pfiaof {
+//     //account-usage-info
+//     display: none;
+//   }
+// }
+// /* Inbox tips, Unsubscribe/other alerts shown on top */
+// .S4 .X3 {
+//   margin-left: 9px;
+//   margin-right: 9px;
+// }
+// .G4,
+// .GR,
+// div[aria-label="Inbox tip"] {
+//   border: 0 !important;
+//   border-radius: 0 !important;
+//   box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24) !important;
+// }

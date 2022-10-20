@@ -1,4 +1,4 @@
-import { objectMap } from './utils.js';
+import { buildSelectors } from '../shared/utils.js';
 
 export const MONTHS = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
@@ -39,7 +39,7 @@ export const GMAIL_CLASSES = {
   UNREAD_EMAIL_ROW: 'zE'
 };
 
-const CLASS_SELECTORS = objectMap(GMAIL_CLASSES, ([ key, value ]) => [ key, `.${value.split(' ').join(' .')}` ]);
+const CLASS_SELECTORS = buildSelectors(GMAIL_CLASSES);
 
 export const GMAIL_SELECTORS = {
   ...CLASS_SELECTORS,
@@ -50,4 +50,70 @@ export const GMAIL_SELECTORS = {
   SELECTED_EMAIL: `${CLASS_SELECTORS.EMAIL_ROW}.btb`
 };
 
+// export const OUTLOOK_CLASSES = {
+//   EMAIL_ROW: 'hcptT',
+//   EMAIL_ROW_INNER_CONTAINER: 'zKDWD',
+//   EMAIL_COLUMN_CONTAINER: 'y1E5h',
+//   EMAIL_CONTAINER: 'q9iRC',
+//   EMAIL_DATE: 'hwyHQ',
+//   EMAIL_LABEL_CONTAINERS: 'F6Q1l',
+//   EMAIL_LABEL_TEXTS: 'cFOen',
+//   EMAIL_PARTICIPANT_CONTAINERS: 'gy2aJ',
+//   EMAIL_SUBJECT: 'vTzd2',
+//   HIDDEN_EMAIL_ROW: 'l9cM7',
+//   HIDE_AVATAR: 'oWYiS',
+//   INBOX: 'mKBmm',
+//   // INBOX_HEADER: 'UF2Vc',
+//   // PINNED_EMAIL_ROW: 'fWXdQ',
+//   PREVIEW_ELEMENTS: 'c2xp6',
+//   PREVIEW_CONTAINER: 'Mq3cC',
+//   PREVIEW_COMPOSE: 'soZTT',
+//   SCROLLBAR_ELEMENT: 'zXLz3',
+//   SELECTED_ROW: 'epBmH',
+//   TIME_ROW: 'Cnnoo',
+//   UNREAD_EMAIL_ROW: 'VcZPl',
+//   UNSELECTED_ROW: 'IjQyD'
+// };
+
+// const CLASS_SELECTORS = objectMap(OUTLOOK_CLASSES, ([ key, value ]) => [ key, `.${value.split(' ').join(' .')}` ]);
+
+// export const OUTLOOK_SELECTORS = {
+//   ...CLASS_SELECTORS,
+//   PREVIEW_PANE: `${CLASS_SELECTORS.PREVIEW_CONTAINER} #ReadingPaneContainerId`,
+//   SELECTED_EMAIL: `${CLASS_SELECTORS.EMAIL_ROW}[aria-selected="true"]`,
+//   EMAIL_PARTICIPANTS: `${CLASS_SELECTORS.EMAIL_PARTICIPANT_CONTAINERS} span, .Ljsqx span, .uSUBc span`,
+//   EMAIL_LABELS: `${CLASS_SELECTORS.EMAIL_LABEL_CONTAINERS} ${CLASS_SELECTORS.EMAIL_LABEL_TEXTS}`
+// };
+
 export const DEFAULT_PROFILE_URL = '//ssl.gstatic.com/ui/v1/icons/mail/profile_mask2.png';
+
+// const findPrefixedClass = (el, prefix) => Array.from(el?.classList).find(c => c.startsWith(prefix));
+// const findPrefixedClasses = (el, prefixes) => prefixes.map(prefix => findPrefixedClass(el, prefix));
+
+// const CHECKBOX_CLASSES = {
+//   UNCHECKED_ROOT: '',
+//   UNCHECKED_CHECK: '',
+//   UNCHECKED_CIRCLE: '',
+//   CHECKED_ROOT: '',
+//   CHECKED_CHECK: '',
+//   CHECKED_CIRCLE: ''
+// };
+// export const getCheckboxClasses = () => CHECKBOX_CLASSES;
+// export const findCheckboxClasses = async () => {
+//   if (CHECKBOX_CLASSES.UNCHECKED_ROOT !== '') {
+//     return;
+//   }
+//   const firstEmailCheckbox = await observeForElement(document, '.ms-Check[class*="root-"]');
+//   CHECKBOX_CLASSES.UNCHECKED_ROOT = findPrefixedClass(firstEmailCheckbox, 'root-');
+//   CHECKBOX_CLASSES.UNCHECKED_CHECK = findPrefixedClasses(firstEmailCheckbox.querySelector('.ms-Check-check'), [ 'check-', 'css-', 'root-' ]);
+//   CHECKBOX_CLASSES.UNCHECKED_CIRCLE = findPrefixedClasses(firstEmailCheckbox.querySelector('.ms-Check-circle'), [ 'circle-', 'css-', 'root-' ]);
+//   firstEmailCheckbox.click();
+//   await observeForCondition(firstEmailCheckbox, () => !hasClass(firstEmailCheckbox, CHECKBOX_CLASSES.UNCHECKED_ROOT));
+//   CHECKBOX_CLASSES.CHECKED_ROOT = findPrefixedClass(firstEmailCheckbox, 'root-');
+//   CHECKBOX_CLASSES.CHECKED_CHECK = findPrefixedClasses(firstEmailCheckbox.querySelector('.ms-Check-check'), [ 'check-', 'css-', 'root-' ]);
+//   CHECKBOX_CLASSES.CHECKED_CIRCLE = findPrefixedClasses(firstEmailCheckbox.querySelector('.ms-Check-circle'), [ 'circle-', 'css-', 'root-' ]);
+//   firstEmailCheckbox.click();
+//   document.querySelectorAll(`${CLASSES.BUNDLE_WRAPPER_CLASS} .ms-Check`).forEach(el => addClass(el, CHECKBOX_CLASSES.UNCHECKED_ROOT));
+//   document.querySelectorAll(`${CLASSES.BUNDLE_WRAPPER_CLASS} .ms-Check-circle`).forEach(el => addClass(el, CHECKBOX_CLASSES.UNCHECKED_CIRCLE));
+//   document.querySelectorAll(`${CLASSES.BUNDLE_WRAPPER_CLASS} .ms-Check-check`).forEach(el => addClass(el, CHECKBOX_CLASSES.UNCHECKED_CHECK));
+// };

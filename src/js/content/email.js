@@ -1,73 +1,63 @@
-import {
-  buildAvatar,
-  getMyEmailAddress,
-  getTabs,
-  isDarkMode,
-  isInBundle,
-  isInInbox,
-  openInbox
-} from './emailUtils.js';
-import dateLabels from './dateLabels.js';
-import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
-import calendar from './calendar.js';
-import { getOptions } from './options.js';
+import { CLASSES } from '../shared/constants.js';
+import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from '../outlook/constants.js';
+// import calendar from './calendar.js';
+import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
-
+import { matchesMyEmail, setSelectedRow } from '../outlook/outlookUtils.js';
 import {
-  addClass,
   encodeBundleId,
   querySelectorText,
   querySelectorWithText,
   hasClass,
   queryParentSelector,
-  observeForRemoval
-} from './utils.js';
+  htmlToElements
+} from '../shared/utils.js';
 
-const IGNORE_CLICK_COLUMNS = [ 'oZ-x3', 'apU', 'bq4' ];
-const { REMINDER_EMAIL_CLASS, UNBUNDLED_PARENT_LABEL } = CLASSES;
-const { UNREAD_EMAIL_ROW } = GMAIL_CLASSES;
+const { REMINDER_EMAIL_CLASS } = CLASSES;
+const { UNREAD_EMAIL_ROW } = OUTLOOK_CLASSES;
 const {
-  EMAIL_DATE,
-  EMAIL_LABEL_CONTAINERS,
-  EMAIL_LABEL_TEXTS,
-  EMAIL_LABELS,
-  EMAIL_PARTICIPANTS,
-  EMAIL_SUBJECT
-} = GMAIL_SELECTORS;
+  EMAIL_LABELS, EMAIL_PARTICIPANTS, EMAIL_SUBJECT, EMAIL_DATE, EMAIL_ROW_INNER_CONTAINER
+} = OUTLOOK_SELECTORS;
 
 export default class Email {
-  constructor(emailEl, prevDate) {
+  constructor(emailEl, emailIndex) {
     this.emailEl = emailEl;
+    this.order = emailIndex * 100;
+    if (!this.emailEl.style.order) {
+      this.emailEl.style.order = this.order;
+    }
+    if (!this.emailEl.querySelector('.hidden-selector')) {
+      this.emailEl.appendChild(htmlToElements('<span class="hidden-selector"></span>'));
+    }
 
     const options = getOptions();
     this.processIcon();
     if (options.emailBundling === 'enabled') {
       this.processBundle();
     }
-    this.processCalendar();
-    this.processDate(prevDate);
+    // this.processCalendar();
     this.setupPreview();
   }
 
   getLabels() {
-    return Array.from(this.emailEl.querySelectorAll(EMAIL_LABEL_CONTAINERS)).map(labelContainer => {
-      const labelEl = labelContainer.querySelector(EMAIL_LABELS);
-      const labelTitle = labelEl.getAttribute('title');
-      const labelText = labelContainer.querySelector(EMAIL_LABEL_TEXTS);
-      const whiteText = labelText.style.color === 'rgb(255, 255, 255)';
+    return Array.from(this.emailEl.querySelectorAll(EMAIL_LABELS)).map(labelContainer => {
+      const labelTitle = querySelectorText('span', labelContainer);
 
       return {
         title: labelTitle,
         encodedId: encodeBundleId(labelTitle),
-        textColor: isDarkMode() || whiteText ? labelEl.style.backgroundColor : labelText.style.color,
-        element: labelEl
+        borderColor: labelContainer.style.borderColor,
+        textColor: labelContainer.style.color,
+        backgroundColor: labelContainer.style.backgroundColor,
+        element: labelContainer
       };
     });
   }
 
   getParticipants() {
     const participantNodes = Array.from(this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS));
-    return participantNodes.map(node => ({ email: node.getAttribute('email'), name: node.getAttribute('name') }));
+    const participants = participantNodes.map(node => ({ email: node.getAttribute('title'), name: node.innerText }));
+    return participants;
   }
 
   isBundled() {
@@ -86,7 +76,7 @@ export default class Email {
     }
 
     const participants = this.getParticipants();
-    const allNamesMe = participants.length > 0 && participants.every(participant => participant.email === getMyEmailAddress());
+    const allNamesMe = participants.length > 0 && participants.every(participant => matchesMyEmail(participant.email));
     if (this.isCalendarReminder()) {
       return true;
     }
@@ -107,101 +97,72 @@ export default class Email {
   }
 
   isUnread() {
-    return hasClass(this.emailEl, UNREAD_EMAIL_ROW);
+    return hasClass(this.emailEl.querySelector(EMAIL_ROW_INNER_CONTAINER), UNREAD_EMAIL_ROW);
   }
 
   processIcon() {
     if (this.isReminder()) {
       this.processReminder();
       this.emailEl.setAttribute('data-icon', 'reminder');
-    } else {
-      this.processAvatar();
-      this.emailEl.setAttribute('data-icon', 'avatar');
     }
   }
 
-  processAvatar() {
-    const options = getOptions();
-    if (options.showAvatar === 'enabled') {
-      const participants = this.getParticipants();
-      if (!participants.length) {
-        return; // Prevents Drafts in Search or Drafts folder from causing errors
-      }
-      let firstParticipant = participants[0];
-
-      const excludingMe = participants.filter(participant => participant.email !== getMyEmailAddress());
-      // If there are others in the participants, use one of their initials instead
-      if (excludingMe.length > 0) {
-        [firstParticipant] = excludingMe;
-      }
-
-      this.addAvatar(firstParticipant);
-    }
-  }
-
-  processDate(prevDate) {
-    const { element: dateElement, text: dateDisplay } = querySelectorWithText(EMAIL_DATE, this.emailEl);
-    const rawDate = dateElement && dateElement.getAttribute('title');
-    let date = new Date(rawDate);
-    const snoozeString = querySelectorText('.by1.cL', this.emailEl);
-    const isSnoozed = snoozeString || (prevDate && date < prevDate);
-    if (isSnoozed) {
-      date = prevDate || new Date();
-    }
-
-    const dateLabel = dateLabels.buildDateLabel(date);
-    this.dateInfo = {
-      date,
-      dateLabel,
-      dateDisplay,
-      rawDate
-    };
-
-    this.emailEl.setAttribute('data-date-label', dateLabel);
+  getDate() {
+    const { text: dateDisplay } = querySelectorWithText(EMAIL_DATE, this.emailEl);
+    // dateDisplay looks like `Fri 4/22`; not sure what happens if it's a previous year
+    return dateDisplay;
   }
 
   processBundle() {
-    const tabs = getTabs();
-    const labels = this.getLabels().filter(label => !tabs.includes(label.title));
+    if (!this.emailEl.querySelector(EMAIL_ROW_INNER_CONTAINER)) {
+      return;
+    }
+    const labels = this.getLabels(); // .filter(label => !tabs.includes(label.title));
 
     // only process bundles on the inbox page
-    if (isInInbox() && !isInBundle()) {
-      const starContainer = this.emailEl.querySelector('.T-KT');
-      const isStarred = hasClass(starContainer, 'T-KT-Jp');
-      const isUnbundled = labels.some(label => label.title.includes(UNBUNDLED_PARENT_LABEL));
+    const isStarred = this.emailEl.querySelector('[data-icon-name="PinFilled"]');
+    const isUnbundled = labels.some(label => label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL));
 
-      if (labels.length && !isStarred && !isUnbundled) {
-        if (this.emailEl.getAttribute('data-inbox') !== 'show-bundled') {
-          this.emailEl.setAttribute('data-inbox', 'bundled');
+    if (labels.length && !isStarred && !isUnbundled) {
+      let showEmail = this.emailEl.getAttribute('data-inbox') === 'show-bundled';
+      const bundles = labels.map(label => {
+        const bundleId = encodeBundleId(label.title);
+        this.emailEl.setAttribute(`data-${bundleId}`, true);
+        const bundle = document.querySelector(`[data-inbox="${bundleId}"]`);
+        if (bundle && !showEmail) {
+          showEmail = bundle.getAttribute('data-show-emails') === 'true';
         }
+        return bundleId;
+      }).join('||');
+
+      this.emailEl.setAttribute('data-inbox', showEmail ? 'show-bundled' : 'bundled');
+      this.emailEl.setAttribute('data-bundles', bundles); // labels.map(label => encodeBundleId(label.title)).join('||'));
+    } else {
+      this.emailEl.setAttribute('data-inbox', 'email');
+      this.emailEl.style.order = this.order;
+      if (isUnbundled) {
         labels.forEach(label => {
-          this.emailEl.setAttribute(`data-${encodeBundleId(label.title)}`, true);
+          if (label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL)) {
+            // Remove 'Unbundled/' from display in the UI
+            label.element.querySelector('.av').innerText = label.title.replace(`${CLASSES.UNBUNDLED_PARENT_LABEL}/`, '');
+          } else {
+            // Hide labels that aren't nested under UNBUNDLED_PARENT_LABEL
+            label.element.hidden = true;
+          }
         });
-        this.emailEl.setAttribute('data-bundles', labels.map(label => encodeBundleId(label.title)).join('||'));
-      } else {
-        this.emailEl.setAttribute('data-inbox', 'email');
-        if (isUnbundled) {
-          labels.forEach(label => {
-            if (label.title.includes(UNBUNDLED_PARENT_LABEL)) {
-              // Remove 'Unbundled/' from display in the UI
-              label.element.querySelector(EMAIL_LABEL_TEXTS).innerText = label.title.replace(`${UNBUNDLED_PARENT_LABEL}/`, '');
-            } else {
-              // Hide labels that aren't nested under UNBUNDLED_PARENT_LABEL
-              label.element.hidden = true;
-            }
-          });
-        }
       }
     }
   }
 
-  processCalendar() {
-    const isCalendarEvent = querySelectorText('.aKS .aJ6', this.emailEl) === 'RSVP';
+  // processCalendar() {
+  //   const calendarAlreadyProcessed = this.emailEl.getAttribute('data-calendar');
+  //   const isCalendarEvent = querySelectorText('.aKS .aJ6', this.emailEl) === 'RSVP';
 
-    if (isCalendarEvent) {
-      calendar.addEventAttachment(this.emailEl);
-    }
-  }
+  //   if (isCalendarEvent && !calendarAlreadyProcessed) {
+  //     calendar.addEventAttachment(this.emailEl);
+  //     this.emailEl.setAttribute('data-calendar', true);
+  //   }
+  // }
 
   processReminder() {
     const { element: subjectEl, text: subject } = querySelectorWithText('.bog span', this.emailEl);
@@ -223,15 +184,6 @@ export default class Email {
     }
     // replace email with Reminder
     this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS).forEach(node => { node.innerHTML = 'Reminder'; });
-    const options = getOptions();
-    if (options.showAvatar === 'enabled') {
-      this.addAvatar();
-    }
-    addClass(this.emailEl, REMINDER_EMAIL_CLASS);
-  }
-
-  addAvatar(participant) {
-    buildAvatar(this.emailEl.querySelector('.oZ-x3'), participant);
   }
 
   setupPreview() {
@@ -243,29 +195,18 @@ export default class Email {
   }
 
   async emailClicked(event) {
-    this.emailEl.setAttribute('data-selected', true);
-
-    if (this.emailEl.getAttribute('data-inbox') && isInBundle()) {
-      openInbox();
-      emailPreview.hidePreview();
-      await observeForRemoval(document, '[data-pane="bundle"]');
-      const clickColumn = queryParentSelector(event.target, '.xY');
-      if (clickColumn && IGNORE_CLICK_COLUMNS.some(col => hasClass(clickColumn, col))) {
-        const clickSelector = `${event.target.tagName}.${Array.from(event.target.classList).join('.')}`;
-        const clickTarget = this.emailEl.querySelector(clickSelector);
-        if (clickTarget) {
-          clickTarget.click();
-        }
-      } else {
-        emailPreview.emailClicked(this.emailEl);
-      }
+    const isButton = queryParentSelector(event.target, '.ms-Button');
+    const isCheckbox = queryParentSelector(event.target, '.ms-Check');
+    const isSelector = hasClass(event.target, 'hidden-selector');
+    if (isButton || isCheckbox || isSelector) {
+      return;
+    }
+    setSelectedRow(this.emailEl);
+    const conversationEmail = queryParentSelector(event.target, '[role="treeitem"]');
+    if (conversationEmail) {
+      emailPreview.emailClicked(conversationEmail);
     } else {
-      const clickColumn = queryParentSelector(event.target, '.xY');
-      if (clickColumn && IGNORE_CLICK_COLUMNS.some(col => hasClass(clickColumn, col))) {
-        return;
-      }
       emailPreview.emailClicked(this.emailEl);
     }
-    this.emailEl.focus();
   }
 }

@@ -1,133 +1,108 @@
+import {
+  addClass, encodeBundleId, hasClass, isInViewport, removeClass, runObserver
+} from '../shared/utils.js';
+import { getOptions, reloadOptions } from '../shared/options.js';
+
+import { findNextVisibleRow } from './outlookUtils.js';
+import { CLASSES } from '../shared/constants.js';
+import { OUTLOOK_CLASSES, findCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
+
 import Email from './email.js';
 import Bundle from './bundle.js';
-import {
-  getTabs,
-  getCurrentBundle,
-  isInBundle,
-  isInInbox,
-  openInbox
-} from './emailUtils.js';
-import {
-  addClass,
-  addPixels,
-  encodeBundleId,
-  observeForElement,
-  removeClass
-} from './utils.js';
-import dateLabels from './dateLabels.js';
-import { getOptions, reloadOptions } from './options.js';
-import { CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import profilePhoto from './profilePhoto.js';
 
-const {
-  EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE, SELECTED_EMAIL
-} = GMAIL_SELECTORS;
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-
-// document.querySelectorAll('.v1') -- gmail's loading indicator
+const { TIME_ROW: TIME_ROW_CLASS } = OUTLOOK_CLASSES;
+const {
+  EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, SCROLLBAR_ELEMENT, TIME_ROW
+} = OUTLOOK_SELECTORS;
 
 export default {
   async observeEmails() {
-    const mainContainer = await observeForElement(document, '.AO');
-    const observer = new MutationObserver(() => {
-      observer.disconnect();
-      if (isInInbox()) {
-        let inbox = document.querySelector(`${EMAIL_CONTAINER}[role=main][data-pane="inbox"]`);
-        if (!inbox) {
-          inbox = document.querySelector(`${EMAIL_CONTAINER}[role=main]`);
-          if (inbox) {
-            inbox.setAttribute('data-pane', 'inbox');
-            const previewPane = inbox.querySelector(PREVIEW_PANE);
-            if (previewPane) {
-              previewPane.setAttribute('data-pane', 'inbox');
-            }
-          }
-        }
-      }
+    findCheckboxClasses();
+    const outerContainer = document.querySelector(EMAIL_CONTAINER);
+    const options = { subtree: true, childList: true, attributes: true };
+    runObserver(outerContainer, options, async () => {
       reloadOptions();
-      this.moveBundleElement();
-      emailPreview.checkPreview();
+      await emailPreview.checkPreview();
       this.processEmails();
-      observer.observe(mainContainer, { subtree: true, childList: true });
-    });
-    observer.observe(mainContainer, { subtree: true, childList: true });
+    }, true);
   },
   processEmails() {
-    const isInInboxFlag = isInInbox();
-    const emailElements = document.querySelectorAll(`${EMAIL_CONTAINER}[role=main] ${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
-    let selectedEmail = document.querySelector(`[role="main"] ${EMAIL_ROW}[data-selected="true"]`);
+    const emailElements = document.querySelectorAll(`${EMAIL_CONTAINER} ${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS}),`
+      + `${EMAIL_CONTAINER} ${HIDDEN_EMAIL_ROW}`);
+    let selectedEmail = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
     if (!selectedEmail) {
-      selectedEmail = document.querySelector(`[role="main"] ${SELECTED_EMAIL}`);
+      selectedEmail = document.querySelector(SELECTED_EMAIL);
       if (selectedEmail) {
         selectedEmail.setAttribute('data-selected', true);
       }
     }
 
-    const tabs = getTabs();
     const options = getOptions();
-
-    const currentTab = tabs.length && document.querySelector('.aAy[aria-selected="true"]');
     const labelStats = {};
     const participantEmails = new Set();
-    let prevDate;
 
     // Start from last email on page and head towards first
+    let lastEmailEl;
+    let visibleEmptyEmails;
+    const loaderEl = document.querySelector('.jxHeC');
+    if (loaderEl) {
+      loaderEl.style.order = emailElements.length * 100;
+    }
     for (let i = emailElements.length - 1; i >= 0; i--) {
       const emailElement = emailElements[i];
-      const email = new Email(emailElement, prevDate);
-      prevDate = email.dateInfo.date;
-
-      const emailLabels = email.getLabels().map(label => label.title);
-
-      // Check for labels used for Tabs, and hide them from the row.
-      if (currentTab) {
-        email.emailEl.querySelectorAll('.ar.as').forEach(labelEl => {
-          if (labelEl.innerText === currentTab.innerText) {
-            // Remove Tabbed labels from the row.
-            labelEl.hidden = true;
-          }
-        });
+      if (i === emailElements.length - 1) {
+        lastEmailEl = emailElement;
       }
+      const emptyEmail = emailElement.childElementCount === 0;
+      if (emptyEmail && !visibleEmptyEmails) {
+        visibleEmptyEmails = isInViewport(emailElement);
+      } else {
+        const email = new Email(emailElement, i);
 
-      // Collect senders, message count and unread stats for each label
-      if (emailLabels.length && email.isBundled()) {
-        const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
-        emailLabels.forEach(label => {
-          const encodedId = encodeBundleId(label);
-          if (!labelStats[encodedId]) {
-            labelStats[encodedId] = {
-              title: label,
-              encodedId,
-              count: 1,
-              senders: [{
+        const emailLabels = email.getLabels().map(label => label.title);
+
+        // Collect senders, message count and unread stats for each label
+        if (emailLabels.length && email.isBundled()) {
+          const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
+          emailLabels.forEach(label => {
+            const encodedId = encodeBundleId(label);
+            if (!labelStats[encodedId]) {
+              labelStats[encodedId] = {
+                title: label,
+                encodedId,
+                count: 1,
+                senders: [{
+                  name: firstParticipant,
+                  isUnread: email.isUnread()
+                }]
+              };
+              removeClass(document.querySelector(`[data-${encodedId}].bundle-last-email`), 'bundle-last-email');
+              addClass(email.emailEl, 'bundle-last-email');
+            } else {
+              labelStats[encodedId].count++;
+              labelStats[encodedId].senders.push({
                 name: firstParticipant,
                 isUnread: email.isUnread()
-              }]
-            };
-          } else {
-            labelStats[encodedId].count++;
-            labelStats[encodedId].senders.push({
-              name: firstParticipant,
-              isUnread: email.isUnread()
-            });
-          }
-          labelStats[encodedId].email = email;
-          labelStats[encodedId].emailEl = email.emailEl;
-          if (email.isUnread()) {
-            labelStats[encodedId].containsUnread = true;
-          }
-        });
+              });
+            }
+            labelStats[encodedId].email = email;
+            labelStats[encodedId].emailEl = email.emailEl;
+            if (email.isUnread()) {
+              labelStats[encodedId].containsUnread = true;
+            }
+          });
+        }
+        email.getParticipants().forEach(participant => participantEmails.add(participant.email));
       }
-      email.getParticipants().forEach(participant => participantEmails.add(participant.email));
     }
-    profilePhoto.fetchProfilePhotos([...participantEmails]);
 
     // Update bundle stats
-    if (isInInboxFlag && !isInBundle() && options.emailBundling === 'enabled') {
+    if (options.emailBundling === 'enabled') {
       Object.values(labelStats).forEach(stats => {
         const bundle = new Bundle(stats);
-        bundle.updateStats();
+        bundle.updateStats(stats);
       });
 
       const emailBundles = this.getBundledLabels();
@@ -136,94 +111,37 @@ export default {
           el.remove();
         }
       });
-      this.setCurrentBundle();
     }
 
-    dateLabels.addDateLabels();
+    if (visibleEmptyEmails) {
+      const emailContainer = document.querySelector(EMAIL_CONTAINER);
+      if (hasClass(emailContainer, 'preview-showing')) {
+        removeClass(emailContainer, 'preview-showing');
+        addClass(emailContainer, 'preview-showing');
+      } else {
+        const firstEmailEl = document.querySelector(`${SCROLLBAR_ELEMENT} > div:nth-child(1)`);
+        firstEmailEl.style.height = '100vh';
+        lastEmailEl.scrollIntoView();
+        firstEmailEl.style.height = '';
+        firstEmailEl.scrollIntoView();
+      }
+    }
+
+    document.querySelectorAll(TIME_ROW).forEach(timeRow => {
+      const nextVisibleRow = findNextVisibleRow(timeRow, true, true);
+      if (!nextVisibleRow || hasClass(nextVisibleRow, TIME_ROW_CLASS)) {
+        timeRow.style.display = 'none';
+      } else {
+        timeRow.style.display = null;
+        timeRow.style.order = parseInt(nextVisibleRow.style.order);
+      }
+    });
   },
   getBundledLabels() {
-    const bundleRows = Array.from(document.querySelectorAll(`${EMAIL_CONTAINER}[role=main] .${BUNDLE_WRAPPER_CLASS}`));
+    const bundleRows = Array.from(document.querySelectorAll(`${EMAIL_CONTAINER} .${BUNDLE_WRAPPER_CLASS}`));
     return bundleRows.reduce((bundles, el) => {
       bundles[el.getAttribute('data-inbox')] = el;
       return bundles;
     }, {});
-  },
-  setCurrentBundle() {
-    const currentBundle = document.querySelector(`.${BUNDLE_WRAPPER_CLASS}.btb`);
-    if (currentBundle) {
-      removeClass(currentBundle, 'btb');
-      removeClass(currentBundle.querySelector('.PF'), 'PE');
-    }
-
-    const selectedEmail = document.querySelector(`[role=main] ${SELECTED_EMAIL}:not(.${BUNDLE_WRAPPER_CLASS})`);
-    if (selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled') {
-      const [newBundle] = selectedEmail.getAttribute('data-bundles').split('||');
-      const selectedBundle = document.querySelector(`[data-inbox=${encodeBundleId(newBundle)}]`);
-      if (selectedBundle) {
-        addClass(selectedBundle, 'btb');
-        // add left border
-        addClass(selectedBundle.querySelector('.PF'), 'PE');
-      }
-    }
-  },
-  moveBundleElement() {
-    if (isInBundle()) {
-      const inboxPane = document.querySelector(`${EMAIL_CONTAINER}[data-pane="inbox"]`);
-      const bundlePane = document.querySelector(`${EMAIL_CONTAINER}[role="main"]:not([data-pane="inbox"])`);
-
-      if (inboxPane && bundlePane && inboxPane !== bundlePane && !bundlePane.getAttribute('data-navigating')) {
-        const bundleEmails = bundlePane.querySelectorAll(`${EMAIL_ROW}`);
-        if (!bundleEmails.length) {
-          if (this.bundleObserver) {
-            this.bundleObserver.disconnect();
-          }
-          openInbox();
-          return;
-        }
-        bundlePane.setAttribute('data-pane', 'bundle');
-        const bundleId = getCurrentBundle();
-        inboxPane.style.display = '';
-        const bundleRow = inboxPane.querySelector(`${EMAIL_ROW}.${BUNDLE_WRAPPER_CLASS}[data-inbox="${bundleId}"]`);
-        if (bundleRow) {
-          let bundlePlaceholder = document.querySelector('.bundle-placeholder');
-          if (!bundlePlaceholder) {
-            bundlePlaceholder = document.createElement('div');
-            addClass(bundlePlaceholder, 'bundle-placeholder');
-          }
-          bundlePane.style.position = 'absolute';
-          bundleRow.parentNode.insertBefore(bundlePlaceholder, bundleRow.nextSibling);
-          bundlePane.style.top = addPixels(bundleRow.offsetTop, bundleRow.clientHeight, 6);
-
-          const adjustBundleHeight = () => {
-            bundlePane.style['margin-top'] = `${bundleRow.clientHeight}px`;
-            bundlePlaceholder.style.height = `${bundlePane.offsetHeight}px`;
-          };
-          if (this.bundleObserver) {
-            this.bundleObserver.disconnect();
-          }
-          this.bundleObserver = new MutationObserver(adjustBundleHeight);
-          this.bundleObserver.observe(bundlePane, { subtree: true, attributes: true });
-          adjustBundleHeight();
-        }
-      }
-    } else {
-      if (this.bundleObserver) {
-        this.bundleObserver.disconnect();
-      }
-      const bundlePlaceholder = document.querySelector('.bundle-placeholder');
-      if (bundlePlaceholder) {
-        bundlePlaceholder.remove();
-      }
-    }
-  },
-  restoreBundle() {
-    const inboxPane = document.querySelector(`${EMAIL_CONTAINER}[data-pane="inbox"]`);
-    const bundlePane = document.querySelector(`${EMAIL_CONTAINER}[data-pane="bundle"]`);
-    if (inboxPane && bundlePane) {
-      inboxPane.parentNode.appendChild(bundlePane);
-      inboxPane.style.display = 'none';
-      bundlePane.removeAttribute('data-pane');
-      bundlePane.setAttribute('data-navigating', true);
-    }
   }
 };
