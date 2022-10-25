@@ -5,7 +5,7 @@ import {
   htmlToElements,
   observeForRemoval,
   hasClass
-} from './utils.js';
+} from '../shared/utils.js';
 import {
   checkImportantMarkers,
   getCurrentBundle,
@@ -14,7 +14,7 @@ import {
   openInbox
 } from './emailUtils.js';
 
-import { getOptions } from './options.js';
+import { getOptions } from '../shared/options.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { EMAIL_ROW, UNREAD_EMAIL_ROW } = GMAIL_CLASSES;

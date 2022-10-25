@@ -3,7 +3,7 @@ import {
   hasClass,
   observeForElement,
   removeClass
-} from './utils.js';
+} from '../shared/utils.js';
 import {
   isInBundle,
   isInInbox,
@@ -12,8 +12,8 @@ import {
 } from './emailUtils.js';
 import leftNav from './leftNav.js';
 import inbox from './inbox.js';
-import { reloadOptions } from './options.js';
-import { CLASSES } from './constants.js';
+import { reloadOptions } from '../shared/options.js';
+import { CLASSES } from '../shared/constants.js';
 
 const { BUNDLE_PAGE_CLASS } = CLASSES;
 

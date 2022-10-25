@@ -10,7 +10,7 @@ import {
 import dateLabels from './dateLabels.js';
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import calendar from './calendar.js';
-import { getOptions } from './options.js';
+import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
 
 import {
@@ -21,7 +21,7 @@ import {
   hasClass,
   queryParentSelector,
   observeForRemoval
-} from './utils.js';
+} from '../shared/utils.js';
 
 const IGNORE_CLICK_COLUMNS = [ 'oZ-x3', 'apU', 'bq4' ];
 const { REMINDER_EMAIL_CLASS, UNBUNDLED_PARENT_LABEL } = CLASSES;

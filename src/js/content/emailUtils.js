@@ -5,8 +5,8 @@ import {
   GMAIL_SELECTORS
 } from './constants.js';
 import profilePhoto from './profilePhoto.js';
-import { getOptions } from './options.js';
-import { addClass, hasClass, observeForElement } from './utils.js';
+import { getOptions } from '../shared/options.js';
+import { addClass, hasClass, observeForElement } from '../shared/utils.js';
 
 export const buildAvatar = (avatarWrapperEl, participant) => {
   let avatarElement = avatarWrapperEl.querySelector(`.${CLASSES.AVATAR_CLASS}`);

@@ -1,7 +1,7 @@
 import leftNav from './leftNav.js';
 import navigation from './navigation.js';
 import inbox from './inbox.js';
-import { addClass, observeForElement } from './utils.js';
+import { addClass, observeForElement } from '../shared/utils.js';
 import keyboard from './keyboard.js';
 
 async function checkForDarkMode() {

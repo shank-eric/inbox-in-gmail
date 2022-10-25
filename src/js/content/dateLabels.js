@@ -1,7 +1,6 @@
-import { addClass, hasClass } from './utils.js';
-import {
-  CLASSES, DATE_LABELS, GMAIL_SELECTORS, MONTHS
-} from './constants.js';
+import { addClass, hasClass } from '../shared/utils.js';
+import { DATE_LABELS, MONTHS } from '../shared/constants.js';
+import { CLASSES, GMAIL_SELECTORS } from './constants.js';
 
 const { TIME_ROW } = CLASSES;
 const { EMAIL_CONTAINER, EMAIL_ROW } = GMAIL_SELECTORS;

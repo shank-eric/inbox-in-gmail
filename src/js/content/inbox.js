@@ -13,9 +13,9 @@ import {
   encodeBundleId,
   observeForElement,
   removeClass
-} from './utils.js';
+} from '../shared/utils.js';
 import dateLabels from './dateLabels.js';
-import { getOptions, reloadOptions } from './options.js';
+import { getOptions, reloadOptions } from '../shared/options.js';
 import { CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
 import profilePhoto from './profilePhoto.js';

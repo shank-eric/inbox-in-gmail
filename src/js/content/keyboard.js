@@ -1,7 +1,7 @@
 import {
   hasClass,
   isTypable
-} from './utils.js';
+} from '../shared/utils.js';
 import {
   isInBundle,
   openInbox,

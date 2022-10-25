@@ -1,5 +1,5 @@
-import { CLASSES } from './constants.js';
-import { htmlToElements, querySelectorText } from './utils.js';
+import { CLASSES } from '../shared/constants.js';
+import { htmlToElements, querySelectorText } from '../shared/utils.js';
 
 export default {
   addEventAttachment(email) {

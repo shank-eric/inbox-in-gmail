@@ -20,11 +20,18 @@ export const observeForCondition = (el, condition) => new Promise(
 
 export const observeForElement = (el, selector) => observeForCondition(el, () => el && el.querySelector(selector));
 export const observeForRemoval = (el, selector) => observeForCondition(el, () => !el || !el.querySelector(selector));
-export const startObserver = (observer, element, options, callback) => {
-  if (observer) {
-    observer.disconnect();
+
+export const runObserver = (element, options, callback, runContinously, existingObserver) => {
+  if (existingObserver) {
+    existingObserver.disconnect();
   }
-  observer = new MutationObserver(callback);
+  const observer = new MutationObserver(async () => {
+    observer.disconnect();
+    await callback();
+    if (runContinously) {
+      observer.observe(element, options);
+    }
+  });
   observer.observe(element, options);
   return observer;
 };
@@ -56,6 +63,16 @@ export const addPixels = (...pixels) => {
   return `${pixelInt}px`;
 };
 
+export const isInViewport = element => {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0
+      && rect.left >= 0
+      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+};
+
 export const encodeBundleId = bundleId => encodeURIComponent(bundleId.replace(/[/\\& ]/g, '-'));
 
 export const queryParentSelector = (el, selector) => {
@@ -73,6 +90,7 @@ export const queryParentSelector = (el, selector) => {
 };
 
 export const objectMap = (obj, fn) => Object.fromEntries(Object.entries(obj).map(fn));
+export const buildSelectors = classObject => objectMap(classObject, ([ key, value ]) => [ key, `.${value.split(' ').join(' .')}` ]);
 
 // ---- Classes ---- \\
 export const hasClass = (element, className) => element && element.classList && element.classList.contains(className);

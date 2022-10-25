@@ -3,8 +3,8 @@ import {
   addPixels,
   observeForElement,
   removeClass,
-  startObserver
-} from './utils.js';
+  runObserver
+} from '../shared/utils.js';
 import { buildAvatar, getThreadId } from './emailUtils.js';
 import {
   CLASSES,
@@ -70,7 +70,7 @@ export default {
       previewPane.style['padding-top'] = `${rowHeight}px`;
       previewPlaceholder.style.height = addPixels(previewPane.offsetHeight, -rowHeight, 16);
     };
-    this.previewObserver = startObserver(this.previewObserver, previewPane, { subtree: true, attributes: true }, adjustPreviewHeight);
+    this.previewObserver = runObserver(previewPane, { subtree: true, attributes: true }, adjustPreviewHeight, false, this.previewObserver);
     adjustPreviewHeight();
     this.setAvatars();
 
@@ -84,7 +84,7 @@ export default {
       }
       this.rowObserver.observe(this.currentEmail, { attributes: true });
     };
-    this.rowObserver = startObserver(this.rowObserver, this.currentEmail, { attributes: true }, checkPreviewPosition);
+    this.rowObserver = runObserver(this.currentEmail, { attributes: true }, checkPreviewPosition, false, this.rowObserver);
     if (!this.currentEmail.getAttribute('data-previewing')) {
       document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
       this.currentEmail.setAttribute('data-previewing', true);
