@@ -1,0 +1,100 @@
+html[dir=ltr] {
+  body {
+
+    //main inbox element, has data-max-width on it
+    .q9iRC {
+      background-color: var(--neutralLighterAlt);
+
+      // for scrolling preview
+      &.preview-showing {
+
+        // element right above data-app-section=MessageList
+        .G8_Dc {
+          overflow-y: auto;
+          height: auto;
+
+          // scrollbar element around messages
+          .jEpCF {
+            overflow: unset;
+
+            // element directly inside the scrollbar
+            .zXLz3 {
+              width: calc(100% - 18px);
+            }
+          }
+
+          // shared class on several containers in the message list
+          .Cz7T5 {
+            overflow: unset;
+          }
+
+          // class in between some of the shared one above
+          .ONAp_ {
+            overflow: unset;
+          }
+        }
+      }
+
+      // element directly inside of data-max-width
+      .HOVUa {
+        max-width: 2400px;
+        width: calc(100% - 80px);
+        margin: 0 auto;
+
+        //wrapper around email list and preview pane
+        .G8_Dc {
+
+          //main email list
+          .XW2m0 {
+            min-height: calc(100% - 41px);
+            border: none;
+            display: flex;
+            background-color: var(--neutralLighterAlt);
+
+            //email list scroll container
+            .jEpCF {
+              padding-left: 18px;
+
+              //email rows container
+              .zXLz3 {
+                display: flex;
+                flex-direction: column;
+                position: initial;
+                background-color: var(--neutralLight);
+              }
+            }
+
+            > div:nth-child(2) {
+              background-color: var(--neutralQuaternary);
+              border-bottom: 1px solid black;
+              margin: 0 18px;
+              padding: 0 !important;
+            }
+
+            //time rows
+            [id^="groupHeader"] {
+              padding-left: 16px;
+              font-size: 12px;
+            }
+          }
+
+          @import './email-row';
+          @import './bundle';
+          @import './email-preview';
+
+          //archived notification
+          .HqtOc {
+            position: fixed;
+            background: transparent;
+          }
+
+          .ms-Spinner {
+            position: fixed;
+            background: transparent;
+            left: calc(50vw - 30px);
+          }
+        }
+      }
+    }
+  }
+}

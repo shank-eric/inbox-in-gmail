@@ -1,0 +1,51 @@
+.bundle-wrapper {
+  .ms-Persona-imageArea {
+    width: 28px;
+    height: 28px;
+
+    .ms-Persona-initials {
+      text-align: center;
+      border-radius: 50%;
+      border-style: solid;
+      border-width: 1px;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 28px;
+      height: 28px;
+    }
+  }
+
+  [aria-checked="false"] .ms-Check {
+    display: none;
+  }
+
+  &:hover, [aria-checked="true"] {
+    .ms-Persona-coin {
+      display: none;
+    }
+
+    .ms-Check {
+      display: block;
+    }
+  }
+
+  &[data-show-emails="true"] {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  &.bundle-unread {
+
+    .gMkyO,
+    .bundle-senders {
+      font-weight: 600;
+    }
+  }
+
+  .label-link {
+    border: 1px solid;
+    padding: 2px 12px;
+    display: inline-block;
+  }
+}
