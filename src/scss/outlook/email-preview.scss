@@ -5,7 +5,6 @@
   left: 0;
   right: 0;
   position: static;
-  background-color: var(--neutralLighter);
 
   //menu when multiple items selected
   .DPXAn {
@@ -43,6 +42,7 @@
 
   #ReadingPaneContainerId {
     position: absolute;
+    box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
 
     &:not(.show-preview):not(.preview-compose) {
       display: none;
@@ -53,19 +53,34 @@
       left: 18px;
     }
 
-    // message header
-    .XV5zJ {
-      margin-right: 8px;
-      border-bottom: 0;
+    .AJYpX, .g_zET {
+      background-color: var(--white);
     }
 
-    // message container
-    ._xWdq {
-      margin: 0 8px !important;
-      border-radius: 0 0 4px 4px;
-      border-color: var(--neutralLight);
-      display: block;
-      width: auto !important;
+    // message header
+    .XV5zJ, .NTPm6 {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid var(--themeLighter);
+    }
+
+    // show more messages button
+    .Xpejj [role="button"], .PCN7W {
+      margin: 0 !important;
+      border-radius: 0;
+      //keeps ,argins from collapsing
+      border: 1px solid transparent;
+      border-bottom-color: var(--themeLighter);
+    }
+
+    // messages in the thread
+    ._xWdq, .eIxcM, .SlLx9, .GjFKx {
+      width: calc(100% - 24px) !important;
+      margin: 0 !important;
+      border-radius: 0;
+      border: none;
+      border-bottom: 1px solid var(--themeLighter);
     }
 
     &.preview-compose {
@@ -115,8 +130,8 @@
         width: calc(100% - 72px); // left(36) + main container's padding-left(24)
       }
 
-      .DLFwp {
-        background-color: var(--neutralLight);
+      .AJYpX, .g_zET {
+        background-color: var(--neutralLighter);
       }
     }
   }
@@ -128,28 +143,19 @@
   }
 
   // preview container
-  .c2xp6 {
+  .MtujV, .c2xp6 {
     height: auto;
     background-color: var(--themeLighter);
-    // width: calc(100% - 11px);
-    padding-bottom: 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 4px;
 
     .rNszf {
       overflow: visible;
       height: auto;
 
-      // width: calc(100% + 11px);
       // conversation container
       .Q8TCC {
         overflow: visible;
         height: auto;
-
-        // collapsed thread of preview
-        .jblWR {
-          width: auto !important;
-          margin-right: 8px !important;
-          border-radius: 0;
-        }
 
         .body-155 {
           background-color: unset;

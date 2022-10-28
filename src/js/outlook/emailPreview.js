@@ -69,7 +69,7 @@ export default {
         return;
       }
       const previewEls = Array.from(previewPane.querySelectorAll(PREVIEW_ELEMENTS));
-      previewPlaceholder.style.height = addPixels(...previewEls.map(el => el.offsetHeight), 20);
+      previewPlaceholder.style.height = addPixels(...previewEls.map(el => el.offsetHeight), 12);
       previewPane.style.height = previewPlaceholder.style.height;
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
     };
@@ -90,7 +90,7 @@ export default {
     }
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     const { offsetTop } = previewPlaceholder;
-    const totalTop = addPixels(offsetTop, 30);
+    const totalTop = addPixels(offsetTop, 39);
     previewPane.style.top = totalTop;
   },
   hidePreviewPane(previewPane) {

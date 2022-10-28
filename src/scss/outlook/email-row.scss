@@ -1,5 +1,7 @@
 //email row
 .hcptT {
+  box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
+
   &[data-previewing="true"] {
     position: sticky;
     top: 0;
@@ -36,7 +38,7 @@
   }
 
   &.bundle-last-email:not([data-previewing="true"]) {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
 
   // inner container

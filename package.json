@@ -7,18 +7,13 @@
     "node": ">=16.13.1"
   },
   "scripts": {
-    "build": "yarn gmail:build && yarn outlook:build",
-    "watch": "concurrently \"yarn outlook:watch\" \"yarn gmail:watch\"",
-    "gmail:build": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css --no-source-map",
-    "gmail:watch": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css -w --source-map",
-    "outlook:build": "sass src/scss/outlook/index.scss:src/css/outlook.css src/scss/options.scss:src/css/options.css --no-source-map",
-    "outlook:watch": "sass src/scss/outlook/index.scss:src/css/outlook.css src/scss/options.scss:src/css/options.css -w --source-map",
+    "build": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css src/scss/outlook/index.scss:src/css/outlook.css --no-source-map",
+    "watch": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css src/scss/outlook/index.scss:src/css/outlook.css -w --source-map",
     "js:lint": "$(npm bin)/eslint './src/**/*.js'",
     "js:lint:fix": "$(npm bin)/eslint './src/**/*.js' --fix"
   },
   "devDependencies": {
     "@types/eslint": "^8.2.2",
-    "concurrently": "^7.5.0",
     "eslint": "^8.6.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
