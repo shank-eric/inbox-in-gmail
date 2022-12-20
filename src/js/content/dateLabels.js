@@ -1,7 +1,9 @@
-import { addClass } from './utils.js';
-import { SELECTORS } from './constants.js';
+import { addClass, hasClass } from '../shared/utils.js';
+import { DATE_LABELS, MONTHS } from '../shared/constants.js';
+import { CLASSES, GMAIL_SELECTORS } from './constants.js';
 
-const { EMAIL_CONTAINER, EMAIL_ROW } = SELECTORS;
+const { TIME_ROW } = CLASSES;
+const { EMAIL_CONTAINER, EMAIL_ROW } = GMAIL_SELECTORS;
 
 export default {
   addDateLabels() {
@@ -22,20 +24,44 @@ export default {
     }
   },
   addDateLabel(email, label) {
-    if (email.previousSibling && email.previousSibling.className === 'time-row') {
+    if (email.previousSibling && email.previousSibling.className === TIME_ROW) {
       if (email.previousSibling.innerText === label) {
         return;
       }
       email.previousSibling.remove();
     }
     const timeRow = document.createElement('div');
-    addClass(timeRow, 'time-row');
+    addClass(timeRow, TIME_ROW);
 
     const time = document.createElement('div');
     time.className = 'time';
     time.innerText = label;
     timeRow.appendChild(time);
     email.parentElement.insertBefore(timeRow, email);
+  },
+  buildDateLabel(date) {
+    const now = new Date();
+    if (!date) {
+      return null;
+    }
+
+    if (now.getFullYear() === date.getFullYear()) {
+      if (now.getMonth() === date.getMonth()) {
+        if (now.getDate() === date.getDate()) {
+          return DATE_LABELS.TODAY;
+        }
+        if (now.getDate() - 1 === date.getDate()) {
+          return DATE_LABELS.YESTERDAY;
+        }
+        return DATE_LABELS.THIS_MONTH;
+      }
+      return MONTHS[date.getMonth()];
+    }
+    if (now.getFullYear() - 1 === date.getFullYear()) {
+      return DATE_LABELS.LAST_YEAR;
+    }
+
+    return date.getFullYear().toString();
   },
   isEmptyDateLabel(row) {
     let sibling = row.nextSibling;
@@ -48,7 +74,7 @@ export default {
     if (!sibling) {
       return true;
     }
-    if (sibling.className === 'time-row') {
+    if (hasClass(sibling, TIME_ROW)) {
       return true;
     }
     if (sibling.getAttribute('data-inbox') !== 'bundled') {
@@ -59,7 +85,7 @@ export default {
   cleanupDateLabels() {
     document.querySelectorAll('.time-row').forEach(row => {
       // Delete any back to back date labels
-      if (row.nextSibling && row.nextSibling.className === 'time-row') {
+      if (row.nextSibling && row.nextSibling.className === TIME_ROW) {
         row.remove();
         // Check nextSibling recursively until reaching the next .time-row
         // If all siblings are bundled, then hide row

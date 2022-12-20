@@ -1,29 +1,40 @@
 import {
   buildAvatar,
-  buildDateLabel
+  getMyEmailAddress,
+  getTabs,
+  isDarkMode,
+  isInBundle,
+  isInInbox,
+  openInbox
 } from './emailUtils.js';
-import { CLASSES } from './constants.js';
+import dateLabels from './dateLabels.js';
+import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import calendar from './calendar.js';
-import { getOptions } from './options.js';
+import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
 
 import {
   addClass,
   encodeBundleId,
-  getMyEmailAddress,
-  getTabs,
   querySelectorText,
   querySelectorWithText,
   hasClass,
-  isDarkMode,
-  isInBundle,
-  isInInbox,
-  openInbox,
   queryParentSelector,
   observeForRemoval
-} from './utils.js';
+} from '../shared/utils.js';
 
 const IGNORE_CLICK_COLUMNS = [ 'oZ-x3', 'apU', 'bq4' ];
+const { REMINDER_EMAIL_CLASS, UNBUNDLED_PARENT_LABEL } = CLASSES;
+const { UNREAD_EMAIL_ROW } = GMAIL_CLASSES;
+const {
+  EMAIL_DATE,
+  EMAIL_LABEL_CONTAINERS,
+  EMAIL_LABEL_TEXTS,
+  EMAIL_LABELS,
+  EMAIL_PARTICIPANTS,
+  EMAIL_SUBJECT
+} = GMAIL_SELECTORS;
+
 export default class Email {
   constructor(emailEl, prevDate) {
     this.emailEl = emailEl;
@@ -39,10 +50,10 @@ export default class Email {
   }
 
   getLabels() {
-    return Array.from(this.emailEl.querySelectorAll('.ar.as')).map(labelContainer => {
-      const labelEl = labelContainer.querySelector('.at');
+    return Array.from(this.emailEl.querySelectorAll(EMAIL_LABEL_CONTAINERS)).map(labelContainer => {
+      const labelEl = labelContainer.querySelector(EMAIL_LABELS);
       const labelTitle = labelEl.getAttribute('title');
-      const labelText = labelContainer.querySelector('.av');
+      const labelText = labelContainer.querySelector(EMAIL_LABEL_TEXTS);
       const whiteText = labelText.style.color === 'rgb(255, 255, 255)';
 
       return {
@@ -55,7 +66,7 @@ export default class Email {
   }
 
   getParticipants() {
-    const participantNodes = Array.from(this.emailEl.querySelectorAll('.yW span[email]'));
+    const participantNodes = Array.from(this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS));
     return participantNodes.map(node => ({ email: node.getAttribute('email'), name: node.getAttribute('name') }));
   }
 
@@ -70,7 +81,7 @@ export default class Email {
     if (options.reminderTreatment === 'none') {
       return false;
     }
-    if (hasClass(this.emailEl, CLASSES.REMINDER_EMAIL_CLASS) || this.emailEl.getAttribute('data-icon') === 'reminder') {
+    if (hasClass(this.emailEl, REMINDER_EMAIL_CLASS) || this.emailEl.getAttribute('data-icon') === 'reminder') {
       return true;
     }
 
@@ -83,7 +94,7 @@ export default class Email {
       return allNamesMe;
     }
     if (options.reminderTreatment === 'containing-word') {
-      const subjectText = querySelectorText('.y6', this.emailEl);
+      const subjectText = querySelectorText(EMAIL_SUBJECT, this.emailEl);
       return allNamesMe && subjectText.match(/reminder/i);
     }
 
@@ -91,12 +102,12 @@ export default class Email {
   }
 
   isCalendarReminder() {
-    const subjectText = querySelectorText('.y6', this.emailEl).toLowerCase();
+    const subjectText = querySelectorText(EMAIL_SUBJECT, this.emailEl).toLowerCase();
     return subjectText.includes('notification') && subjectText.includes('(reminders)');
   }
 
   isUnread() {
-    return hasClass(this.emailEl, 'zE');
+    return hasClass(this.emailEl, UNREAD_EMAIL_ROW);
   }
 
   processIcon() {
@@ -129,7 +140,7 @@ export default class Email {
   }
 
   processDate(prevDate) {
-    const { element: dateElement, text: dateDisplay } = querySelectorWithText('.xW.xY span', this.emailEl);
+    const { element: dateElement, text: dateDisplay } = querySelectorWithText(EMAIL_DATE, this.emailEl);
     const rawDate = dateElement && dateElement.getAttribute('title');
     let date = new Date(rawDate);
     const snoozeString = querySelectorText('.by1.cL', this.emailEl);
@@ -138,7 +149,7 @@ export default class Email {
       date = prevDate || new Date();
     }
 
-    const dateLabel = buildDateLabel(date);
+    const dateLabel = dateLabels.buildDateLabel(date);
     this.dateInfo = {
       date,
       dateLabel,
@@ -157,7 +168,7 @@ export default class Email {
     if (isInInbox() && !isInBundle()) {
       const starContainer = this.emailEl.querySelector('.T-KT');
       const isStarred = hasClass(starContainer, 'T-KT-Jp');
-      const isUnbundled = labels.some(label => label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL));
+      const isUnbundled = labels.some(label => label.title.includes(UNBUNDLED_PARENT_LABEL));
 
       if (labels.length && !isStarred && !isUnbundled) {
         if (this.emailEl.getAttribute('data-inbox') !== 'show-bundled') {
@@ -171,9 +182,9 @@ export default class Email {
         this.emailEl.setAttribute('data-inbox', 'email');
         if (isUnbundled) {
           labels.forEach(label => {
-            if (label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL)) {
+            if (label.title.includes(UNBUNDLED_PARENT_LABEL)) {
               // Remove 'Unbundled/' from display in the UI
-              label.element.querySelector('.av').innerText = label.title.replace(`${CLASSES.UNBUNDLED_PARENT_LABEL}/`, '');
+              label.element.querySelector(EMAIL_LABEL_TEXTS).innerText = label.title.replace(`${UNBUNDLED_PARENT_LABEL}/`, '');
             } else {
               // Hide labels that aren't nested under UNBUNDLED_PARENT_LABEL
               label.element.hidden = true;
@@ -185,12 +196,10 @@ export default class Email {
   }
 
   processCalendar() {
-    const calendarAlreadyProcessed = this.emailEl.getAttribute('data-calendar');
     const isCalendarEvent = querySelectorText('.aKS .aJ6', this.emailEl) === 'RSVP';
 
-    if (isCalendarEvent && !calendarAlreadyProcessed) {
+    if (isCalendarEvent) {
       calendar.addEventAttachment(this.emailEl);
-      this.emailEl.setAttribute('data-calendar', true);
     }
   }
 
@@ -213,12 +222,12 @@ export default class Email {
       }
     }
     // replace email with Reminder
-    this.emailEl.querySelectorAll('.yP,.zF').forEach(node => { node.innerHTML = 'Reminder'; });
+    this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS).forEach(node => { node.innerHTML = 'Reminder'; });
     const options = getOptions();
     if (options.showAvatar === 'enabled') {
       this.addAvatar();
     }
-    addClass(this.emailEl, CLASSES.REMINDER_EMAIL_CLASS);
+    addClass(this.emailEl, REMINDER_EMAIL_CLASS);
   }
 
   addAvatar(participant) {

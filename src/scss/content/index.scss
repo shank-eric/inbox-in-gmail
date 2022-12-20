@@ -1,96 +1,116 @@
 @import 'avatar';
 @import 'bundle';
 @import 'calendar-event';
-
 @import 'email-list';
 @import 'email-list-skinny';
 @import 'email';
 @import 'reminder';
-
 @import 'floating-buttons';
 @import 'header';
 @import 'left-nav';
-
 @import 'dark-mode';
 
-
-.Wg.aAr { //email-grouping-headers
-	display: none;
+//email-grouping-headers
+.Wg.aAr {
+  display: none;
 }
 
 .left-hand-chat, .g-suite {
-	.dw {	//popup-container (holds hangouts chats and email compose)
-		left: -40px;
-	}
+
+  //popup-container (holds hangouts chats and email compose)
+  .dw {
+    left: -40px;
+  }
 }
 
-.ar4 { //main-container
-	max-width: 2400px;
-	padding: 0 100px;
-	margin: 0 auto;
+.bkK > .nH {
+  background: transparent !important;
+}
 
-	.cf.TB { //no-emails-table
-		// add padding to no results message to reduce jumping
-		// doesn't fully prevent jumping, revisit after the setInterval is removed
-		margin-top: 23px;
-		border-bottom: none;
-	}
+.ar4 {
+  //main-container
+  max-width: 2400px;
+  margin: 0 auto;
 
-	.aKh { //inbox-tab-container
-		margin-bottom: 20px;
-		.aKk { //inbox-tab-table
-			justify-content: center;
-			.aAA { //inbox-tab-row
-				justify-content: center;
-				// max-width: 1200px;
+  @media (min-width: 1200px) {
+    padding: 0 100px;
+  }
 
-				.aRz.J-KU { //tab-cell
-					justify-content: center;
-					flex-grow: 1;
+  //no-emails-table
+  .cf.TB {
+    // add padding to no results message to reduce jumping
+    // doesn't fully prevent jumping, revisit after the setInterval is removed
+    margin-top: 23px;
+    border-bottom: none;
+  }
 
-					.aAy { //tab-container
-						justify-content: center;
-						flex-grow: 1;
-					}
-				}
-			}
-		}
-	}
+  //inbox-tab-container
+  .aKh {
+    margin-bottom: 20px;
 
-	&.z { //main-inbox
-		.cf.TB { //no-emails-table
-			.TD {
-				background-color: transparent;
-				.TC {
-					background-image: url('chrome-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
-					background-repeat: no-repeat;
-					background-position: center;
-					height: calc(100vh - 200px);
-					color: transparent;
-				}
-			}
+    //inbox-tab-table
+    .aKk {
+      justify-content: center;
 
-			@-moz-document url-prefix() {
-				.TC {
-					background-image: url('moz-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
-				}
-			}
-		}
-	}
+      //inbox-tab-row
+      .aAA {
+        justify-content: center;
 
-	.pfiaof { //account-usage-info
-		display: none;
-	}
+        // max-width: 1200px;
+        //tab-cell
+        .aRz.J-KU {
+          justify-content: center;
+          flex-grow: 1;
+
+          //tab-container
+          .aAy {
+            justify-content: center;
+            flex-grow: 1;
+          }
+        }
+      }
+    }
+  }
+
+  //main-inbox
+  &.z {
+
+    //no-emails-table
+    .cf.TB {
+      .TD {
+        background-color: transparent;
+
+        .TC {
+          background-image: url('chrome-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
+          background-repeat: no-repeat;
+          background-position: center;
+          height: calc(100vh - 200px);
+          color: transparent;
+        }
+      }
+
+      @-moz-document url-prefix() {
+        .TC {
+          background-image: url('moz-extension://__MSG_@@extension_id__/images/ic_zero_inbox_2x.png');
+        }
+      }
+    }
+  }
+
+  //account-usage-info
+  .pfiaof {
+    display: none;
+  }
 }
 
 /* Inbox tips, Unsubscribe/other alerts shown on top */
 .S4 .X3 {
-	margin-left: 9px;
-	margin-right: 9px;
+  margin-left: 9px;
+  margin-right: 9px;
 }
 
 .G4, .GR, div[aria-label="Inbox tip"] {
-	border: 0 !important;
-	border-radius: 0 !important;
-	box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24) !important;
 }

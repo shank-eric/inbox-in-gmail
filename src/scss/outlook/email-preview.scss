@@ -1,0 +1,176 @@
+// email-preview
+.Mq3cC {
+  //preview elements have margin-left: 8px and margin-right: 19px
+  //make this preview container wider so that the right margin looks like it's 8px
+  left: 0;
+  right: 0;
+  position: static;
+
+  //menu when multiple items selected
+  .DPXAn {
+    height: 48px;
+    flex-direction: row;
+    position: fixed;
+    top: 48px;
+    width: auto;
+    left: unset;
+    right: 120px;
+
+    img {
+      display: none;
+    }
+
+    .w1MGJ {
+      display: flex;
+      flex-direction: row;
+
+      // count of selected conversations
+      .ksePc {
+        padding: 0;
+      }
+    }
+
+    .QICup {
+      display: none;
+      margin: 0;
+
+      button {
+        border-top: none;
+      }
+    }
+  }
+
+  #ReadingPaneContainerId {
+    position: absolute;
+    box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
+
+    &:not(.show-preview):not(.preview-compose) {
+      display: none;
+    }
+
+    &.show-preview {
+      width: calc(100% - 48px); // left(18) + main container's padding-left(18)
+      left: 18px;
+    }
+
+    .AJYpX, .g_zET {
+      background-color: var(--white);
+    }
+
+    // message header
+    .XV5zJ, .NTPm6 {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid var(--themeLighter);
+    }
+
+    // show more messages button
+    .Xpejj [role="button"], .PCN7W {
+      margin: 0 !important;
+      border-radius: 0;
+      //keeps ,argins from collapsing
+      border: 1px solid transparent;
+      border-bottom-color: var(--themeLighter);
+    }
+
+    // messages in the thread
+    ._xWdq, .eIxcM, .SlLx9, .GjFKx {
+      width: calc(100% - 24px) !important;
+      margin: 0 !important;
+      border-radius: 0;
+      border: none;
+      border-bottom: 1px solid var(--themeLighter);
+    }
+
+    &.preview-compose {
+      display: flex;
+      flex: initial;
+      align-items: flex-end;
+      bottom: 41px;
+      left: unset;
+      right: 0;
+      border: 1px solid;
+      z-index: 15;
+      max-height: calc(100% - 41px);
+
+      .soZTT {
+        position: initial;
+        max-width: 50vw;
+        max-height: calc(100vh - 200px);
+
+        &.compose-reminder {
+          top: calc(50vh - 150px);
+          left: calc(50vw - 400px);
+          position: fixed !important;
+          width: 800px;
+
+          .iZH92 {
+            margin-top: 0;
+          }
+
+          // formatting bar
+          .h04ZZ,
+          // body
+          // to/cc container
+          .JpOD6 {
+            display: none;
+          }
+        }
+      }
+
+      .pvlo9 {
+        height: 20px;
+      }
+    }
+
+    &.bundle-preview {
+      &:not(.preview-compose) {
+        left: 30px; //18px padding-left on main + 12px margin on bundle
+        width: calc(100% - 72px); // left(36) + main container's padding-left(24)
+      }
+
+      .AJYpX, .g_zET {
+        background-color: var(--neutralLighter);
+      }
+    }
+  }
+
+  // bottom bar showing draft emails as tabs
+  .nuum5 {
+    position: fixed;
+    bottom: 0;
+  }
+
+  // preview container
+  .MtujV, .c2xp6 {
+    height: auto;
+    background-color: var(--themeLighter);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 4px;
+
+    .rNszf {
+      overflow: visible;
+      height: auto;
+
+      // conversation container
+      .Q8TCC {
+        overflow: visible;
+        height: auto;
+
+        .body-155 {
+          background-color: unset;
+        }
+
+        //expand multiple collapsed threads
+        .GBXUq {
+          margin-right: 8px !important;
+        }
+      }
+    }
+  }
+
+  //padding at the bottom of the preview pane
+  .W5F8i {
+    height: 0px;
+  }
+}

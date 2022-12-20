@@ -7,27 +7,33 @@
   left: calc(50vw - 400px);
   position: fixed !important;
   width: 800px;
-
   .iN > tbody > tr:first-child, // compose-email-body
   .aDl, // compose-email-body-formatting-options
   .btC td:not(.Up):not(.az5), // compose-email-footer-row (hides all but the 'Send' and trash-can buttons)
   .btC .az5 .bty:first-child, // more options menu in the cell with the trash can
   .hG // compose-email-send-more-options
-  {
+
+    {
     display: none !important;
   }
 
-  .aDg > .aDj { //compose-email-footer
+  //compose-email-footer
+  .aDg > .aDj {
     position: initial;
-    tr.btC { //compose-email-footer-row
+
+    //compose-email-footer-row
+    tr.btC {
       justify-content: flex-end;
+
       .az5 {
         margin-left: 0;
-        .og.T-I-J3{
+
+        .og.T-I-J3 {
           background-image: none;
           width: auto;
           opacity: 1;
           height: auto;
+
           &:after {
             content: 'Cancel';
           }
@@ -35,12 +41,14 @@
       }
     }
   }
-  &:not(.show-to-address) .hl // compose-email-to
-  {
+
+  // compose-email-to
+  &:not(.show-to-address) .hl {
     display: none !important;
   }
 
-  .aoO { // compose-email-send-button
+  // compose-email-send-button
+  .aoO {
     border-radius: 4px !important;
   }
 }

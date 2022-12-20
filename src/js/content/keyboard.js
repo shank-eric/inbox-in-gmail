@@ -1,15 +1,19 @@
 import {
   hasClass,
+  isTypable
+} from '../shared/utils.js';
+import {
   isInBundle,
-  isTypable,
-  openInbox
-} from './utils.js';
+  openInbox,
+  openReminder
+} from './emailUtils.js';
 import inbox from './inbox.js';
 import emailPreview from './emailPreview.js';
-import { CLASSES, SELECTORS } from './constants.js';
+import { GMAIL_CLASSES, CLASSES, GMAIL_SELECTORS } from './constants.js';
 
-const { EMAIL_ROW, SELECTED_EMAIL } = SELECTORS;
-const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;
+const { EMAIL_ROW, SELECTED_EMAIL } = GMAIL_SELECTORS;
+const { EMAIL_ROW: EMAIL_ROW_CLASS } = GMAIL_CLASSES;
+const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 
 export default {
   init() {
@@ -55,7 +59,8 @@ export default {
       }
     },
     Quote: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? -250 : -25),
-    Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25)
+    Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25),
+    KeyT: openReminder
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
   navigate: ({ currentRow, keyCode }) => {

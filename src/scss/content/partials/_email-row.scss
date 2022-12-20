@@ -1,159 +1,215 @@
 .time {
-    color: #666;
-    font-size: 13px;
-    padding-top: 16px;
-    padding-left: 4px;
-    padding-bottom: 8px;
+  color: #666;
+  font-size: 13px;
+  padding-top: 16px;
+  padding-left: 4px;
+  padding-bottom: 8px;
 }
+
 .time-row:first-child .time {
-    padding-top: 0;
+  padding-top: 0;
 }
 
-.zA, .zA:hover { //email-rows, bundle-rows
-    box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
-    -webkit-box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
-    z-index: inherit;
+//email-rows, bundle-rows
+.zA, .zA:hover {
+  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+  -webkit-box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+  z-index: inherit;
 }
-.zA { //email-rows, bundle-rows
-    padding: 12px 10px;
-    &.tr:first-child {
-        // add margin so screen doesn't jump while we're figuring out time-rows
-        margin-top: 23px;
+
+//email-rows, bundle-rows
+.zA {
+  padding: 12px 10px;
+
+  &.tr:first-child {
+    // add margin so screen doesn't jump while we're figuring out time-rows
+    margin-top: 23px;
+  }
+
+  .avatar {
+    left: -6px; //shift left to line up with the checkbox underneath it
+    flex: 32px 0 0;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+  }
+
+  &:hover .avatar {
+    display: none;
+  }
+
+  //checkbox-column
+  .oZ-x3 {
+
+    //drag-indicator
+    &:before {
+      display: none;
     }
-    .avatar {
-        left: -6px; //shift left to line up with the checkbox underneath it
-        flex: 32px 0 0;
-        width: 32px;
-        height: 32px;
-        line-height: 32px;
+
+    //checkbox
+    .T-Jo {
+      margin-left: 1px;
+
+      //checkbox-checked
+      &.T-Jo-Jp.J-J5-Ji {
+        display: inline;
+
+        + .avatar {
+          display: none;
+        }
+      }
     }
-    &:hover .avatar {
+  }
+
+  //important-indicator-column
+  .WA {
+    padding: 0;
+  }
+
+  // sender-column
+  .yX {
+    padding: 0 15px;
+  }
+
+  //subject-column
+  .a4W {
+
+    //inline-label
+    .ar {
+      height: 22px;
+      border-radius: 2px;
+
+      //inline-label-text
+      .av {
+        padding-top: 2px;
+      }
+    }
+  }
+
+  //snoozed-until-column
+  .byZ {
+
+    //snoozed-until-text
+    .cL {
+      font-weight: normal;
+    }
+  }
+
+  //action-buttons-column
+  .bq4 {
+
+    //action-buttons-list
+    .bqY {
+      //make room for the pin
+      position: relative;
+      left: -10px;
+
+      //action-button-item
+      .bqX {
+        margin: 0 10px;
+
+        //delete-button
+        &.bru {
+          order: 2;
+        }
+
+        //archive-button
+        &.brq {
+          order: 3;
+          // make space for the pin button
+          margin-right: 22px;
+        }
+      }
+    }
+  }
+
+  //pin-star-column
+  .apU {
+    display: block;
+    position: absolute;
+    right: 0px;
+    margin-right: 2px;
+
+    //pin-icon
+    .aXw {
+      display: none;
+    }
+
+    > .T-KT::after {
+      transform: scale(1);
+    }
+  }
+
+  //attachment-column
+  .yf {
+    img {
+      display: none;
+    }
+  }
+
+  //this is also holding the list of senders in a bundle
+  //date-column
+  .xW {
+    //make room for the pin icon
+    margin-left: -32px;
+    margin-right: 10px;
+  }
+
+  //option on the body
+  .show-avatar-enabled & {
+
+    //checkbox-column
+    .oZ-x3 {
+
+      //checkbox
+      .T-Jo {
         display: none;
+      }
     }
-    .oZ-x3 { //checkbox-column
-        &:before { //drag-indicator
-            display: none;
-        }
-        .T-Jo { //checkbox
-            margin-left: 1px;
-            &.T-Jo-Jp.J-J5-Ji { //checkbox-checked
-                display: inline;
-                + .avatar {
-                    display: none;
-                }
-            }
-        }
-    }
+  }
 
-    .WA { //important-indicator-column
-        padding: 0;
-    }
+  &[data-inbox="bundled"] {
+    display: none;
+  }
 
-    .yX { // sender-column
-        padding: 0 15px;
+  // row-hovered
+  &.aqw {
+
+    //checkbox-column
+    .oZ-x3 {
+
+      //checkbox
+      .T-Jo {
+        display: inline;
+      }
     }
 
-    .a4W { //subject-column
-        .ar { //inline-label
-            height: 22px;
-            border-radius: 2px;
-            .av { //inline-label-text
-                padding-top: 2px;
-            }
-        }
+    //pin-star-column
+    .apU {
+
+      //pin-icon
+      .aXw {
+        display: flex;
+      }
+    }
+  }
+
+  //keyboard-selected-email
+  &.btb {
+    padding-left: 4px;
+
+    &[data-previewing] {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12);
     }
 
-    .byZ { //snoozed-until-column
-        .cL { //snoozed-until-text
-            font-weight: normal;
-        }
+    //keyboard-focus-indicator
+    .PF.xY.PE {
+      //keeps the avatar aligned
+      margin-left: -5px;
+      margin-right: 10px;
     }
-
-    .bq4 { //action-buttons-column
-        .bqY { //action-buttons-list
-
-            //make room for the pin
-            position: relative;
-            left: -10px;
-            .bqX { //action-button-item
-                margin: 0 10px;
-
-                &.bru { //delete-button
-                    order: 2;
-                }
-                &.brq { //archive-button
-                    order: 3;
-                    // make space for the pin button
-                    margin-right: 22px;
-                }
-            }
-        }
-    }
-
-    .apU { //pin-star-column
-        display: block;
-        position: absolute;
-        right: 0px;
-        margin-right: 2px;
-        .aXw { //pin-icon
-            display: none;
-        }
-
-        > .T-KT::after {
-            transform: scale(1);
-        }
-    }
-
-    .yf { //attachment-column
-        img {
-            display: none;
-        }
-    }
-
-    //this is also holding the list of senders in a bundle
-    .xW { //date-column
-        //make room for the pin icon
-        margin-left: -32px;
-        margin-right: 10px;
-    }
-
-    .show-avatar-enabled & { //option on the body
-        .oZ-x3 { //checkbox-column
-            .T-Jo { //checkbox
-                display: none;
-            }
-        }
-    }
-    &[data-inbox="bundled"] {
-        display: none;
-    }
-
-    &.aqw { // row-hovered
-        .oZ-x3 { //checkbox-column
-            .T-Jo { //checkbox
-                display: inline;
-            }
-        }
-        .apU { //pin-star-column
-            .aXw { //pin-icon
-                display: flex;
-            }
-        }
-    }
-
-    &.btb { //keyboard-selected-email
-        padding-left: 4px;
-        &[data-previewing] {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12);
-        }
-
-        .PF.xY.PE { //keyboard-focus-indicator
-            //keeps the avatar aligned
-            margin-left: -5px;
-            margin-right: 10px;
-        }
-    }
+  }
 }

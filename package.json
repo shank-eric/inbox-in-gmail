@@ -7,8 +7,8 @@
     "node": ">=16.13.1"
   },
   "scripts": {
-    "build": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css --no-source-map",
-    "watch": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css -w --source-map",
+    "build": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css src/scss/outlook/index.scss:src/css/outlook.css --no-source-map",
+    "watch": "sass src/scss/content/index.scss:src/css/content.css src/scss/options.scss:src/css/options.css src/scss/outlook/index.scss:src/css/outlook.css -w --source-map",
     "js:lint": "$(npm bin)/eslint './src/**/*.js'",
     "js:lint:fix": "$(npm bin)/eslint './src/**/*.js' --fix"
   },

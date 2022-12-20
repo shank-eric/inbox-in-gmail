@@ -1,0 +1,126 @@
+@import 'email-list';
+
+#app {
+  #LeftRail {
+    display: none;
+  }
+
+  // same level as #LeftRail
+  .DAZwg {
+    width: 100%;
+
+    .q58ff {
+      width: 100%;
+    }
+
+    //wrapper around the TopBar with file menu and the ribbon
+    .UAnq8 {
+      height: 43px;
+
+      #TopBar {
+        display: none;
+      }
+    }
+
+    .top-bar {
+      display: flex;
+      background-color: var(--neutralLighter);
+
+      > div:nth-child(1) {
+        flex-grow: 1;
+      }
+
+      // moved bar with filter and select all
+      .V2uYM {
+        border-bottom: none;
+
+        // inner container in Inbox bar
+        .rEzfP {
+          padding: 0;
+
+          // Inbox span
+          .vlQVl {
+            display: none;
+          }
+
+          // select all container
+          .ZYym6 {
+            margin-bottom: 3px;
+            margin-right: 4px;
+
+            [role="checkbox"] {
+              margin-left: 0;
+              height: 34px;
+
+              &:hover {
+                background-color: var(--neutralLight);
+              }
+            }
+
+            [role="button"] {
+              height: 34px;
+              border-radius: 0;
+              margin-right: 0;
+
+              &:hover {
+                background-color: var(--neutralLight);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    #outerRibbonContainer {
+      padding: 0;
+    }
+
+    // may not be needed with outlook updates
+    .ms-CommandBar:not(.bsTYb) {
+      padding: 0;
+      min-width: 200px;
+      justify-content: space-between;
+
+      // border-bottom: 1px solid var(--neutralLight);
+      .ms-CommandBar-primaryCommand {
+        flex-grow: 0;
+        margin-right: 4px;
+
+        .TAtn8 {
+          width: auto;
+          height: 44px;
+
+          button {
+            height: 34px;
+            margin-top: 5px;
+            margin-right: 0;
+            border-radius: 0;
+          }
+        }
+
+        .UhijP {
+          position: fixed;
+          bottom: 12px;
+          right: 12px;
+          z-index: 1000;
+          padding: 8px;
+          height: auto;
+
+          .ms-Button-textContainer {
+            display: none;
+          }
+
+          i {
+            font-size: 36px;
+          }
+        }
+      }
+
+      .ms-CommandBar-secondaryCommand {
+        .ms-OverflowSet-item {
+          display: none;
+        }
+      }
+    }
+  }
+}

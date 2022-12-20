@@ -1,0 +1,80 @@
+//email row
+.hcptT {
+  box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
+
+  &[data-previewing="true"] {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  &[data-inbox="bundled"] {
+    display: none;
+  }
+
+  &[data-inbox="show-bundled"] {
+    width: calc(100% - 24px);
+    margin: 0 auto;
+
+    &[data-previewing="true"] {
+      top: 36px;
+    }
+  }
+
+  &[data-icon="reminder"] {
+    .ms-Persona-coin {
+      background: url(https://res.cdn.office.net/todo/publicIcons/todo-metaos-32.png);
+      background-size: 28px;
+
+      .ms-Persona-initials {
+        display: none;
+      }
+    }
+
+    // email subject
+    .FqgPc {
+      display: none;
+    }
+  }
+
+  &.bundle-last-email:not([data-previewing="true"]) {
+    margin-bottom: 12px;
+  }
+
+  // inner container
+  .nloVY {
+    position: relative;
+
+    //from column
+    > :nth-child(1) {
+      position: initial;
+    }
+
+    .bundle-senders {
+      text-overflow: ellipsis;
+      overflow: auto;
+      white-space: nowrap;
+    }
+  }
+
+  // archive button container
+  .QpoLy {
+    align-items: center;
+    height: 36px;
+
+    button {
+      background-color: transparent;
+      color: unset;
+      width: 24px;
+      height: 24px;
+
+      i {
+        margin: 0;
+      }
+    }
+
+    &:hover button {
+      background-color: var(--neutralLight)
+    }
+  }
+}

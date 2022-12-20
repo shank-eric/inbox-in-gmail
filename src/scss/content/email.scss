@@ -1,62 +1,89 @@
-.Nu.S3.aZ6 { //preview-pane
-	overflow: auto;
-	box-shadow: 0 3px 4px rgba(0,0,0,.24);
-	margin-left: 2px;
-	width: calc(100% - 5px);
-	height: auto !important;  //need !important to override inline styles
+//preview-pane
+.Nu.S3.aZ6 {
+  overflow: auto;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, .24);
+  margin-left: 2px;
+  width: calc(100% - 5px);
+  height: auto !important; //need !important to override inline styles
 
-	&:not(.show-preview) {
-		display: none;
-	}
-	.ao8 { //preview-pane-container
-		width: auto !important;
-	}
-	.if > .byY { //email-subject-header
-		padding-left: 20px;
-	}
+  &:not(.show-preview) {
+    display: none;
+  }
 
-	.ii.gt { //email-body
-		padding-right: 56px;
-	}
+  //preview-pane-container
+  .ao8 {
+    width: auto !important;
+  }
 
-	.nH.if { //email-container
-		.nH.aE0 { //bottom-spacer
-			padding-bottom: 0 !important;
-		}
-	}
+  //email-subject-header
+  .if > .byY {
+    padding-left: 20px;
+  }
+
+  //email-body
+  .ii.gt {
+    padding-right: 56px;
+  }
+
+  //email-container
+  .nH.if {
+
+    //bottom-spacer
+    .nH.aE0 {
+      padding-bottom: 0 !important;
+    }
+  }
 }
 
-.Nf .Nt { //preview-pane-separator
-	display: none;
+//preview-pane-separator
+.Nf .Nt {
+  display: none;
 }
 
-.Bs.nH.iY.bAt { //email-container
-	margin: 2px;
-	box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
-	width: auto;
-	.byY { //subject-container
-		padding: 20px 4px 8px 20px;
-		.ha { //subject-text-container
-			.J-J5-Ji { //labels-container
-				display: none;
-			}
-		}
-	}
+//email-container
+.Bs.nH.iY.bAt {
+  margin: 2px;
+  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+  width: auto;
 
-	.aHU { //body-container
-		.gE { //header-container
-			.iw { //email-header
-				.go { //email-address
-					display: none;
-				}
-			}
-		}
-		.ii.gt { //email-body
-			padding-right: 56px;
-		}
-	}
+  //subject-container
+  .byY {
+    padding: 20px 4px 8px 20px;
 
-	.Bu.yM { //spacer(?) cell in the email table
-		display: none;
-	}
+    //subject-text-container
+    .ha {
+
+      //labels-container
+      .J-J5-Ji {
+        display: none;
+      }
+    }
+  }
+
+  //body-container
+  .aHU {
+
+    //header-container
+    .gE {
+
+      //email-header
+      .iw {
+
+        //email-address
+        .go {
+          display: none;
+        }
+      }
+    }
+
+    //email-body
+    .ii.gt {
+      padding-right: 56px;
+    }
+  }
+
+  //spacer(?) cell in the email table
+  .Bu.yM {
+    display: none;
+  }
 }

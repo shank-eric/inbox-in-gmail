@@ -1,4 +1,4 @@
-import { addClass, queryParentSelector, removeClass } from './utils.js';
+import { addClass, queryParentSelector, removeClass } from '../shared/utils.js';
 import inbox from './inbox.js';
 
 export default {

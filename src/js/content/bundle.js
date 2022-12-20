@@ -1,21 +1,24 @@
-import { CLASSES, SELECTORS } from './constants.js';
+import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
 import {
-  addClass,
+  addRemoveClass,
+  htmlToElements,
+  observeForRemoval,
+  hasClass
+} from '../shared/utils.js';
+import {
   checkImportantMarkers,
   getCurrentBundle,
-  htmlToElements,
   isInBundle,
-  observeForRemoval,
   openBundle,
-  openInbox,
-  removeClass,
-  hasClass
-} from './utils.js';
-import { getOptions } from './options.js';
+  openInbox
+} from './emailUtils.js';
 
-const { BUNDLE_WRAPPER_CLASS, EMAIL_ROW_CLASS } = CLASSES;
-const { EMAIL_CONTAINER } = SELECTORS;
+import { getOptions } from '../shared/options.js';
+
+const { BUNDLE_WRAPPER_CLASS } = CLASSES;
+const { EMAIL_ROW, UNREAD_EMAIL_ROW } = GMAIL_CLASSES;
+const { EMAIL_CONTAINER } = GMAIL_SELECTORS;
 
 export default class Bundle {
   constructor(attrs) {
@@ -46,7 +49,7 @@ export default class Bundle {
     }
 
     const bundleWrapper = htmlToElements(`
-        <div class="${EMAIL_ROW_CLASS} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox=${encodedId} data-date-label="${dateLabel}" data-show-emails="false">
+        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox=${encodedId} data-date-label="${dateLabel}" data-show-emails="false">
           <div class="PF xY"></div>
           <div class="apU xY"></div>
           <div class="WA xY ${importantMarkerClass}"></div>
@@ -143,11 +146,9 @@ export default class Bundle {
 
   checkUnread() {
     if (this.attrs.containsUnread) {
-      addClass(this.element, 'zE');
-      removeClass(this.element, 'yO');
+      addRemoveClass(this.element, UNREAD_EMAIL_ROW, 'yO');
     } else {
-      addClass(this.element, 'yO');
-      removeClass(this.element, 'zE');
+      addRemoveClass(this.element, 'yO', UNREAD_EMAIL_ROW);
     }
   }
 
