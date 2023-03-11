@@ -1,5 +1,8 @@
-import { addClass, queryParentSelector, removeClass } from '../shared/utils.js';
+import { addClass, hasClass, observeForElement, queryParentSelector, removeClass } from '../shared/utils.js';
 import inbox from './inbox.js';
+import { GMAIL_SELECTORS } from './constants.js';
+
+const { LEFT_MENU_BUTTON } = GMAIL_SELECTORS;
 
 export default {
   loadedMenu: false,
@@ -12,7 +15,7 @@ export default {
     { label: 'spam', selector: '.aHS-bnv' },
     { label: 'trash', selector: '.aHS-bnx' },
     { label: 'starred', selector: '.aHS-bnw' },
-    { label: 'important', selector: '.aHS-bns' }
+    { label: 'important', selector: '.aHS-bns' },
   ],
   init() {
     const observer = new MutationObserver(() => {
@@ -60,6 +63,7 @@ export default {
         moreMenu.click();
         this.setupClickEventForNodes();
         this.observeLabelNav();
+        this.checkShownCategories();
         observer.disconnect();
       }
 
@@ -92,6 +96,43 @@ export default {
     const leftNavItems = document.querySelectorAll('.TN');
     leftNavItems.forEach(item => item.addEventListener('click', this.activateMenuItem));
   },
+  async checkShownCategories() {
+    const categorySelectors = {
+      Updates: '.aS4',
+      Forums: '.aS3',
+      Promotions: '.aS5',
+      Social: '.aS6',
+    };
+    const body = document.querySelector('body');
+    const categories = document.querySelectorAll('.byl.aJZ .aim .TO');
+    if (categories.length === 0) {
+      Object.keys(categorySelectors).forEach(categoryName => {
+        body.setAttribute(`data-${categoryName}`, false);
+      });
+    } else {
+      const navContainer = document.querySelector('[role=navigation]');
+      const menuButton = await observeForElement(document, LEFT_MENU_BUTTON);
+      const navExpanded = !hasClass(navContainer, 'bhZ');
+      const categoriesExpanded = categories.length > 1;
+      if (!categoriesExpanded) {
+        if (!navExpanded) {
+          menuButton.click(); // expand the nav
+        }
+        categories[0].click(); // expand the categories
+        await observeForElement(document, '.byl.aJZ .aim .TO[class*="aS"]');
+      }
+      Object.entries(categorySelectors).forEach(([categoryName, categorySelector]) => {
+        const categoryShown = !!this.findMenuItem(`.byl.aJZ .aim .TO${categorySelector}`);
+        body.setAttribute(`data-${categoryName}`, categoryShown);
+      });
+      if (!categoriesExpanded) {
+        categories[0].click(); // categories was collapsed, put it back
+        if (!navExpanded) {
+          menuButton.click(); // nav was collapsed before, put it back
+        }
+      }
+    }
+  },
   activateMenuItem(event) {
     inbox.restoreBundle();
     document.querySelectorAll('.nZ').forEach(el => removeClass(el, 'nZ'));
@@ -99,5 +140,5 @@ export default {
   },
   findMenuItem(itemSelector) {
     return queryParentSelector(document.querySelector(itemSelector), '.aim');
-  }
+  },
 };

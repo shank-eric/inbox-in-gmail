@@ -1,6 +1,6 @@
 {
   "extends": [
-    "airbnb-base"
+    "prettier"
   ],
   "plugins": [
     "eslint-plugin-import"
@@ -34,7 +34,7 @@
     ],
     "max-len": [
       "warn",
-      150
+      250
     ],
     "no-param-reassign": "off",
     "no-plusplus": [
@@ -43,6 +43,7 @@
         "allowForLoopAfterthoughts": true
       }
     ],
+    "quotes": ["error", "single"],
     "radix": [
       "error",
       "as-needed"
