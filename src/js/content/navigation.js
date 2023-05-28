@@ -1,20 +1,12 @@
-import {
-  addClass,
-  hasClass,
-  observeForElement,
-  removeClass
-} from '../shared/utils.js';
-import {
-  isInBundle,
-  isInInbox,
-  openInbox,
-  openReminder
-} from './emailUtils.js';
+import { addClass, hasClass, observeForElement, removeClass } from '../shared/utils.js';
+import { isInBundle, isInInbox, openInbox, openReminder } from './emailUtils.js';
 import leftNav from './leftNav.js';
 import inbox from './inbox.js';
 import { reloadOptions } from '../shared/options.js';
 import { CLASSES } from '../shared/constants.js';
+import { GMAIL_SELECTORS } from './constants.js';
 
+const { LEFT_MENU_BUTTON } = GMAIL_SELECTORS;
 const { BUNDLE_PAGE_CLASS } = CLASSES;
 
 export default {
@@ -22,7 +14,8 @@ export default {
     reloadOptions();
     this.updateFloatingButtons();
     this.updateHeader();
-    if (!isInInbox()) { // always make sure we start on the main inbox page so we can find the right email container
+    if (!isInInbox()) {
+      // always make sure we start on the main inbox page so we can find the right email container
       openInbox();
     } else {
       this.handleHashChange();
@@ -70,11 +63,13 @@ export default {
 
     const titleNodes = document.querySelectorAll('a[title="Gmail"]');
     if (titleNodes) {
-      titleNodes.forEach(titleNode => { titleNode.href = hash; });
+      titleNodes.forEach(titleNode => {
+        titleNode.href = hash;
+      });
     }
   },
   async updateFloatingButtons() {
-    const menuButton = await observeForElement(document, '.gb_Rd');
+    const menuButton = await observeForElement(document, LEFT_MENU_BUTTON);
     const navContainer = document.querySelector('[role=navigation]');
     const navExpanded = !hasClass(navContainer, 'bhZ');
     if (navExpanded) {
@@ -93,5 +88,5 @@ export default {
       // nav was originally expanded, re-open it
       menuButton.click();
     }
-  }
+  },
 };

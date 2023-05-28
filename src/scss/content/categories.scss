@@ -1,0 +1,10 @@
+$categories: Forums, Promotions, Social, Updates;
+body{
+  @each $category in $categories {
+    &[data-#{to-lower-case($category)}="false"] {
+      [title="#{$category}"][aria-checked="false"] {
+        display: none;
+      }
+    }
+  }
+}
