@@ -24,10 +24,10 @@ export default {
       currentBundle,
       keyCode: event.code,
       mainContainer,
-      shiftKey: event.shiftKey
+      shiftKey: event.shiftKey,
     };
 
-    const navKeys = [ 'ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK', 'KeyE' ];
+    const navKeys = ['ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK', 'KeyE'];
     if (isTypable(event.target)) {
       return;
     }
@@ -56,13 +56,19 @@ export default {
         }
       }
     },
+    KeyE: ({ currentRow, ...rest }) => {
+      if (emailPreview.previewShowing) {
+        emailPreview.emailClicked(currentRow);
+      }
+      this.navigate({ currentRow, ...rest });
+    },
     Quote: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? -250 : -25),
-    Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25)
+    Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25),
     // KeyT: openReminder
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
   async navigate({ currentRow, keyCode, target }) {
-    const searchNext = [ 'ArrowDown', 'KeyJ', 'KeyE' ].includes(keyCode);
+    const searchNext = ['ArrowDown', 'KeyJ', 'KeyE'].includes(keyCode);
     const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(EMAIL_ROW);
     if (hasClass(target, EMAIL_ROW_CLASS)) {
       await observeForCondition(document, () => {
@@ -74,11 +80,11 @@ export default {
 
     if (rowToSelect) {
       setTimeout(() => {
-        const selector = rowToSelect.querySelector('.hidden-selector');
+        const selector = rowToSelect;
         selector.click(); // check the box to select the row
         selector.click(); // check it again to uncheck the box, but leave it selected
         setSelectedRow(rowToSelect);
       });
     }
-  }
+  },
 };

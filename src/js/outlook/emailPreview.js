@@ -1,20 +1,9 @@
-import {
-  addClass,
-  addRemoveClass,
-  addPixels,
-  observeForElement,
-  removeClass,
-  runObserver,
-  hasClass,
-  observeForRemoval
-} from '../shared/utils.js';
+import { addClass, addRemoveClass, addPixels, observeForElement, removeClass, runObserver, hasClass, observeForRemoval } from '../shared/utils.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const {
-  PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_ELEMENTS, EMAIL_CONTAINER
-} = OUTLOOK_SELECTORS;
+const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_ELEMENTS, EMAIL_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default {
   currentEmail: null,
@@ -63,7 +52,7 @@ export default {
     const emailContainer = document.querySelector(EMAIL_CONTAINER);
     addClass(emailContainer, 'preview-showing');
     this.previewShowing = true;
-    const adjustPreviewHeight = () => {
+    const adjustPreviewSize = () => {
       if (hasClass(previewPane, 'preview-compose')) {
         previewPane.style.height = null;
         return;
@@ -71,10 +60,11 @@ export default {
       const previewEls = Array.from(previewPane.querySelectorAll(PREVIEW_ELEMENTS));
       previewPlaceholder.style.height = addPixels(...previewEls.map(el => el.offsetHeight), 12);
       previewPane.style.height = previewPlaceholder.style.height;
+      previewPane.style.width = getComputedStyle(previewPlaceholder).width;
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
     };
-    this.previewObserver = runObserver(previewPane, { subtree: true, attributes: true }, adjustPreviewHeight, false, this.previewObserver);
-    adjustPreviewHeight();
+    this.previewObserver = runObserver(previewPane, { subtree: true, attributes: true }, adjustPreviewSize, false, this.previewObserver);
+    adjustPreviewSize();
 
     this.setPreviewPosition(previewPane);
     if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
@@ -130,6 +120,7 @@ export default {
   async checkPreview() {
     const previewPane = await this.getPreviewPane();
     const composeContainer = previewPane.querySelector(PREVIEW_COMPOSE);
+    const previewPlaceholder = document.querySelector('.preview-placeholder');
     if (composeContainer) {
       addRemoveClass(previewPane, 'preview-compose', 'show-preview');
       previewPane.style.top = null;
@@ -155,8 +146,10 @@ export default {
 
       if (previewBundledEmail) {
         addClass(previewPane, 'bundle-preview');
+        addClass(previewPlaceholder, 'bundle-preview-placeholder');
       } else {
         removeClass(previewPane, 'bundle-preview');
+        removeClass(previewPlaceholder, 'bundle-preview-placeholder');
       }
 
       if (currentEmailChanged) {
@@ -172,5 +165,5 @@ export default {
     } else {
       this.hidePreviewPane(previewPane);
     }
-  }
+  },
 };

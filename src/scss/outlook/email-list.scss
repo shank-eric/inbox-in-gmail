@@ -1,35 +1,38 @@
-html[dir=ltr] {
+html[dir='ltr'] {
   body {
-
     //main inbox element, has data-max-width on it
     .q9iRC {
-
       // for scrolling preview
       &.preview-showing {
-
         // element right above data-app-section=MessageList
-        .G8_Dc {
-          overflow-y: auto;
-          height: auto;
+        .HOVUa {
+          .G8_Dc {
+            overflow-y: auto;
+            height: auto;
+            //main email list
+            .XW2m0 {
+              max-height: unset;
+              height: auto;
 
-          // scrollbar element around messages
-          .jEpCF {
-            overflow: unset;
+              // scrollbar element around messages
+              .jEpCF {
+                overflow: unset;
 
-            // element directly inside the scrollbar
-            .zXLz3 {
-              width: calc(100% - 18px);
+                // element directly inside the scrollbar
+                .zXLz3 {
+                  width: calc(100% - 18px);
+                }
+              }
             }
-          }
+            // shared class on several containers in the message list
+            .Cz7T5 {
+              overflow: unset;
+            }
 
-          // shared class on several containers in the message list
-          .Cz7T5 {
-            overflow: unset;
-          }
-
-          // class in between some of the shared one above
-          .ONAp_ {
-            overflow: unset;
+            // class in between some of the shared one above
+            .ONAp_ {
+              overflow: unset;
+            }
           }
         }
       }
@@ -42,19 +45,21 @@ html[dir=ltr] {
 
         //wrapper around email list and preview pane
         .G8_Dc {
-          background-color: var(--white);
-
           //main email list
           .XW2m0 {
             min-height: calc(100% - 41px);
+            max-height: unset;
+            height: auto;
             border: none;
             display: flex;
-            background-color: var(--white);
+            background-color: var(--neutralLighterAlt);
+            overflow: visible;
 
             //email list scroll container
             .jEpCF {
               padding-left: 18px;
-              background-color: var(--white);
+              max-height: calc(100vh - 134px);
+              overflow-y: auto;
 
               //email rows container
               .zXLz3 {
@@ -66,15 +71,13 @@ html[dir=ltr] {
 
             // email column headers
             > div:nth-child(2) {
-              border-bottom: 1px solid black;
-              border-top: 1px solid black;
               box-shadow: rgb(0 0 0 / 24%) -2px -2px 4px;
               margin: 0 18px;
               padding: 0 !important;
             }
 
             //time rows
-            [id^="groupHeader"] {
+            [id^='groupHeader'] {
               padding-left: 16px;
               font-size: 12px;
             }
@@ -83,6 +86,10 @@ html[dir=ltr] {
           @import './email-row';
           @import './bundle';
           @import './email-preview';
+
+          .bundle-preview-placeholder {
+            padding: 0 12px;
+          }
 
           //archived notification
           .HqtOc {

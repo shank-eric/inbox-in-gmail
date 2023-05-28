@@ -1,6 +1,4 @@
-import {
-  addClass, encodeBundleId, hasClass, isInViewport, removeClass, runObserver
-} from '../shared/utils.js';
+import { addClass, encodeBundleId, hasClass, isInViewport, removeClass, runObserver } from '../shared/utils.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 
 import { findNextVisibleRow } from './outlookUtils.js';
@@ -13,24 +11,28 @@ import emailPreview from './emailPreview.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { TIME_ROW: TIME_ROW_CLASS } = OUTLOOK_CLASSES;
-const {
-  EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, SCROLLBAR_ELEMENT, TIME_ROW
-} = OUTLOOK_SELECTORS;
+const { EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, SCROLLBAR_ELEMENT, TIME_ROW } = OUTLOOK_SELECTORS;
 
 export default {
   async observeEmails() {
     findCheckboxClasses();
     const outerContainer = document.querySelector(EMAIL_CONTAINER);
     const options = { subtree: true, childList: true, attributes: true };
-    runObserver(outerContainer, options, async () => {
-      reloadOptions();
-      await emailPreview.checkPreview();
-      this.processEmails();
-    }, true);
+    runObserver(
+      outerContainer,
+      options,
+      async () => {
+        reloadOptions();
+        await emailPreview.checkPreview();
+        this.processEmails();
+      },
+      true
+    );
   },
   processEmails() {
-    const emailElements = document.querySelectorAll(`${EMAIL_CONTAINER} ${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS}),`
-      + `${EMAIL_CONTAINER} ${HIDDEN_EMAIL_ROW}`);
+    const emailSelector = `${EMAIL_CONTAINER} ${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`;
+    const hiddenEmailSelector = `${EMAIL_CONTAINER} ${HIDDEN_EMAIL_ROW}`;
+    const emailElements = document.querySelectorAll(`${emailSelector},${hiddenEmailSelector}`);
     let selectedEmail = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
     if (!selectedEmail) {
       selectedEmail = document.querySelector(SELECTED_EMAIL);
@@ -74,10 +76,12 @@ export default {
                 title: label,
                 encodedId,
                 count: 1,
-                senders: [{
-                  name: firstParticipant,
-                  isUnread: email.isUnread()
-                }]
+                senders: [
+                  {
+                    name: firstParticipant,
+                    isUnread: email.isUnread(),
+                  },
+                ],
               };
               removeClass(document.querySelector(`[data-${encodedId}].bundle-last-email`), 'bundle-last-email');
               addClass(email.emailEl, 'bundle-last-email');
@@ -85,7 +89,7 @@ export default {
               labelStats[encodedId].count++;
               labelStats[encodedId].senders.push({
                 name: firstParticipant,
-                isUnread: email.isUnread()
+                isUnread: email.isUnread(),
               });
             }
             labelStats[encodedId].email = email;
@@ -107,7 +111,7 @@ export default {
       });
 
       const emailBundles = this.getBundledLabels();
-      Object.entries(emailBundles).forEach(([ label, el ]) => {
+      Object.entries(emailBundles).forEach(([label, el]) => {
         if (!labelStats[label]) {
           el.remove();
         }
@@ -144,5 +148,5 @@ export default {
       bundles[el.getAttribute('data-inbox')] = el;
       return bundles;
     }, {});
-  }
+  },
 };

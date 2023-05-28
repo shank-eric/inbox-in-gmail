@@ -2,26 +2,26 @@
 .hcptT {
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
 
-  &[data-previewing="true"] {
+  &[data-previewing='true'] {
     position: sticky;
     top: 0;
     z-index: 10;
   }
 
-  &[data-inbox="bundled"] {
-    display: none;
+  &[data-inbox='bundled'] {
+    display: none !important;
   }
 
-  &[data-inbox="show-bundled"] {
+  &[data-inbox='show-bundled'] {
     width: calc(100% - 24px);
     margin: 0 auto;
 
-    &[data-previewing="true"] {
+    &[data-previewing='true'] {
       top: 36px;
     }
   }
 
-  &[data-icon="reminder"] {
+  &[data-icon='reminder'] {
     .ms-Persona-coin {
       background: url(https://res.cdn.office.net/todo/publicIcons/todo-metaos-32.png);
       background-size: 28px;
@@ -37,7 +37,7 @@
     }
   }
 
-  &.bundle-last-email:not([data-previewing="true"]) {
+  &.bundle-last-email:not([data-previewing='true']) {
     margin-bottom: 12px;
   }
 
@@ -74,7 +74,7 @@
     }
 
     &:hover button {
-      background-color: var(--neutralLight)
+      background-color: var(--neutralLight);
     }
   }
 }

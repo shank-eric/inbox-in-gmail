@@ -1,13 +1,7 @@
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, getCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import {
-  addClass,
-  addRemoveClass,
-  htmlToElements,
-  queryParentSelector,
-  removeClass
-} from '../shared/utils.js';
+import { addClass, addRemoveClass, htmlToElements, queryParentSelector, removeClass } from '../shared/utils.js';
 
 import { getOptions } from '../shared/options.js';
 import { setSelectedRow } from './outlookUtils.js';
@@ -22,12 +16,12 @@ const {
   HIDE_AVATAR,
   SELECTED_ROW,
   UNSELECTED_ROW,
-  UNREAD_EMAIL_ROW
+  UNREAD_EMAIL_ROW,
 } = OUTLOOK_CLASSES;
 const {
   EMAIL_COLUMN_CONTAINER: EMAIL_COLUMN_CONTAINER_SELECTOR,
   EMAIL_ROW_INNER_CONTAINER: EMAIL_ROW_INNER_CONTAINER_SELECTOR,
-  EMAIL_CONTAINER
+  EMAIL_CONTAINER,
 } = OUTLOOK_SELECTORS;
 
 export default class Bundle {
@@ -42,9 +36,7 @@ export default class Bundle {
   }
 
   buildBundleWrapper() {
-    const {
-      email, emailEl, encodedId, title
-    } = this.attrs;
+    const { email, emailEl, encodedId, title } = this.attrs;
     const labels = email.getLabels();
     const label = labels.find(lab => lab.encodedId === encodedId);
     const options = getOptions();
@@ -58,19 +50,19 @@ export default class Bundle {
 
     emailEl.style.width = '100%';
 
-    const {
-      UNCHECKED_ROOT,
-      UNCHECKED_CIRCLE,
-      UNCHECKED_CHECK
-    } = getCheckboxClasses();
-    const columnWidths = Array.from(emailEl.querySelectorAll(`.${EMAIL_COLUMN_CONTAINER} > div`)).map(el => [ el.style.width, el.style.paddingLeft ]);
+    const { UNCHECKED_ROOT, UNCHECKED_CIRCLE, UNCHECKED_CHECK } = getCheckboxClasses();
+    const columnWidths = Array.from(emailEl.querySelectorAll(`.${EMAIL_COLUMN_CONTAINER} > div`)).map(el => [el.style.width, el.style.paddingLeft]);
     emailEl.style.width = '';
     addClass(emailEl, 'bundle-email');
-    const abbrev = title.split(' ').map(word => word.substring(0, 1)).join('');
-    const archiveButtonPath = 'M6.5 8a.5.5 0 000 1h3a.5.5 0 000-1h-3zM1 3.5C1 2.67 1.67 2 2.5'
-      + ' 2h11c.83 0 1.5.67 1.5 1.5v1c0 .65-.42 1.2-1 1.41v5.59a2.5 2.5 0 01-2.5 2.5h-7A2.5 2.5 0'
-      + ' 012 11.5V5.91c-.58-.2-1-.76-1-1.41v-1zM2.5 3a.5.5 0 00-.5.5v1c0 .28.22.5.5.5h11a.5.5 0'
-      + ' 00.5-.5v-1a.5.5 0 00-.5-.5h-11zM3 6v5.5c0 .83.67 1.5 1.5 1.5h7c.83 0 1.5-.67 1.5-1.5V6H3z';
+    const abbrev = title
+      .split(' ')
+      .map(word => word.substring(0, 1))
+      .join('');
+    const archiveButtonPath =
+      'M6.5 8a.5.5 0 000 1h3a.5.5 0 000-1h-3zM1 3.5C1 2.67 1.67 2 2.5' +
+      ' 2h11c.83 0 1.5.67 1.5 1.5v1c0 .65-.42 1.2-1 1.41v5.59a2.5 2.5 0 01-2.5 2.5h-7A2.5 2.5 0' +
+      ' 012 11.5V5.91c-.58-.2-1-.76-1-1.41v-1zM2.5 3a.5.5 0 00-.5.5v1c0 .28.22.5.5.5h11a.5.5 0' +
+      ' 00.5-.5v-1a.5.5 0 00-.5-.5h-11zM3 6v5.5c0 .83.67 1.5 1.5 1.5h7c.83 0 1.5-.67 1.5-1.5V6H3z';
 
     const bundleWrapper = htmlToElements(`
     <div
@@ -84,7 +76,7 @@ export default class Bundle {
     >
       <div draggable="true">
         <div
-          class="${EMAIL_ROW_INNER_CONTAINER} YbB6r IKvQi IjQyD JCRRb G1NES"
+          class="${EMAIL_ROW_INNER_CONTAINER} YbB6r IKvQi IjQyD EhiOs JCRRb G1NES"
           tabindex="-1"
         >
           <div class="oJTdD">
