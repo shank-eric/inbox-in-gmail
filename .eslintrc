@@ -1,4 +1,9 @@
 {
+  "env": {
+    "browser": true,
+    "es6": true,
+    "webextensions": true
+  },
   "extends": [
     "prettier"
   ],
@@ -10,20 +15,9 @@
     "sourceType": "module"
   },
   "rules": {
-    "array-bracket-spacing": [
-      "error",
-      "always",
-      {
-        "singleValue": false
-      }
-    ],
     "arrow-parens": [
       "error",
       "as-needed"
-    ],
-    "comma-dangle": [
-      "error",
-      "never"
     ],
     "consistent-return": "off",
     "import/extensions": [
@@ -49,8 +43,4 @@
       "as-needed"
     ]
   },
-  "env": {
-    "browser": true,
-    "webextensions": true
-  }
 }

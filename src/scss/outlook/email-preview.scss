@@ -49,16 +49,12 @@
     }
 
     &.show-preview {
-      width: calc(100% - 48px); // left(18) + main container's padding-left(18)
       left: 18px;
     }
 
-    .AJYpX, .g_zET {
-      background-color: var(--white);
-    }
-
     // message header
-    .XV5zJ, .NTPm6 {
+    .XV5zJ,
+    .NTPm6 {
       margin: 0;
       border: none;
       border-radius: 0;
@@ -66,7 +62,8 @@
     }
 
     // show more messages button
-    .Xpejj [role="button"], .PCN7W {
+    .Xpejj [role='button'],
+    .PCN7W {
       margin: 0 !important;
       border-radius: 0;
       //keeps ,argins from collapsing
@@ -75,7 +72,10 @@
     }
 
     // messages in the thread
-    ._xWdq, .eIxcM, .SlLx9, .GjFKx {
+    ._xWdq,
+    .eIxcM,
+    .SlLx9,
+    .GjFKx {
       width: calc(100% - 24px) !important;
       margin: 0 !important;
       border-radius: 0;
@@ -96,7 +96,7 @@
 
       .soZTT {
         position: initial;
-        max-width: 50vw;
+        width: 50vw;
         max-height: calc(100vh - 200px);
 
         &.compose-reminder {
@@ -127,10 +127,10 @@
     &.bundle-preview {
       &:not(.preview-compose) {
         left: 30px; //18px padding-left on main + 12px margin on bundle
-        width: calc(100% - 72px); // left(36) + main container's padding-left(24)
       }
 
-      .AJYpX, .g_zET {
+      .AJYpX,
+      .g_zET {
         background-color: var(--neutralLighter);
       }
     }
@@ -143,7 +143,8 @@
   }
 
   // preview container
-  .MtujV, .c2xp6 {
+  .MtujV,
+  .c2xp6 {
     height: auto;
     background-color: var(--themeLighter);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 4px;

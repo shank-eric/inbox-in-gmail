@@ -3,20 +3,11 @@ import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
 import { matchesMyEmail, setSelectedRow } from './outlookUtils.js';
-import {
-  encodeBundleId,
-  querySelectorText,
-  querySelectorWithText,
-  hasClass,
-  queryParentSelector,
-  htmlToElements
-} from '../shared/utils.js';
+import { encodeBundleId, querySelectorText, querySelectorWithText, hasClass, queryParentSelector } from '../shared/utils.js';
 
 const { REMINDER_EMAIL_CLASS } = CLASSES;
 const { UNREAD_EMAIL_ROW } = OUTLOOK_CLASSES;
-const {
-  EMAIL_LABELS, EMAIL_PARTICIPANTS, EMAIL_SUBJECT, EMAIL_DATE, EMAIL_ROW_INNER_CONTAINER
-} = OUTLOOK_SELECTORS;
+const { EMAIL_LABELS, EMAIL_PARTICIPANTS, EMAIL_SUBJECT, EMAIL_DATE, EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default class Email {
   constructor(emailEl, emailIndex) {
@@ -24,9 +15,6 @@ export default class Email {
     this.order = emailIndex * 100;
     if (!this.emailEl.style.order) {
       this.emailEl.style.order = this.order;
-    }
-    if (!this.emailEl.querySelector('.hidden-selector')) {
-      this.emailEl.appendChild(htmlToElements('<span class="hidden-selector"></span>'));
     }
 
     const options = getOptions();
@@ -47,7 +35,7 @@ export default class Email {
         borderColor: labelContainer.style.borderColor,
         textColor: labelContainer.style.color,
         backgroundColor: labelContainer.style.backgroundColor,
-        element: labelContainer
+        element: labelContainer,
       };
     });
   }
@@ -59,7 +47,7 @@ export default class Email {
   }
 
   isBundled() {
-    return [ 'bundled', 'show-bundled' ].includes(this.emailEl.getAttribute('data-inbox'));
+    return ['bundled', 'show-bundled'].includes(this.emailEl.getAttribute('data-inbox'));
   }
 
   isReminder() {
@@ -116,15 +104,17 @@ export default class Email {
 
     if (labels.length && !isStarred && !isUnbundled) {
       let showEmail = this.emailEl.getAttribute('data-inbox') === 'show-bundled';
-      const bundles = labels.map(label => {
-        const bundleId = encodeBundleId(label.title);
-        this.emailEl.setAttribute(`data-${bundleId}`, true);
-        const bundle = document.querySelector(`[data-inbox="${bundleId}"]`);
-        if (bundle && !showEmail) {
-          showEmail = bundle.getAttribute('data-show-emails') === 'true';
-        }
-        return bundleId;
-      }).join('||');
+      const bundles = labels
+        .map(label => {
+          const bundleId = encodeBundleId(label.title);
+          this.emailEl.setAttribute(`data-${bundleId}`, true);
+          const bundle = document.querySelector(`[data-inbox="${bundleId}"]`);
+          if (bundle && !showEmail) {
+            showEmail = bundle.getAttribute('data-show-emails') === 'true';
+          }
+          return bundleId;
+        })
+        .join('||');
 
       this.emailEl.setAttribute('data-inbox', showEmail ? 'show-bundled' : 'bundled');
       this.emailEl.setAttribute('data-bundles', bundles); // labels.map(label => encodeBundleId(label.title)).join('||'));
@@ -152,8 +142,8 @@ export default class Email {
     if (subject) {
       if (subject.toLowerCase() === 'reminder') {
         subjectEl.outerHTML = '';
-        this.emailEl.querySelectorAll('.Zt').forEach(node => { node.outerHTML = ''; });
-        this.emailEl.querySelectorAll('.y2').forEach(node => { node.style.color = '#202124'; });
+        this.emailEl.querySelectorAll('.Zt').forEach(node => (node.outerHTML = ''));
+        this.emailEl.querySelectorAll('.y2').forEach(node => (node.style.color = '#202124'));
       } else if (this.isCalendarReminder()) {
         if (subject.indexOf('Notification: ') >= 0) {
           let newSubject = subject.replace('Notification: ', '');
@@ -164,7 +154,7 @@ export default class Email {
       }
     }
     // replace email with Reminder
-    this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS).forEach(node => { node.innerHTML = 'Reminder'; });
+    this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS).forEach(node => (node.innerHTML = 'Reminder'));
   }
 
   setupPreview() {

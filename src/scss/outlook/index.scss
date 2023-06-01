@@ -33,6 +33,7 @@
       // moved bar with filter and select all
       .V2uYM {
         border-bottom: none;
+        background: transparent;
 
         // inner container in Inbox bar
         .rEzfP {
@@ -48,7 +49,7 @@
             margin-bottom: 3px;
             margin-right: 4px;
 
-            [role="checkbox"] {
+            [role='checkbox'] {
               margin-left: 0;
               height: 34px;
 
@@ -57,7 +58,7 @@
               }
             }
 
-            [role="button"] {
+            [role='button'] {
               height: 34px;
               border-radius: 0;
               margin-right: 0;
