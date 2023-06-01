@@ -1,9 +1,19 @@
-import { addClass, addRemoveClass, addPixels, observeForElement, removeClass, runObserver, hasClass, observeForRemoval } from '../shared/utils.js';
+import {
+  addClass,
+  addRemoveClass,
+  addPixels,
+  hasClass,
+  htmlToElements,
+  observeForElement,
+  observeForRemoval,
+  removeClass,
+  runObserver,
+} from '../shared/utils.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_ELEMENTS, EMAIL_CONTAINER } = OUTLOOK_SELECTORS;
+const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_WRAPPER, EMAIL_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default {
   currentEmail: null,
@@ -38,8 +48,7 @@ export default {
     // this creates a space for the preview and uses absolute positioning to make it look like it's under the current email
     let previewPlaceholder = document.querySelector('.preview-placeholder');
     if (!previewPlaceholder) {
-      previewPlaceholder = document.createElement('div');
-      addClass(previewPlaceholder, 'preview-placeholder');
+      previewPlaceholder = htmlToElements('<div class="preview-placeholder"><div class="preview-scroll-target"></div></div>');
     }
     previewPlaceholder.style.order = parseInt(this.currentEmail.style.order) + 1;
     this.currentEmail.parentNode.insertBefore(previewPlaceholder, this.currentEmail.nextSibling);
@@ -48,6 +57,7 @@ export default {
   showPreviewPane(previewPane) {
     this.movePreviewPane(previewPane);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
+    const previewScrolTarget = document.querySelector('.preview-scroll-target');
     addClass(previewPane, 'show-preview');
     const emailContainer = document.querySelector(EMAIL_CONTAINER);
     addClass(emailContainer, 'preview-showing');
@@ -57,21 +67,29 @@ export default {
         previewPane.style.height = null;
         return;
       }
-      const previewEls = Array.from(previewPane.querySelectorAll(PREVIEW_ELEMENTS));
-      previewPlaceholder.style.height = addPixels(...previewEls.map(el => el.offsetHeight), 12);
-      previewPane.style.height = previewPlaceholder.style.height;
-      previewPane.style.width = getComputedStyle(previewPlaceholder).width;
+      const previewWrapper = previewPane.querySelector(PREVIEW_WRAPPER);
+      if (previewWrapper.childElementCount > 1) {
+        const previewHeight = addPixels(previewWrapper.offsetHeight, 12);
+        const previewWidth = getComputedStyle(previewPlaceholder).width;
+        const { height, width } = previewPlaceholder.style;
+        const sizeChanged = previewHeight !== height || previewWidth !== width;
+        if (sizeChanged) {
+          previewPlaceholder.style.height = previewHeight;
+          previewPane.style.height = previewHeight;
+          previewPane.style.width = previewWidth;
+          if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
+            document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
+            this.currentEmail.setAttribute('data-previewing', true);
+            setTimeout(() => previewScrolTarget.scrollIntoView({ behavior: 'smooth' }), 0);
+          }
+        }
+      }
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
     };
     this.previewObserver = runObserver(previewPane, { subtree: true, attributes: true }, adjustPreviewSize, false, this.previewObserver);
     adjustPreviewSize();
 
     this.setPreviewPosition(previewPane);
-    if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
-      document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
-      this.currentEmail.setAttribute('data-previewing', true);
-      previewPane.scrollIntoView({ behavior: 'smooth' });
-    }
   },
   setPreviewPosition(previewPane) {
     if (hasClass(previewPane, 'preview-compose')) {
