@@ -68,7 +68,7 @@ export default {
         return;
       }
       const previewWrapper = previewPane.querySelector(PREVIEW_WRAPPER);
-      if (previewWrapper.childElementCount > 1) {
+      if (previewWrapper?.childElementCount > 1) {
         const previewHeight = addPixels(previewWrapper.offsetHeight, 12);
         const previewWidth = getComputedStyle(previewPlaceholder).width;
         const { height, width } = previewPlaceholder.style;

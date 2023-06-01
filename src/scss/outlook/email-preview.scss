@@ -97,14 +97,19 @@
       align-items: flex-end;
       bottom: 41px;
       left: unset;
-      right: 0;
+      right: 18px;
       border: 1px solid;
       z-index: 15;
       max-height: calc(100% - 41px);
+      width: unset !important;
+      @media (max-width: 1375px) {
+        left: calc(100vw - 1000px) !important;
+        right: unset !important;
+      }
 
       .soZTT {
         position: initial;
-        width: 50vw;
+        width: 600px;
         max-height: calc(100vh - 200px);
 
         &.compose-reminder {
@@ -146,8 +151,9 @@
 
   // bottom bar showing draft emails as tabs
   .nuum5 {
-    position: fixed;
+    position: absolute;
     bottom: 0;
+    z-index: 100;
   }
 
   // preview container
