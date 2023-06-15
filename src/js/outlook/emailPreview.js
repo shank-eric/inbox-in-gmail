@@ -50,17 +50,15 @@ export default {
     if (!previewPlaceholder) {
       previewPlaceholder = htmlToElements('<div class="preview-placeholder"><div class="preview-scroll-target"></div></div>');
     }
-    previewPlaceholder.style.order = parseInt(this.currentEmail.style.order) + 1;
     this.currentEmail.parentNode.insertBefore(previewPlaceholder, this.currentEmail.nextSibling);
     this.setPreviewPosition(previewPane);
   },
   showPreviewPane(previewPane) {
     this.movePreviewPane(previewPane);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
-    const previewScrolTarget = document.querySelector('.preview-scroll-target');
+    const previewScrollTarget = document.querySelector('.preview-scroll-target');
     addClass(previewPane, 'show-preview');
     const emailContainer = document.querySelector(EMAIL_CONTAINER);
-    addClass(emailContainer, 'preview-showing');
     this.previewShowing = true;
     const adjustPreviewSize = () => {
       if (hasClass(previewPane, 'preview-compose')) {
@@ -80,7 +78,7 @@ export default {
           if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
             document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
             this.currentEmail.setAttribute('data-previewing', true);
-            setTimeout(() => previewScrolTarget.scrollIntoView({ behavior: 'smooth' }), 0);
+            setTimeout(() => previewScrollTarget.scrollIntoView({ behavior: 'smooth' }), 0);
           }
         }
       }
@@ -97,9 +95,11 @@ export default {
       return;
     }
     const previewPlaceholder = document.querySelector('.preview-placeholder');
-    const { offsetTop } = previewPlaceholder;
-    const totalTop = addPixels(offsetTop, 39);
-    previewPane.style.top = totalTop;
+    const { offsetTop } = previewPlaceholder.parentNode.parentNode;
+    const totalTop = addPixels(offsetTop, 36, 39);
+    if (previewPane.style.top !== totalTop) {
+      previewPane.style.top = totalTop;
+    }
   },
   hidePreviewPane(previewPane) {
     const previewingEmail = document.querySelector('[data-previewing]');
@@ -110,7 +110,6 @@ export default {
       removeClass(previewPane, 'show-preview');
     }
     const emailContainer = document.querySelector(EMAIL_CONTAINER);
-    removeClass(emailContainer, 'preview-showing');
     this.previewShowing = false;
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     if (previewPlaceholder) {

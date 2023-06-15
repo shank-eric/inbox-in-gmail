@@ -13,8 +13,8 @@ export default class Email {
   constructor(emailEl, emailIndex) {
     this.emailEl = emailEl;
     this.order = emailIndex * 100;
-    if (!this.emailEl.style.order) {
-      this.emailEl.style.order = this.order;
+    if (!this.emailEl.parentNode.parentNode.style.order) {
+      this.emailEl.parentNode.parentNode.style.order = this.order;
     }
 
     const options = getOptions();
@@ -120,7 +120,7 @@ export default class Email {
       this.emailEl.setAttribute('data-bundles', bundles); // labels.map(label => encodeBundleId(label.title)).join('||'));
     } else {
       this.emailEl.setAttribute('data-inbox', 'email');
-      this.emailEl.style.order = this.order;
+      this.emailEl.parentNode.parentNode.style.order = this.order;
       if (isUnbundled) {
         labels.forEach(label => {
           if (label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL)) {

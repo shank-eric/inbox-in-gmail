@@ -2,39 +2,9 @@ html[dir='ltr'] {
   body {
     //main inbox element, has data-max-width on it
     .q9iRC {
-      // for scrolling preview
-      &.preview-showing {
-        // element right above data-app-section=MessageList
-        .HOVUa {
-          .G8_Dc {
-            overflow-y: auto;
-            height: auto;
-            //main email list
-            .XW2m0 {
-              max-height: unset;
-              height: auto;
-
-              // scrollbar element around messages
-              .jEpCF {
-                overflow: unset;
-
-                // element directly inside the scrollbar
-                .zXLz3 {
-                  width: calc(100% - 18px);
-                }
-              }
-            }
-            // shared class on several containers in the message list
-            .Cz7T5 {
-              overflow: unset;
-            }
-
-            // class in between some of the shared one above
-            .ONAp_ {
-              overflow: unset;
-            }
-          }
-        }
+      .G8_Dc {
+        overflow-y: auto;
+        height: auto;
       }
 
       // element directly inside of data-max-width
@@ -58,14 +28,17 @@ html[dir='ltr'] {
             //email list scroll container
             .jEpCF {
               padding-left: 18px;
-              max-height: calc(100vh - 134px);
-              overflow-y: auto;
+              height: unset !important;
 
               //email rows container
-              .zXLz3 {
+              > div {
                 display: flex;
+                height: unset !important;
                 flex-direction: column;
                 position: initial;
+                > div {
+                  position: unset !important;
+                }
               }
             }
 

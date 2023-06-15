@@ -47,60 +47,52 @@ export default {
 
     // Start from last email on page and head towards first
     let lastEmailEl;
-    let visibleEmptyEmails;
-    const loaderEl = document.querySelector('.jxHeC');
-    if (loaderEl) {
-      loaderEl.style.order = emailElements.length * 100;
-    }
     // TODO: this for loop is an area that might be able to be shared with gmail
     for (let i = emailElements.length - 1; i >= 0; i--) {
       const emailElement = emailElements[i];
       if (i === emailElements.length - 1) {
         lastEmailEl = emailElement;
       }
-      const emptyEmail = emailElement.childElementCount === 0;
-      if (emptyEmail && !visibleEmptyEmails) {
-        visibleEmptyEmails = isInViewport(emailElement);
-      } else {
-        const email = new Email(emailElement, i);
+      const email = new Email(emailElement, i);
 
-        const emailLabels = email.getLabels().map(label => label.title);
+      const emailLabels = email.getLabels().map(label => label.title);
 
-        // Collect senders, message count and unread stats for each label
-        if (emailLabels.length && email.isBundled()) {
-          const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
-          emailLabels.forEach(label => {
-            const encodedId = encodeBundleId(label);
-            if (!labelStats[encodedId]) {
-              labelStats[encodedId] = {
-                title: label,
-                encodedId,
-                count: 1,
-                senders: [
-                  {
-                    name: firstParticipant,
-                    isUnread: email.isUnread(),
-                  },
-                ],
-              };
+      // Collect senders, message count and unread stats for each label
+      if (emailLabels.length && email.isBundled()) {
+        const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
+        emailLabels.forEach(label => {
+          const encodedId = encodeBundleId(label);
+          if (!labelStats[encodedId]) {
+            labelStats[encodedId] = {
+              title: label,
+              encodedId,
+              count: 1,
+              senders: [
+                {
+                  name: firstParticipant,
+                  isUnread: email.isUnread(),
+                },
+              ],
+            };
+            if (!hasClass(email.emailEl, 'bundle-last-email')) {
               removeClass(document.querySelector(`[data-${encodedId}].bundle-last-email`), 'bundle-last-email');
               addClass(email.emailEl, 'bundle-last-email');
-            } else {
-              labelStats[encodedId].count++;
-              labelStats[encodedId].senders.push({
-                name: firstParticipant,
-                isUnread: email.isUnread(),
-              });
             }
-            labelStats[encodedId].email = email;
-            labelStats[encodedId].emailEl = email.emailEl;
-            if (email.isUnread()) {
-              labelStats[encodedId].containsUnread = true;
-            }
-          });
-        }
-        email.getParticipants().forEach(participant => participantEmails.add(participant.email));
+          } else {
+            labelStats[encodedId].count++;
+            labelStats[encodedId].senders.push({
+              name: firstParticipant,
+              isUnread: email.isUnread(),
+            });
+          }
+          labelStats[encodedId].email = email;
+          labelStats[encodedId].emailEl = email.emailEl;
+          if (email.isUnread()) {
+            labelStats[encodedId].containsUnread = true;
+          }
+        });
       }
+      email.getParticipants().forEach(participant => participantEmails.add(participant.email));
     }
 
     // Update bundle stats
@@ -118,20 +110,6 @@ export default {
       });
     }
 
-    if (visibleEmptyEmails) {
-      const emailContainer = document.querySelector(EMAIL_CONTAINER);
-      if (hasClass(emailContainer, 'preview-showing')) {
-        removeClass(emailContainer, 'preview-showing');
-        addClass(emailContainer, 'preview-showing');
-      } else {
-        const firstEmailEl = document.querySelector(`${SCROLLBAR_ELEMENT} > div:nth-child(1)`);
-        firstEmailEl.style.height = '100vh';
-        lastEmailEl.scrollIntoView();
-        firstEmailEl.style.height = '';
-        firstEmailEl.scrollIntoView();
-      }
-    }
-
     document.querySelectorAll(TIME_ROW).forEach(timeRow => {
       const nextVisibleRow = findNextVisibleRow(timeRow, true, true);
       if (!nextVisibleRow || hasClass(nextVisibleRow, TIME_ROW_CLASS)) {
@@ -145,7 +123,7 @@ export default {
   getBundledLabels() {
     const bundleRows = Array.from(document.querySelectorAll(`${EMAIL_CONTAINER} .${BUNDLE_WRAPPER_CLASS}`));
     return bundleRows.reduce((bundles, el) => {
-      bundles[el.getAttribute('data-inbox')] = el;
+      bundles[el.getAttribute('data-inbox')] = el.parentNode.parentNode;
       return bundles;
     }, {});
   },
