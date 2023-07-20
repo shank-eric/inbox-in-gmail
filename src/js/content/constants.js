@@ -1,19 +1,6 @@
 import { objectMap } from '../shared/utils.js';
 
-export const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export const NAME_COLORS = [
   '1bbc9b',
@@ -85,7 +72,7 @@ export const GMAIL_SELECTORS = {
   // EMAIL_CONTAINER: '.BltHke', // could add .nH.oy8Mbf
   EMAIL_DATE: `${CLASS_SELECTORS.EMAIL_DATE_CONTAINER} span`,
   EMAIL_PARTICIPANTS: `${CLASS_SELECTORS.EMAIL_PARTICIPANT_CONTAINERS} span[email]`,
-  LEFT_MENU_BUTTON: '.gb_Ic[aria-expanded]',
+  LEFT_MENU_BUTTON: '.gb_Oc[aria-expanded]',
   PREVIEW_PANE: '.Nu.S3.aZ6',
   SELECTED_EMAIL: `${CLASS_SELECTORS.EMAIL_ROW}.btb`,
 };
