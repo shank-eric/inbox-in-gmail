@@ -1,7 +1,7 @@
 {
   "name": "inbox-reborn",
   "version": "0.5.9.3",
-  "packageManager": "yarn@3.1.1",
+  "packageManager": "yarn@3.6.0",
   "type": "module",
   "engines": {
     "node": ">=16.13.1"
