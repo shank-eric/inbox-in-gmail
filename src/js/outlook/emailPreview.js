@@ -58,7 +58,6 @@ export default {
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     const previewScrollTarget = document.querySelector('.preview-scroll-target');
     addClass(previewPane, 'show-preview');
-    const emailContainer = document.querySelector(EMAIL_CONTAINER);
     this.previewShowing = true;
     const adjustPreviewSize = () => {
       if (hasClass(previewPane, 'preview-compose')) {
@@ -109,7 +108,6 @@ export default {
     if (previewPane) {
       removeClass(previewPane, 'show-preview');
     }
-    const emailContainer = document.querySelector(EMAIL_CONTAINER);
     this.previewShowing = false;
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     if (previewPlaceholder) {
@@ -154,7 +152,7 @@ export default {
     this.hideIfCurrentEmailRemoved(previewPane);
 
     const nothingSelected = previewPane.querySelector('.QYrHp');
-    const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [data-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS})`);
+    const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS})`);
     if (selectedEmails.length === 1 && !nothingSelected) {
       const selectedEmail = selectedEmails[0];
       const selectedEmailIsBundled = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled';
