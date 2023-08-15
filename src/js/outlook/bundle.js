@@ -29,7 +29,7 @@ export default class Bundle {
     this.attrs = attrs;
     this.element = document.querySelector(`${EMAIL_CONTAINER} .${BUNDLE_WRAPPER_CLASS}[data-inbox="${attrs.encodedId}"]`);
     if (attrs.count === 0 && this.element) {
-      this.element.remove();
+      this.element.parentNode.parentNode.remove();
     } else if (!this.element) {
       this.element = this.buildBundleWrapper();
     }
@@ -65,6 +65,8 @@ export default class Bundle {
       ' 00.5-.5v-1a.5.5 0 00-.5-.5h-11zM3 6v5.5c0 .83.67 1.5 1.5 1.5h7c.83 0 1.5-.67 1.5-1.5V6H3z';
 
     const bundleWrapper = htmlToElements(`
+    <div>
+    <div data-animatable="true" class="EeHm8">
     <div
       tabindex="-1"
       class="${EMAIL_ROW} ${BUNDLE_WRAPPER_CLASS}"
@@ -159,25 +161,28 @@ export default class Bundle {
       <span class="hidden-selector"></span>
       <div class="bundle-spacer"></div>
     </div>
+    </div>
+    </div>
     `);
 
     bundleWrapper.onclick = e => this.handleBundleClick(e);
 
     if (emailEl && emailEl.parentNode) {
-      emailEl.parentElement.insertBefore(bundleWrapper, emailEl);
+      const emailWrapper = emailEl.parentNode.parentNode;
+      emailWrapper.parentElement.insertBefore(bundleWrapper, emailWrapper);
     }
     return bundleWrapper;
   }
 
   async handleBundleClick(e) {
-    const bundleRow = e.currentTarget;
+    const bundleRow = e.currentTarget.querySelector('[data-show-emails]');
     const isCheckClick = queryParentSelector(e.target, '.ms-Check');
     if (isCheckClick) {
       this.checkEmails();
     }
 
     const { encodedId } = this.attrs;
-    const order = parseInt(this.element.style.order);
+    const order = parseInt(this.element.parentNode.parentNode.style.order);
     emailPreview.hidePreview();
     const currentlyShowing = bundleRow.getAttribute('data-show-emails') === 'true';
     if (currentlyShowing) {
@@ -190,9 +195,10 @@ export default class Bundle {
         addRemoveClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), SELECTED_ROW, UNSELECTED_ROW);
       }
     } else {
-      document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`).forEach((emailRow, index) => {
+      const bundledEmails = document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`);
+      bundledEmails.forEach((emailRow, index) => {
         emailRow.setAttribute('data-inbox', 'show-bundled');
-        emailRow.style.order = order + index + 1;
+        emailRow.parentNode.parentNode.style.order = order + index + 1;
         if (index === 0) {
           setSelectedRow(emailRow);
         }
@@ -244,11 +250,11 @@ export default class Bundle {
   updateStats({ email, emailEl }) {
     this.email = email;
     this.emailEl = emailEl;
-    this.element.style.order = email.order - 1;
+    this.element.parentNode.parentNode.style.order = email.order - 1;
     const { encodedId } = this.attrs;
-    const order = parseInt(this.element.style.order);
+    const order = parseInt(this.element.parentNode.parentNode.style.order);
     document.querySelectorAll(`[data-inbox="show-bundled"][data-${encodedId}]`).forEach((emailRow, index) => {
-      emailRow.style.order = order + index + 1;
+      emailRow.parentNode.parentNode.style.order = order + index + 1;
     });
 
     const options = getOptions();

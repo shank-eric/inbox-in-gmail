@@ -17,13 +17,14 @@ export default {
     const currentBundle = document.querySelector(`${SELECTED_EMAIL}.${BUNDLE_WRAPPER_CLASS}`);
     const mainContainer = document.querySelector('.AO');
     const parameters = {
-      event,
-      target: event.target,
-      currentTarget: event.currentTarget,
-      currentRow,
       currentBundle,
+      currentRow,
+      currentTarget: event.currentTarget,
+      event,
       keyCode: event.code,
       mainContainer,
+      navigate: this.navigate,
+      target: event.target,
       shiftKey: event.shiftKey,
     };
 
@@ -56,11 +57,11 @@ export default {
         }
       }
     },
-    KeyE: ({ currentRow, ...rest }) => {
+    KeyE: ({ currentRow, navigate, ...rest }) => {
       if (emailPreview.previewShowing) {
         emailPreview.emailClicked(currentRow);
       }
-      this.navigate({ currentRow, ...rest });
+      navigate({ currentRow, ...rest });
     },
     Quote: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? -250 : -25),
     Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25),

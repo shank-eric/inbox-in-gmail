@@ -1,12 +1,7 @@
-import {
-  OUTLOOK_CLASSES,
-  OUTLOOK_SELECTORS
-} from './constants.js';
+import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { addRemoveClass, hasClass } from '../shared/utils.js';
 
-const {
-  SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, TIME_ROW
-} = OUTLOOK_CLASSES;
+const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, TIME_ROW } = OUTLOOK_CLASSES;
 const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
@@ -26,8 +21,8 @@ export const getMyEmailAddress = () => {
 };
 
 const deconstructEmail = email => {
-  const [ address, fullDomain ] = email.split('@');
-  const [ domain, tld ] = fullDomain.split('.');
+  const [address, fullDomain] = email.split('@');
+  const [domain, tld] = fullDomain.split('.');
   return { address, domain, tld };
 };
 
@@ -98,14 +93,14 @@ export const setSelectedRow = row => {
 export const findNextVisibleRow = (currentRow, searchNext = true, includeTimeRows = false) => {
   const navigator = searchNext ? 'nextSibling' : 'previousSibling';
   const currentBundle = currentRow.getAttribute('data-bundles');
-  let nextRow = currentRow[navigator];
+  let nextRow = currentRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
   if (!nextRow) return;
   let isEmailOrTimeRow = hasClass(nextRow, EMAIL_ROW_CLASS) || (includeTimeRows && hasClass(nextRow, TIME_ROW));
   let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
   let isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
   // let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
   while (nextRow && (!isEmailOrTimeRow || isEmailBundled || !isSameBundle)) {
-    nextRow = nextRow[navigator];
+    nextRow = nextRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
     if (nextRow) {
       isEmailOrTimeRow = hasClass(nextRow, EMAIL_ROW_CLASS) || (includeTimeRows && hasClass(nextRow, TIME_ROW));
       isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
