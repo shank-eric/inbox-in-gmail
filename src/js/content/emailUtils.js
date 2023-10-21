@@ -148,7 +148,7 @@ export const setCurrentBundle = () => {
     }
   }
   if (bundleId) {
-    const selectedBundle = document.querySelector(`[data-inbox=${encodeBundleId(bundleId)}]`);
+    const selectedBundle = document.querySelector(`[data-inbox="${encodeBundleId(newBundle)}"]`);
     if (selectedBundle) {
       addClass(selectedBundle, 'btb');
       // add left border

@@ -1,6 +1,6 @@
 // ---- HTML Elements ---- \\
-export const observeForCondition = (el, condition) => new Promise(
-  resolve => {
+export const observeForCondition = (el, condition) =>
+  new Promise(resolve => {
     let satisfied = condition();
     if (satisfied) {
       resolve(satisfied);
@@ -15,8 +15,7 @@ export const observeForCondition = (el, condition) => new Promise(
     if (el) {
       observer.observe(el, { subtree: true, childList: true, attributes: true });
     }
-  }
-);
+  });
 
 export const observeForElement = (el, selector) => observeForCondition(el, () => el && el.querySelector(selector));
 export const observeForRemoval = (el, selector) => observeForCondition(el, () => !el || !el.querySelector(selector));
@@ -51,7 +50,7 @@ export const htmlToElements = html => {
 export const isTypable = element => {
   const role = element.getAttribute && element.getAttribute('role');
   const contentEditable = element.getAttribute && element.getAttribute('contenteditable');
-  return [ 'INPUT', 'TEXTAREA' ].includes(element.tagName) || (role === 'textbox') || contentEditable === 'true';
+  return ['INPUT', 'TEXTAREA'].includes(element.tagName) || role === 'textbox' || contentEditable === 'true';
 };
 
 export const pixelsToInt = pixels => (typeof pixels === 'number' ? pixels : parseInt(pixels.replace('px')));
@@ -66,10 +65,10 @@ export const addPixels = (...pixels) => {
 export const isInViewport = element => {
   const rect = element.getBoundingClientRect();
   return (
-    rect.top >= 0
-      && rect.left >= 0
-      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 };
 
@@ -90,7 +89,7 @@ export const queryParentSelector = (el, selector) => {
 };
 
 export const objectMap = (obj, fn) => Object.fromEntries(Object.entries(obj).map(fn));
-export const buildSelectors = classObject => objectMap(classObject, ([ key, value ]) => [ key, `.${value.split(' ').join(' .')}` ]);
+export const buildSelectors = classObject => objectMap(classObject, ([key, value]) => [key, `.${value.split(' ').join(' .')}`]);
 
 // ---- Classes ---- \\
 export const hasClass = (element, className) => element && element.classList && element.classList.contains(className);
