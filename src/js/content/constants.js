@@ -54,7 +54,7 @@ export const CLASSES = {
 };
 
 export const GMAIL_CLASSES = {
-  EMAIL_CONTAINER: 'BltHke',
+  EMAIL_CONTAINER: 'bGI',
   EMAIL_DATE_CONTAINER: 'xW',
   EMAIL_LABEL_CONTAINERS: 'ar',
   EMAIL_LABEL_TEXTS: 'av',
@@ -69,7 +69,6 @@ const CLASS_SELECTORS = objectMap(GMAIL_CLASSES, ([key, value]) => [key, `.${val
 
 export const GMAIL_SELECTORS = {
   ...CLASS_SELECTORS,
-  // EMAIL_CONTAINER: '.BltHke', // could add .nH.oy8Mbf
   EMAIL_DATE: `${CLASS_SELECTORS.EMAIL_DATE_CONTAINER} span`,
   EMAIL_PARTICIPANTS: `${CLASS_SELECTORS.EMAIL_PARTICIPANT_CONTAINERS} span[email]`,
   LEFT_MENU_BUTTON: '.gb_Oc[aria-expanded]',
