@@ -1,18 +1,7 @@
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import {
-  addRemoveClass,
-  htmlToElements,
-  observeForRemoval,
-  hasClass
-} from '../shared/utils.js';
-import {
-  checkImportantMarkers,
-  getCurrentBundle,
-  isInBundle,
-  openBundle,
-  openInbox
-} from './emailUtils.js';
+import { addRemoveClass, htmlToElements, observeForElement, observeForRemoval, hasClass } from '../shared/utils.js';
+import { checkImportantMarkers, getCurrentBundle, isInBundle, openBundle, openInbox, setCurrentBundle } from './emailUtils.js';
 
 import { getOptions } from '../shared/options.js';
 
@@ -33,9 +22,7 @@ export default class Bundle {
 
   buildBundleWrapper() {
     const importantMarkerClass = checkImportantMarkers() ? '' : 'hide-important-markers';
-    const {
-      email, emailEl, encodedId, title
-    } = this.attrs;
+    const { email, emailEl, encodedId, title } = this.attrs;
     const labels = this.attrs.email.getLabels();
     const label = labels.find(lab => lab.encodedId === encodedId);
     const { dateLabel, dateDisplay, rawDate } = email.dateInfo;
@@ -109,7 +96,9 @@ export default class Bundle {
           await observeForRemoval(document, '[data-pane="bundle"]');
         }
         openBundle(encodedId);
+        await observeForElement(document, '[data-pane="bundle"]');
       }
+      setCurrentBundle();
     }
   }
 

@@ -15,11 +15,12 @@
     }
   }
 
-  [aria-checked="false"] .ms-Check {
+  [aria-checked='false'] .ms-Check {
     display: none;
   }
 
-  &:hover, [aria-checked="true"] {
+  &:hover,
+  [aria-checked='true'] {
     .ms-Persona-coin {
       display: none;
     }
@@ -29,7 +30,7 @@
     }
   }
 
-  &[data-show-emails="true"] {
+  &[data-show-emails='true'] {
     position: sticky;
     top: 0;
     z-index: 10;
@@ -37,7 +38,6 @@
   }
 
   &.bundle-unread {
-
     .gMkyO,
     .bundle-senders {
       font-weight: 600;

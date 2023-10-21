@@ -1,12 +1,10 @@
-import {
-  DEFAULT_PROFILE_URL,
-  CLASSES,
-  NAME_COLORS,
-  GMAIL_SELECTORS
-} from './constants.js';
+import { DEFAULT_PROFILE_URL, CLASSES, NAME_COLORS, GMAIL_SELECTORS } from './constants.js';
 import profilePhoto from './profilePhoto.js';
 import { getOptions } from '../shared/options.js';
-import { addClass, hasClass, observeForElement } from '../shared/utils.js';
+import { addClass, encodeBundleId, hasClass, observeForElement, removeClass } from '../shared/utils.js';
+
+const { SELECTED_EMAIL } = GMAIL_SELECTORS;
+const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 
 export const buildAvatar = (avatarWrapperEl, participant) => {
   let avatarElement = avatarWrapperEl.querySelector(`.${CLASSES.AVATAR_CLASS}`);
@@ -126,7 +124,7 @@ export const getThreadId = (emailEl, threadAttr = 'data-thread-id') => {
   return selectedThread && selectedThread.getAttribute(threadAttr);
 };
 
-export const checkImportantMarkers = () => document.querySelector(`${GMAIL_SELECTORS.EMAIL_ROW}:not(.${CLASSES.BUNDLE_WRAPPER_CLASS}) td.WA.xY`);
+export const checkImportantMarkers = () => document.querySelector(`${GMAIL_SELECTORS.EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS}) td.WA.xY`);
 export const getTabs = () => Array.from(document.querySelectorAll('.aKz')).map(el => el.innerText);
 export const isInInbox = () => document.location.hash.match(/#inbox/g) !== null;
 export const isInBundle = () => document.location.hash.match(/#search\/in%3Ainbox\+label%3A/g) !== null;
@@ -134,7 +132,35 @@ export const getCurrentBundle = () => {
   const matches = document.location.hash.match(/#search\/in%3Ainbox\+label%3A(.*)\+-in%3Astarred/);
   return matches && matches[1];
 };
-export const openBundle = bundleId => { window.location.href = `#search/in%3Ainbox+label%3A${bundleId}+-in%3Astarred`; };
-export const openInbox = () => { window.location.href = '#inbox'; };
+export const setCurrentBundle = () => {
+  const currentBundle = document.querySelector(`.${BUNDLE_WRAPPER_CLASS}.btb`);
+  if (currentBundle) {
+    removeClass(currentBundle, 'btb');
+    removeClass(currentBundle.querySelector('.PF'), 'PE');
+  }
+
+  let bundleId = getCurrentBundle();
+  if (!bundleId) {
+    const selectedEmail = document.querySelector(`[role=main] ${SELECTED_EMAIL}:not(.${BUNDLE_WRAPPER_CLASS})`);
+    if (selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled') {
+      const [newBundle] = selectedEmail.getAttribute('data-bundles').split('||');
+      bundleId = newBundle;
+    }
+  }
+  if (bundleId) {
+    const selectedBundle = document.querySelector(`[data-inbox=${encodeBundleId(bundleId)}]`);
+    if (selectedBundle) {
+      addClass(selectedBundle, 'btb');
+      // add left border
+      addClass(selectedBundle.querySelector('.PF'), 'PE');
+    }
+  }
+};
+export const openBundle = bundleId => {
+  window.location.href = `#search/in%3Ainbox+label%3A${bundleId}+-in%3Astarred`;
+};
+export const openInbox = () => {
+  window.location.href = '#inbox';
+};
 
 export const isDarkMode = () => hasClass(document.querySelector('body'), 'dark-mode');
