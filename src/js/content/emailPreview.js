@@ -57,12 +57,9 @@ export default {
     this.previewShowing = true;
     const adjustPreviewHeight = () => {
       const rowHeight = this.currentEmail.clientHeight;
-      if (isInBundle()) {
-        previewPlaceholder.style.height = addPixels(previewPane.offsetHeight, 16);
-      } else {
-        previewPane.style['padding-top'] = `${rowHeight}px`;
-        previewPlaceholder.style.height = addPixels(previewPane.offsetHeight, -rowHeight, 16);
-      }
+      const spacingHeight = isInBundle() ? addPixels(rowHeight, -44) : `${rowHeight}px`;
+      previewPane.style['padding-top'] = spacingHeight;
+      previewPlaceholder.style.height = addPixels(previewPane.offsetHeight, `-${spacingHeight}`, 16);
     };
     this.previewObserver = runObserver(previewPane, { subtree: true, attributes: true }, adjustPreviewHeight, false, this.previewObserver);
     adjustPreviewHeight();

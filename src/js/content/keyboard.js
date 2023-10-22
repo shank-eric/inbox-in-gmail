@@ -55,7 +55,7 @@ export default {
     KeyT: openReminder,
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
-  navigate: ({ currentRow, keyCode }) => {
+  navigate({ currentRow, keyCode }) {
     if (currentRow.getAttribute('data-inbox') === 'bundled') {
       const nextRow = this.findNextVisibleRow(keyCode);
 

@@ -55,7 +55,7 @@ export const isTypable = element => {
 
 export const pixelsToInt = pixels => (typeof pixels === 'number' ? pixels : parseInt(pixels.replace('px')));
 export const addPixels = (...pixels) => {
-  const pixelInt = pixels.reduce((pixel, pixelSum) => {
+  const pixelInt = pixels.reduce((pixelSum, pixel) => {
     pixelSum += pixelsToInt(pixel);
     return pixelSum;
   }, 0);
