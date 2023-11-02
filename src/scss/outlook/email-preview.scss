@@ -57,16 +57,21 @@
     }
 
     &.show-preview {
-      left: 18px;
+      left: 2px;
     }
 
     // message header
     .XV5zJ,
     .NTPm6 {
-      margin: 0;
+      margin: 0 !important;
       border: none;
       border-radius: 0;
       border-bottom: 1px solid var(--themeLighter);
+    }
+
+    // custom scrollbar container
+    .yyYQP {
+      scrollbar-gutter: auto;
     }
 
     // show more messages button
@@ -139,7 +144,7 @@
 
     &.bundle-preview {
       &:not(.preview-compose) {
-        left: 30px; //18px padding-left on main + 12px margin on bundle
+        left: 14px;
       }
 
       .AJYpX,

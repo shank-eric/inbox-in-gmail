@@ -1,4 +1,4 @@
-import { addClass, encodeBundleId, hasClass, isInViewport, removeClass, runObserver } from '../shared/utils.js';
+import { addClass, encodeBundleId, hasClass, removeClass, runObserver } from '../shared/utils.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 
 import { findNextVisibleRow } from './outlookUtils.js';
@@ -11,7 +11,7 @@ import emailPreview from './emailPreview.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { TIME_ROW: TIME_ROW_CLASS } = OUTLOOK_CLASSES;
-const { EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, SCROLLBAR_ELEMENT, TIME_ROW } = OUTLOOK_SELECTORS;
+const { EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, TIME_ROW } = OUTLOOK_SELECTORS;
 
 export default {
   async observeEmails() {
@@ -46,13 +46,9 @@ export default {
     const participantEmails = new Set();
 
     // Start from last email on page and head towards first
-    let lastEmailEl;
     // TODO: this for loop is an area that might be able to be shared with gmail
     for (let i = emailElements.length - 1; i >= 0; i--) {
       const emailElement = emailElements[i];
-      if (i === emailElements.length - 1) {
-        lastEmailEl = emailElement;
-      }
       const email = new Email(emailElement, i);
 
       const emailLabels = email.getLabels().map(label => label.title);

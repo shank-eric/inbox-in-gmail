@@ -110,7 +110,7 @@ export const removeClass = (element, className) => {
   }
 };
 
-export const addRemoveClass = (element, classToAdd, classToRemove) => {
+export const replaceClass = (element, classToAdd, classToRemove) => {
   if (classToAdd === classToRemove) {
     return;
   }

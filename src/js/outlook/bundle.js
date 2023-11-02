@@ -1,7 +1,7 @@
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, getCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { addClass, addRemoveClass, htmlToElements, queryParentSelector, removeClass } from '../shared/utils.js';
+import { addClass, replaceClass, htmlToElements, queryParentSelector, removeClass } from '../shared/utils.js';
 
 import { getOptions } from '../shared/options.js';
 import { setSelectedRow } from './outlookUtils.js';
@@ -50,7 +50,8 @@ export default class Bundle {
 
     emailEl.style.width = '100%';
 
-    const { UNCHECKED_ROOT, UNCHECKED_CIRCLE, UNCHECKED_CHECK } = getCheckboxClasses();
+    const { UNCHECKED_CHECKBOX_CLASSES } = getCheckboxClasses();
+    const { ROOT, INPUT, LABEL, CHECKBOX, CHECKMARK } = UNCHECKED_CHECKBOX_CLASSES;
     const columnWidths = Array.from(emailEl.querySelectorAll(`.${EMAIL_COLUMN_CONTAINER} > div`)).map(el => [el.style.width, el.style.paddingLeft]);
     emailEl.style.width = '';
     addClass(emailEl, 'bundle-email');
@@ -87,22 +88,21 @@ export default class Bundle {
                 <div class="XG5Jd d1dnN B3KmY q0f8X"
                   tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                 >
-                  <div role="presentation"
-                    class="ms-Persona-coin ms-Persona--size28 mP9b0 BQOiO">
-                    <div role="presentation" class="ms-Persona-imageArea">
-                        <div class="ms-Persona-initials" aria-hidden="true"
-                          style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}">
-                          <span>${abbrev}</span>
-                        </div>
-                    </div>
-                  </div>
-                  <div class="ms-Check F5KOS pz2Jt ${UNCHECKED_ROOT}">
-                      <i data-icon-name="CircleRing" aria-hidden="true"
-                          class="ms-Icon ms-Check-circle ${UNCHECKED_CIRCLE}"
-                          style="font-family: controlIcons;"></i>
-                      <i data-icon-name="StatusCircleCheckmark" aria-hidden="true"
-                          class="ms-Icon ms-Check-check LHmNz ${UNCHECKED_CHECK}"
-                          style="font-family: controlIcons;"></i>
+                  <span
+                    role="img" id="avatar-${encodedId}" class="fui-Avatar r81b29z mP9b0 oWYiS BQOiO ___15c0rxp f1w9dchk fxldao9 fy9rknc" aria-label="${title}"
+                  >
+                    <span id="avatar-${encodedId}__initials" class="fui-Avatar__initials rip04v ___456t1b0"
+                    style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}"
+                    >
+                    ${abbrev}</span>
+                  </span>
+                  <div class="ms-Checkbox is-enabled to0aR XG5Jd ${ROOT}">
+                    <input class="${INPUT}" type="checkbox" tabindex="-1" id="checkbox-${encodedId}" data-ktp-execute-target="true"/>
+                    <label class="ms-Checkbox-label ${LABEL}" for="${encodedId}">
+                      <div class="ms-Checkbox-checkbox gy2XW i7xzh ${CHECKBOX}" data-ktp-target="true">
+                        <i data-icon-name="CheckMark" aria-hidden="true" class="ms-Checkbox-checkmark M3Q9u ${CHECKMARK}"></i>
+                      </div>
+                    </label>
                   </div>
                 </div>
                 <div class="${EMAIL_PARTICIPANT_CONTAINERS} W3BHj Dc0o9 Ejrkd">
@@ -140,22 +140,6 @@ export default class Bundle {
               </div>
             </div>
           </div>
-
-          <!-- <div class="QpoLy">
-            <button type="button" class="ms-Button ms-Button--icon pz2Jt XG5Jd BsnNQ uzT44 lZpaF zItCb root-199" data-is-focusable="true">
-            this is the archive button, could be a sweep button for the whole bundle, but doesn't currently work
-              <span class="ms-Button-flexContainer flexContainer-163" data-automationid="splitbuttonprimary">
-                <i data-icon-name="ArchiveRegular" aria-hidden="true" class="ms-Icon root-90 ms-Button-icon icon-200">
-                  <span role="presentation" aria-hidden="true" class="rtm3y">
-                    <svg class="d36TZ" viewBox="0 0 16 16">
-                      <path d="${archiveButtonPath}">
-                      </path>
-                    </svg>
-                  </span>
-                </i>
-              </span>
-            </button>
-          </div>-->
         </div>
       </div>
       <span class="hidden-selector"></span>
@@ -176,7 +160,7 @@ export default class Bundle {
 
   async handleBundleClick(e) {
     const bundleRow = e.currentTarget.querySelector('[data-show-emails]');
-    const isCheckClick = queryParentSelector(e.target, '.ms-Check');
+    const isCheckClick = queryParentSelector(e.target, '.ms-Checkbox');
     if (isCheckClick) {
       this.checkEmails();
     }
@@ -192,7 +176,7 @@ export default class Bundle {
         });
         bundleRow.setAttribute('data-show-emails', !currentlyShowing);
         setSelectedRow(bundleRow);
-        addRemoveClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), SELECTED_ROW, UNSELECTED_ROW);
+        replaceClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), SELECTED_ROW, UNSELECTED_ROW);
       }
     } else {
       const bundledEmails = document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`);
@@ -203,7 +187,7 @@ export default class Bundle {
           setSelectedRow(emailRow);
         }
       });
-      addRemoveClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), UNSELECTED_ROW, SELECTED_ROW);
+      replaceClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), UNSELECTED_ROW, SELECTED_ROW);
       bundleRow.setAttribute('data-show-emails', !currentlyShowing);
     }
   }
@@ -212,39 +196,42 @@ export default class Bundle {
     // none selected -> select all
     // some selected -> select all
     // all selected -> unselect all
-    const unCheckedEmails = document.querySelectorAll(`[data-${this.attrs.encodedId}][aria-selected=false]`);
+    const unCheckedEmails = document.querySelectorAll(`[data-${this.attrs.encodedId}] [aria-checked=false]`);
     const allEmailsChecked = unCheckedEmails.length === 0;
 
-    const emailSelector = `[aria-selected=${allEmailsChecked ? 'true' : 'false'}]`;
-    document.querySelectorAll(`[data-${this.attrs.encodedId}]${emailSelector} [role="checkbox"]`).forEach(checkbox => checkbox.click());
+    const emailSelector = `[aria-checked=${allEmailsChecked ? 'true' : 'false'}]`;
+    document.querySelectorAll(`[data-${this.attrs.encodedId}] ${emailSelector}[role="checkbox"]`).forEach(checkbox => checkbox.click());
   }
 
   updateCheckbox() {
-    const unCheckedEmails = document.querySelectorAll(`[data-${this.attrs.encodedId}][aria-selected=false]`);
+    const unCheckedEmails = document.querySelectorAll(`[data-${this.attrs.encodedId}] [aria-checked=false]`);
     const allEmailsChecked = unCheckedEmails.length === 0;
-    const checkedEmails = document.querySelectorAll(`[data-${this.attrs.encodedId}][aria-selected=true]`);
+    const checkedEmails = document.querySelectorAll(`[data-${this.attrs.encodedId}] [aria-checked=true]`);
     const anyEmailsChecked = checkedEmails.length > 0;
 
-    const action = !allEmailsChecked ? 'UNCHECK' : 'CHECK';
-    const unaction = action === 'CHECK' ? 'UNCHECK' : 'CHECK';
-
-    this.updateCheckboxEl('.ms-Check', 'ROOT', action, unaction);
-    this.updateCheckboxEl('.ms-Check-circle', 'CIRCLE', action, unaction);
-    this.updateCheckboxEl('.ms-Check-check', 'CHECK', action, unaction);
-
-    const checkboxContainer = this.element.querySelector('[role="checkbox"');
+    const checkboxContainer = this.element.querySelector('[role="checkbox"]');
+    checkboxContainer.setAttribute('aria-checked', anyEmailsChecked);
+    const avatarContainer = this.element.querySelector('.fui-Avatar');
     if (anyEmailsChecked) {
-      addClass(checkboxContainer, HIDE_AVATAR);
+      addClass(avatarContainer, HIDE_AVATAR);
     } else {
-      removeClass(checkboxContainer, HIDE_AVATAR);
+      removeClass(avatarContainer, HIDE_AVATAR);
     }
-  }
+    const { CHECKED_CHECKBOX_CLASSES, UNCHECKED_CHECKBOX_CLASSES } = getCheckboxClasses();
+    const addClasses = allEmailsChecked ? CHECKED_CHECKBOX_CLASSES : UNCHECKED_CHECKBOX_CLASSES;
+    const removeClasses = allEmailsChecked ? UNCHECKED_CHECKBOX_CLASSES : CHECKED_CHECKBOX_CLASSES;
 
-  updateCheckboxEl(selector, suffix, action, unaction) {
-    const checkboxClasses = getCheckboxClasses();
-
-    const check = this.element.querySelector(selector);
-    addRemoveClass(check, checkboxClasses[`${action}ED_${suffix}`], checkboxClasses[`${unaction}ED_${suffix}`]);
+    const checkboxEl = this.element.querySelector('.ms-Checkbox');
+    if (allEmailsChecked) {
+      addClass(checkboxEl, 'is-checked');
+    } else {
+      removeClass(checkboxEl, 'is-checked');
+    }
+    replaceClass(checkboxEl, addClasses.ROOT, removeClasses.ROOT);
+    replaceClass(checkboxEl.querySelector('input'), addClasses.INPUT, removeClasses.INPUT);
+    replaceClass(checkboxEl.querySelector('label'), addClasses.LABEL, removeClasses.LABEL);
+    replaceClass(checkboxEl.querySelector('.ms-Checkbox-checkbox'), addClasses.CHECKBOX, removeClasses.CHECKBOX);
+    replaceClass(checkboxEl.querySelector('.ms-Checkbox-checkmark'), addClasses.CHECKMARK, removeClasses.CHECKMARK);
   }
 
   updateStats({ email, emailEl }) {

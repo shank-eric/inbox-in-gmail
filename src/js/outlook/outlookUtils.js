@@ -1,5 +1,5 @@
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
-import { addRemoveClass, hasClass } from '../shared/utils.js';
+import { replaceClass, hasClass } from '../shared/utils.js';
 
 const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, TIME_ROW } = OUTLOOK_CLASSES;
 const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
@@ -21,7 +21,7 @@ export const getMyEmailAddress = () => {
 };
 
 const deconstructEmail = email => {
-  const [address, fullDomain] = email.split('@');
+  const [address, fullDomain = ''] = email.split('@');
   const [domain, tld] = fullDomain.split('.');
   return { address, domain, tld };
 };
@@ -75,7 +75,7 @@ export const matchesMyEmail = email => {
 export const setSelectedRow = row => {
   document.querySelectorAll('[data-selected]').forEach(selectedEl => {
     selectedEl.setAttribute('data-selected', false);
-    addRemoveClass(selectedEl.querySelector(EMAIL_ROW_INNER_CONTAINER), UNSELECTED_ROW, SELECTED_ROW);
+    replaceClass(selectedEl.querySelector(EMAIL_ROW_INNER_CONTAINER), UNSELECTED_ROW, SELECTED_ROW);
   });
   // document.querySelectorAll('[aria-selected]').forEach(selectedEl => {
   //   selectedEl.setAttribute('aria-selected', false);
@@ -87,7 +87,7 @@ export const setSelectedRow = row => {
     document.body.setAttribute('tabindex', '-1');
     document.body.focus();
   });
-  addRemoveClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
+  replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
 };
 
 export const findNextVisibleRow = (currentRow, searchNext = true, includeTimeRows = false) => {
