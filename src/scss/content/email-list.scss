@@ -60,6 +60,16 @@
       margin-left: 1px;
       z-index: 1;
 
+      .bf5 {
+        height: auto;
+        .bv9.bCj {
+          height: auto;
+          .S4 {
+            height: auto;
+          }
+        }
+      }
+
       //bottom-border
       .Nt {
         display: none;
@@ -81,10 +91,14 @@
     //another-email-container
     .Nr.UI.Nf.vy {
       overflow-y: initial;
+      height: auto !important;
+      flex-grow: unset !important;
 
       //default-scroll-container
       .Nu.tf.aZ6 {
         overflow-y: initial;
+        height: auto !important;
+        flex-grow: unset !important;
 
         //email-list-container
         .ae4 {
