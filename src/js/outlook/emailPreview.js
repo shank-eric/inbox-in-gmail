@@ -61,6 +61,9 @@ export default {
     this.previewShowing = true;
     const adjustPreviewSize = () => {
       if (hasClass(previewPane, 'preview-compose')) {
+        document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
+        previewPlaceholder.style.height = null;
+        previewPlaceholder.parentNode.parentNode.style.height = null;
         previewPane.style.height = null;
         return;
       }
@@ -90,12 +93,17 @@ export default {
   },
   setPreviewPosition(previewPane) {
     if (hasClass(previewPane, 'preview-compose')) {
+      document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
       previewPane.style.top = null;
       return;
     }
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     const { offsetTop } = previewPlaceholder.parentNode.parentNode;
-    const totalTop = addPixels(offsetTop, 36, 39);
+    const { children } = previewPlaceholder.parentNode;
+    const childrenHeight = Array.from(children)
+      .map(child => (hasClass(child, 'preview-placeholder') ? 0 : child.offsetHeight))
+      .reduce((a, b) => a + b, 0);
+    const totalTop = addPixels(offsetTop, childrenHeight, 39);
     if (previewPane.style.top !== totalTop) {
       previewPane.style.top = totalTop;
     }
@@ -137,6 +145,7 @@ export default {
     const composeContainer = previewPane.querySelector(PREVIEW_COMPOSE);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     if (composeContainer) {
+      document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
       replaceClass(previewPane, 'preview-compose', 'show-preview');
       previewPane.style.top = null;
       previewPane.style.height = null;

@@ -23,6 +23,7 @@ html[dir='ltr'] {
             border: none;
             display: flex;
             background-color: var(--neutralLighterAlt);
+            box-shadow: none;
             overflow: visible;
             visibility: visible;
 
@@ -30,7 +31,10 @@ html[dir='ltr'] {
             .jEpCF {
               padding-left: 0;
               height: unset !important;
+              width: unset !important;
               scrollbar-gutter: auto;
+              overflow: visible !important;
+              max-height: 400vh;
 
               //email rows container
               > div {
@@ -42,6 +46,11 @@ html[dir='ltr'] {
                   position: unset !important;
                 }
               }
+            }
+
+            .Cz7T5,
+            .ONAp_ {
+              overflow: visible;
             }
 
             // email column headers
@@ -69,6 +78,7 @@ html[dir='ltr'] {
           .HqtOc {
             position: fixed;
             background: transparent;
+            left: 0;
           }
 
           .ms-Spinner {

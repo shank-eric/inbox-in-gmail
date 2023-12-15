@@ -75,10 +75,10 @@ export default {
       composeButton.click();
       const toAddress = await observeForElement(document, COMPOSE_TO_ADDRESS);
       toAddress.innerHTML = 'eric@everfi.com';
-      // const sensitivityMenuButton = await observeForElement(document, '.tDDbL');
-      // sensitivityMenuButton.click();
-      // const internalOption = await observeForElement(document, '.ms-ContextualMenu-list li:nth-child(2) button');
-      // internalOption.click();
+      const sensitivityMenuButton = await observeForElement(document, '.tDDbL');
+      sensitivityMenuButton.click();
+      const internalOption = await observeForElement(document, '.ms-ContextualMenu-list li:nth-child(2) button');
+      internalOption.click();
       const subjectLine = document.querySelector(COMPOSE_SUBJECT_LINE);
       addClass(document.querySelector('.preview-compose'), 'reminder-compose');
       setTimeout(() => {
