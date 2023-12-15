@@ -140,6 +140,23 @@
       .pvlo9 {
         height: 20px;
       }
+
+      &.reminder-compose {
+        bottom: calc(50% - 200px);
+        right: calc(50% - 200px);
+
+        .infoBarDivClass, // sensitivity bar
+        .QHw8J, // bcc button
+        .SZoKq, // to button
+        .AtODR, // to address
+        .weeSc, // CC button
+        .WWmQ_, // CC address
+        .yz4r1, // body
+        .QH6of //some bottom margin
+        {
+          display: none;
+        }
+      }
     }
 
     &.bundle-preview {
@@ -156,7 +173,7 @@
 
   // bottom bar showing draft emails as tabs
   .nuum5 {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     z-index: 100;
   }

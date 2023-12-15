@@ -3,6 +3,7 @@ import { CLASSES } from '../shared/constants.js';
 
 export const DEFAULT_PROFILE_URL = '';
 export const OUTLOOK_CLASSES = {
+  COMPOSE_SUBJECT_LINE: 'TK0zZ',
   EMAIL_ROW: 'hcptT',
   EMAIL_ROW_INNER_CONTAINER: 'YbB6r',
   EMAIL_COLUMN_CONTAINER: 'y1E5h',
@@ -29,6 +30,8 @@ const CLASS_SELECTORS = buildSelectors(OUTLOOK_CLASSES);
 
 export const OUTLOOK_SELECTORS = {
   ...CLASS_SELECTORS,
+  COMPOSE_NEW_MAIL_BUTTON: 'button[data-unique-id=Ribbon-588]',
+  COMPOSE_TO_ADDRESS: '.AtODR .T6Va1',
   PREVIEW_PANE: `${CLASS_SELECTORS.PREVIEW_CONTAINER} #ReadingPaneContainerId`,
   SELECTED_EMAIL: `${CLASS_SELECTORS.EMAIL_ROW}[aria-selected="true"]`,
   EMAIL_PARTICIPANTS: `${CLASS_SELECTORS.EMAIL_PARTICIPANT_CONTAINERS} span, .Ljsqx span, .uSUBc span`,
@@ -67,11 +70,11 @@ export const findCheckboxClasses = async () => {
   }
   const firstEmailCheckbox = await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [role="checkbox"]`);
   firstEmailCheckbox.click();
-  await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [aria-checked="true"] .is-checked.ms-Checkbox[class*="root-"]`);
-  findClasses(firstEmailCheckbox, CHECKED_CHECKBOX_CLASSES);
+  const checkedCheckbox = await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [aria-checked="true"] .is-checked.ms-Checkbox[class*="root-"]`);
+  findClasses(checkedCheckbox, CHECKED_CHECKBOX_CLASSES);
   const uncheckedCheckbox = document.querySelector(`${CLASS_SELECTORS.EMAIL_ROW}:not(.bundle-wrapper) [role="checkbox"][aria-checked="false"]`);
   findClasses(uncheckedCheckbox, UNCHECKED_CHECKBOX_CLASSES);
-  firstEmailCheckbox.click();
+  checkedCheckbox.click();
   document.querySelectorAll(`.${CLASSES.BUNDLE_WRAPPER_CLASS} .ms-Checkbox`).forEach(el => {
     addClass(el, UNCHECKED_CHECKBOX_CLASSES.ROOT);
     addClass(el.querySelector('input'), UNCHECKED_CHECKBOX_CLASSES.INPUT);

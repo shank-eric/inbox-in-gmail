@@ -4,7 +4,7 @@ import keyboard from './keyboard.js';
 
 async function setupOutlookNavigation() {
   const buttonContainer = document.querySelector('.V2uYM');
-  const topBar = await observeForElement(document, '#paddleContainer');
+  const topBar = await observeForElement(document, '.Mezkw');
   topBar.appendChild(buttonContainer);
   addClass(topBar, 'top-bar');
 }
