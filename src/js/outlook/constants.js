@@ -70,11 +70,11 @@ export const findCheckboxClasses = async () => {
   }
   const firstEmailCheckbox = await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [role="checkbox"]`);
   firstEmailCheckbox.click();
-  await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [aria-checked="true"] .is-checked.ms-Checkbox[class*="root-"]`);
-  findClasses(firstEmailCheckbox, CHECKED_CHECKBOX_CLASSES);
+  const checkedCheckbox = await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [aria-checked="true"] .is-checked.ms-Checkbox[class*="root-"]`);
+  findClasses(checkedCheckbox, CHECKED_CHECKBOX_CLASSES);
   const uncheckedCheckbox = document.querySelector(`${CLASS_SELECTORS.EMAIL_ROW}:not(.bundle-wrapper) [role="checkbox"][aria-checked="false"]`);
   findClasses(uncheckedCheckbox, UNCHECKED_CHECKBOX_CLASSES);
-  firstEmailCheckbox.click();
+  checkedCheckbox.click();
   document.querySelectorAll(`.${CLASSES.BUNDLE_WRAPPER_CLASS} .ms-Checkbox`).forEach(el => {
     addClass(el, UNCHECKED_CHECKBOX_CLASSES.ROOT);
     addClass(el.querySelector('input'), UNCHECKED_CHECKBOX_CLASSES.INPUT);
