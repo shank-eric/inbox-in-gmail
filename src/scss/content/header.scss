@@ -1,10 +1,11 @@
 //header-container
-.nH.w-asV.aiw {
+.nH .w-asV.aiw {
   header {
-    box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.28);
+    background-color: #111;
 
     svg {
-      color: #FFF !important;
+      color: #fff !important;
       opacity: 1 !important;
     }
 
@@ -16,50 +17,55 @@
         color: white !important;
 
         &::placeholder {
-          color: #FFF !important;
+          color: #fff !important;
         }
       }
     }
   }
 
   //header-bottom-border
-  &, .nH.nn {
+  &,
+  .nH.nn {
     background-color: #898984;
   }
 
-  body[data-page="inbox"] & {
-    &, .nH.nn {
-      background-color: #4285f4;
+  body[data-page='inbox'] & {
+    &,
+    .nH.nn {
+      background-color: #111;
     }
   }
 
-  body[data-page="snoozed"] & {
-    &, .nH.nn {
+  body[data-page='snoozed'] & {
+    &,
+    .nH.nn {
       background-color: #ef6c00;
     }
   }
 
-  body[data-page="archive"] & {
-    &, .nH.nn {
+  body[data-page='archive'] & {
+    &,
+    .nH.nn {
       background-color: #0f9d58;
     }
   }
 
-  .Yb, .Yb:not(.abs):focus {
+  .Yb,
+  .Yb:not(.abs):focus {
     border-color: transparent;
   }
 
   /* (Active) Icon */
-  .Yb[aria-label="Status: Active"] .Yg {
+  .Yb[aria-label='Status: Active'] .Yg {
     background-color: #34d058;
   }
 
   /* Text */
   .Yc {
-    color: #FFF;
+    color: #fff;
   }
 
-  a[title="Gmail"] {
+  a[title='Gmail'] {
     width: 120px;
     overflow: hidden;
     text-decoration: none;
@@ -67,7 +73,7 @@
     &::after {
       content: 'Inbox';
       font-size: 20px;
-      color: #FFF;
+      color: #fff;
       position: relative;
       top: -2px;
       padding-left: 7px;
@@ -77,51 +83,51 @@
       display: none;
     }
 
-    &[href="#inbox"]::after {
+    &[href='#inbox']::after {
       content: 'Inbox';
     }
 
-    &[href="#snoozed"]::after {
+    &[href='#snoozed']::after {
       content: 'Snoozed';
     }
 
-    &[href="#archive"]::after {
+    &[href='#archive']::after {
       content: 'Archive';
     }
 
-    &[href="#starred"]::after {
+    &[href='#starred']::after {
       content: 'Starred';
     }
 
-    &[href="#sent"]::after {
+    &[href='#sent']::after {
       content: 'Sent';
     }
 
-    &[href="#drafts"]::after {
+    &[href='#drafts']::after {
       content: 'Drafts';
     }
 
-    &[href="#imp"]::after {
+    &[href='#imp']::after {
       content: 'Important';
     }
 
-    &[href="#chats"]::after {
+    &[href='#chats']::after {
       content: 'Chats';
     }
 
-    &[href="#scheduled"]::after {
+    &[href='#scheduled']::after {
       content: 'Scheduled';
     }
 
-    &[href="#all"]::after {
+    &[href='#all']::after {
       content: 'All Mail';
     }
 
-    &[href="#spam"]::after {
+    &[href='#spam']::after {
       content: 'Spam';
     }
 
-    &[href="#trash"]::after {
+    &[href='#trash']::after {
       content: 'Trash';
     }
   }

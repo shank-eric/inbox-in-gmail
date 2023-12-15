@@ -1,22 +1,12 @@
-import {
-  addClass,
-  addPixels,
-  observeForElement,
-  removeClass,
-  runObserver
-} from '../shared/utils.js';
-import { buildAvatar, getThreadId } from './emailUtils.js';
-import {
-  CLASSES,
-  DEFAULT_PROFILE_URL,
-  GMAIL_SELECTORS
-} from './constants.js';
+import { addClass, addPixels, observeForElement, removeClass, runObserver } from '../shared/utils.js';
+import { buildAvatar, getThreadId, isInBundle } from './emailUtils.js';
+import { CLASSES, DEFAULT_PROFILE_URL, GMAIL_SELECTORS } from './constants.js';
 
 const { EMAIL_CONTAINER, EMAIL_ROW, PREVIEW_PANE } = GMAIL_SELECTORS;
 
 /* Issues
-* navigating quickly between two bundles can cause weird things
-*/
+ * navigating quickly between two bundles can cause weird things
+ */
 
 export default {
   currentEmail: null,
@@ -67,8 +57,9 @@ export default {
     this.previewShowing = true;
     const adjustPreviewHeight = () => {
       const rowHeight = this.currentEmail.clientHeight;
-      previewPane.style['padding-top'] = `${rowHeight}px`;
-      previewPlaceholder.style.height = addPixels(previewPane.offsetHeight, -rowHeight, 16);
+      const spacingHeight = isInBundle() ? addPixels(rowHeight, -44) : `${rowHeight}px`;
+      previewPane.style['padding-top'] = spacingHeight;
+      previewPlaceholder.style.height = addPixels(previewPane.offsetHeight, `-${spacingHeight}`, 16);
     };
     this.previewObserver = runObserver(previewPane, { subtree: true, attributes: true }, adjustPreviewHeight, false, this.previewObserver);
     adjustPreviewHeight();
@@ -172,5 +163,5 @@ export default {
     } else {
       this.hidePreviewPane(previewPane);
     }
-  }
+  },
 };

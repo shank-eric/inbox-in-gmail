@@ -1,13 +1,5 @@
-import {
-  hasClass,
-  isTypable
-} from '../shared/utils.js';
-import {
-  isInBundle,
-  openInbox,
-  openReminder
-} from './emailUtils.js';
-import inbox from './inbox.js';
+import { hasClass, isTypable } from '../shared/utils.js';
+import { isInBundle, openInbox, openReminder, setCurrentBundle } from './emailUtils.js';
 import emailPreview from './emailPreview.js';
 import { GMAIL_CLASSES, CLASSES, GMAIL_SELECTORS } from './constants.js';
 
@@ -28,10 +20,10 @@ export default {
       currentBundle,
       keyCode: event.code,
       mainContainer,
-      shiftKey: event.shiftKey
+      shiftKey: event.shiftKey,
     };
 
-    const navKeys = [ 'ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK' ];
+    const navKeys = ['ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK'];
     if (isTypable(event.target)) {
       return;
     }
@@ -41,7 +33,7 @@ export default {
       this.navigate(parameters);
     }
 
-    inbox.setCurrentBundle();
+    setCurrentBundle();
   },
   handlers: {
     Enter: ({ currentRow, currentBundle }) => {
@@ -60,10 +52,10 @@ export default {
     },
     Quote: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? -250 : -25),
     Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25),
-    KeyT: openReminder
+    KeyT: openReminder,
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
-  navigate: ({ currentRow, keyCode }) => {
+  navigate({ currentRow, keyCode }) {
     if (currentRow.getAttribute('data-inbox') === 'bundled') {
       const nextRow = this.findNextVisibleRow(keyCode);
 
@@ -134,5 +126,5 @@ export default {
       nextRow = previousEmail;
     }
     return nextRow;
-  }
+  },
 };

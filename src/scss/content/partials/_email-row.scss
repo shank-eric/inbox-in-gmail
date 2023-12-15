@@ -11,9 +11,10 @@
 }
 
 //email-rows, bundle-rows
-.zA, .zA:hover {
-  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
-  -webkit-box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+.zA,
+.zA:hover {
+  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
+  -webkit-box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
   z-index: inherit;
 }
 
@@ -40,7 +41,6 @@
 
   //checkbox-column
   .oZ-x3 {
-
     //drag-indicator
     &:before {
       display: none;
@@ -73,7 +73,6 @@
 
   //subject-column
   .a4W {
-
     //inline-label
     .ar {
       height: 22px;
@@ -88,7 +87,6 @@
 
   //snoozed-until-column
   .byZ {
-
     //snoozed-until-text
     .cL {
       font-weight: normal;
@@ -97,7 +95,6 @@
 
   //action-buttons-column
   .bq4 {
-
     //action-buttons-list
     .bqY {
       //make room for the pin
@@ -157,10 +154,8 @@
 
   //option on the body
   .show-avatar-enabled & {
-
     //checkbox-column
     .oZ-x3 {
-
       //checkbox
       .T-Jo {
         display: none;
@@ -168,16 +163,14 @@
     }
   }
 
-  &[data-inbox="bundled"] {
+  &[data-inbox='bundled'] {
     display: none;
   }
 
   // row-hovered
   &.aqw {
-
     //checkbox-column
     .oZ-x3 {
-
       //checkbox
       .T-Jo {
         display: inline;
@@ -186,7 +179,6 @@
 
     //pin-star-column
     .apU {
-
       //pin-icon
       .aXw {
         display: flex;
@@ -197,12 +189,16 @@
   //keyboard-selected-email
   &.btb {
     padding-left: 4px;
+    z-index: 2;
 
     &[data-previewing] {
       position: sticky;
       top: 0;
       z-index: 1;
-      box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12);
+      box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12);
+      [data-pane='bundle'] & {
+        top: 0;
+      }
     }
 
     //keyboard-focus-indicator

@@ -1,9 +1,9 @@
 //preview-pane
 .Nu.S3.aZ6 {
   overflow: auto;
-  box-shadow: 0 3px 4px rgba(0, 0, 0, .24);
-  margin-left: 2px;
-  width: calc(100% - 5px);
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.24);
+  margin-left: 1px;
+  width: calc(100% - 2px);
   height: auto !important; //need !important to override inline styles
 
   &:not(.show-preview) {
@@ -27,7 +27,6 @@
 
   //email-container
   .nH.if {
-
     //bottom-spacer
     .nH.aE0 {
       padding-bottom: 0 !important;
@@ -43,7 +42,7 @@
 //email-container
 .Bs.nH.iY.bAt {
   margin: 2px;
-  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
   width: auto;
 
   //subject-container
@@ -52,7 +51,6 @@
 
     //subject-text-container
     .ha {
-
       //labels-container
       .J-J5-Ji {
         display: none;
@@ -62,13 +60,10 @@
 
   //body-container
   .aHU {
-
     //header-container
     .gE {
-
       //email-header
       .iw {
-
         //email-address
         .go {
           display: none;
