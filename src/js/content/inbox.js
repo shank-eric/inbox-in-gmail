@@ -1,7 +1,7 @@
 import Email from './email.js';
 import Bundle from './bundle.js';
 import { getTabs, getCurrentBundle, isInBundle, isInInbox, openInbox, setCurrentBundle } from './emailUtils.js';
-import { addClass, addPixels, encodeBundleId, observeForElement } from '../shared/utils.js';
+import { addClass, addPixels, encodeBundleId, hasClass, observeForCondition, observeForElement } from '../shared/utils.js';
 import dateLabels from './dateLabels.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 import { CLASSES, GMAIL_SELECTORS } from './constants.js';
@@ -29,6 +29,11 @@ export default {
               previewPane.setAttribute('data-pane', 'inbox');
             }
           }
+        }
+      } else if (!isInBundle()) {
+        const inbox = document.querySelector(`${EMAIL_CONTAINER}[data-pane="inbox"]`);
+        if (inbox) {
+          inbox.style.display = 'none';
         }
       }
       reloadOptions();
@@ -139,11 +144,13 @@ export default {
   moveBundleElement() {
     if (isInBundle()) {
       const inboxPane = document.querySelector(`${EMAIL_CONTAINER}[data-pane="inbox"]`);
-      const bundlePane = document.querySelector(`${EMAIL_CONTAINER}[role="main"]:not([data-pane="inbox"])`);
+      const bundlePanes = document.querySelectorAll(`${EMAIL_CONTAINER}.nH.oy8Mbf:not([data-pane="inbox"])`);
+      const bundlePane = bundlePanes[bundlePanes.length - 1];
 
-      if (inboxPane && bundlePane && inboxPane !== bundlePane && !bundlePane.getAttribute('data-navigating')) {
+      if (inboxPane && bundlePane && inboxPane !== bundlePane) {
+        const loading = document.querySelectorAll('.sq.bjE.bFQ:not(.bFR)').length > 0;
         const bundleEmails = bundlePane.querySelectorAll(`${EMAIL_ROW}`);
-        if (!bundleEmails.length) {
+        if (!bundleEmails.length && !loading) {
           if (this.bundleObserver) {
             this.bundleObserver.disconnect();
           }
@@ -163,7 +170,7 @@ export default {
           bundlePane.style.position = 'absolute';
           bundleRow.parentNode.insertBefore(bundlePlaceholder, bundleRow.nextSibling);
           bundleRow.style.position = 'initial';
-          bundlePane.style.top = addPixels(bundleRow.offsetTop, bundleRow.clientHeight, 6);
+          bundlePane.style.top = addPixels(bundleRow.offsetTop, bundleRow.clientHeight, 4);
           bundleRow.style.position = null;
 
           const adjustBundleHeight = () => {

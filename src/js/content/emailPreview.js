@@ -162,6 +162,7 @@ export default {
       }
     } else {
       this.hidePreviewPane(previewPane);
+      this.hidePreviewPane(document.querySelector(`${EMAIL_CONTAINER}:not([role="main"]) ${PREVIEW_PANE}`));
     }
   },
 };
