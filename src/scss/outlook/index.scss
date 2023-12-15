@@ -42,19 +42,29 @@
         .rEzfP {
           padding: 0;
 
+          // another container in Inbox bar
+          .brFj8 {
+            height: 40px;
+            margin-bottom: 0;
+          }
+
           // Inbox span
           .vlQVl {
             display: none;
           }
 
+          // enable checkboxes button
+          .ac0xq {
+            display: none;
+          }
           // select all container
           .ZYym6 {
-            margin-bottom: 3px;
-            margin-right: 4px;
+            margin: 0;
+            height: 40px;
+            visibility: visible;
 
             [role='checkbox'] {
               margin-left: 0;
-              height: 34px;
 
               &:hover {
                 background-color: var(--neutralLight);
@@ -62,13 +72,24 @@
             }
 
             [role='button'] {
-              height: 34px;
               border-radius: 0;
-              margin-right: 0;
 
               &:hover {
                 background-color: var(--neutralLight);
               }
+            }
+          }
+          // set favorite (star) container
+          .IG8s8 {
+            margin: 0 !important;
+            padding: 0;
+          }
+          // filter container
+          .p4pwT {
+            position: initial;
+            padding-right: 15px;
+            [role='button']:hover {
+              background-color: var(--neutralLight);
             }
           }
         }

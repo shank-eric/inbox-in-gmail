@@ -28,8 +28,9 @@ html[dir='ltr'] {
 
             //email list scroll container
             .jEpCF {
-              padding-left: 18px;
+              padding-left: 0;
               height: unset !important;
+              scrollbar-gutter: auto;
 
               //email rows container
               > div {
@@ -46,7 +47,6 @@ html[dir='ltr'] {
             // email column headers
             > div:nth-child(2) {
               box-shadow: rgb(0 0 0 / 24%) -2px -2px 4px;
-              margin: 0 18px;
               padding: 0 !important;
             }
 

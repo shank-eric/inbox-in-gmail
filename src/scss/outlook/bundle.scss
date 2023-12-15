@@ -15,17 +15,18 @@
     }
   }
 
-  [aria-checked='false'] .ms-Check {
+  [aria-checked='false'] .ms-Checkbox {
     display: none;
   }
 
   &:hover,
   [aria-checked='true'] {
+    .fui-Avatar,
     .ms-Persona-coin {
       display: none;
     }
 
-    .ms-Check {
+    .ms-Checkbox {
       display: block;
     }
   }
@@ -48,5 +49,10 @@
     border: 1px solid;
     padding: 2px 12px;
     display: inline-block;
+  }
+
+  // from column
+  .jHAG3 {
+    padding-left: 32px;
   }
 }

@@ -28,13 +28,13 @@ export default class Email {
   getLabels() {
     return Array.from(this.emailEl.querySelectorAll(EMAIL_LABELS)).map(labelContainer => {
       const labelTitle = querySelectorText('span', labelContainer);
-
+      const { color, borderColor, backgroundColor } = getComputedStyle(labelContainer);
       return {
         title: labelTitle,
         encodedId: encodeBundleId(labelTitle),
-        borderColor: labelContainer.style.borderColor,
-        textColor: labelContainer.style.color,
-        backgroundColor: labelContainer.style.backgroundColor,
+        borderColor,
+        textColor: color,
+        backgroundColor,
         element: labelContainer,
       };
     });
@@ -167,7 +167,7 @@ export default class Email {
 
   async emailClicked(event) {
     const isButton = queryParentSelector(event.target, '.ms-Button');
-    const isCheckbox = queryParentSelector(event.target, '.ms-Check');
+    const isCheckbox = queryParentSelector(event.target, '.ms-Checkbox');
     const isSelector = hasClass(event.target, 'hidden-selector');
     if (isButton || isCheckbox || isSelector) {
       return;

@@ -1,6 +1,6 @@
 import {
   addClass,
-  addRemoveClass,
+  replaceClass,
   addPixels,
   hasClass,
   htmlToElements,
@@ -65,7 +65,7 @@ export default {
         return;
       }
       const previewWrapper = previewPane.querySelector(PREVIEW_WRAPPER);
-      if (previewWrapper?.childElementCount > 1) {
+      if (previewWrapper?.childElementCount >= 1) {
         const previewHeight = addPixels(previewWrapper.offsetHeight, 12);
         const previewWidth = getComputedStyle(previewPlaceholder).width;
         const { height, width } = previewPlaceholder.style;
@@ -137,18 +137,18 @@ export default {
     const composeContainer = previewPane.querySelector(PREVIEW_COMPOSE);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     if (composeContainer) {
-      addRemoveClass(previewPane, 'preview-compose', 'show-preview');
+      replaceClass(previewPane, 'preview-compose', 'show-preview');
       previewPane.style.top = null;
       previewPane.style.height = null;
       return;
     }
     const selectedEmailOptions = previewPane.querySelector('.J7DEf');
     if (selectedEmailOptions) {
-      addRemoveClass(previewPane, 'show-preview', 'preview-compose');
+      replaceClass(previewPane, 'show-preview', 'preview-compose');
       previewPane.style.height = null;
       return;
     }
-    addRemoveClass(previewPane, 'show-preview', 'preview-compose');
+    replaceClass(previewPane, 'show-preview', 'preview-compose');
     this.hideIfCurrentEmailRemoved(previewPane);
 
     const nothingSelected = previewPane.querySelector('.QYrHp');

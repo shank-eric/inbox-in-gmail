@@ -1,6 +1,6 @@
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { addRemoveClass, htmlToElements, observeForElement, observeForRemoval, hasClass } from '../shared/utils.js';
+import { hasClass, htmlToElements, replaceClass, observeForRemoval } from '../shared/utils.js';
 import { checkImportantMarkers, getCurrentBundle, isInBundle, openBundle, openInbox, setCurrentBundle } from './emailUtils.js';
 
 import { getOptions } from '../shared/options.js';
@@ -135,9 +135,9 @@ export default class Bundle {
 
   checkUnread() {
     if (this.attrs.containsUnread) {
-      addRemoveClass(this.element, UNREAD_EMAIL_ROW, 'yO');
+      replaceClass(this.element, UNREAD_EMAIL_ROW, 'yO');
     } else {
-      addRemoveClass(this.element, 'yO', UNREAD_EMAIL_ROW);
+      replaceClass(this.element, 'yO', UNREAD_EMAIL_ROW);
     }
   }
 
