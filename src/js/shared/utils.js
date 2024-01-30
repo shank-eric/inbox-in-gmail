@@ -31,6 +31,10 @@ export const runObserver = (element, options, callback, runContinously, existing
       observer.observe(element, options);
     }
   });
+  if (!element) {
+    console.log('element not found');
+    return null;
+  }
   observer.observe(element, options);
   return observer;
 };
