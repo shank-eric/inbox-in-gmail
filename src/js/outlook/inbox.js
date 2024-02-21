@@ -1,7 +1,7 @@
 import { addClass, encodeBundleId, hasClass, removeClass, runObserver } from '../shared/utils.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 
-import { findNextVisibleRow } from './outlookUtils.js';
+import { findNextVisibleRow, isInInbox } from './outlookUtils.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, findCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 
@@ -92,7 +92,7 @@ export default {
     }
 
     // Update bundle stats
-    if (options.emailBundling === 'enabled') {
+    if (options.emailBundling === 'enabled' && isInInbox()) {
       Object.values(labelStats).forEach(stats => {
         const bundle = new Bundle(stats);
         bundle.updateStats(stats);
