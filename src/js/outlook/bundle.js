@@ -79,7 +79,7 @@ export default class Bundle {
     >
       <div draggable="true">
         <div
-          class="${EMAIL_ROW_INNER_CONTAINER} YbB6r IKvQi IjQyD EhiOs JCRRb G1NES"
+          class="${EMAIL_ROW_INNER_CONTAINER} IKvQi IjQyD EhiOs JCRRb G1NES"
           tabindex="-1"
         >
           <div class="oJTdD">

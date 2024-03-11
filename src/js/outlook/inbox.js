@@ -93,6 +93,7 @@ export default {
 
     // Update bundle stats
     if (options.emailBundling === 'enabled' && isInInbox()) {
+      document.querySelectorAll(`.${BUNDLE_WRAPPER_CLASS}`).forEach(el => (el.style.display = 'block'));
       Object.values(labelStats).forEach(stats => {
         const bundle = new Bundle(stats);
         bundle.updateStats(stats);
@@ -104,6 +105,8 @@ export default {
           el.remove();
         }
       });
+    } else {
+      document.querySelectorAll(`.${BUNDLE_WRAPPER_CLASS}`).forEach(el => (el.style.display = 'none'));
     }
 
     document.querySelectorAll(TIME_ROW).forEach(timeRow => {

@@ -4,8 +4,8 @@ import { CLASSES } from '../shared/constants.js';
 export const DEFAULT_PROFILE_URL = '';
 export const OUTLOOK_CLASSES = {
   COMPOSE_SUBJECT_LINE: 'TK0zZ',
-  EMAIL_ROW: 'hcptT',
-  EMAIL_ROW_INNER_CONTAINER: 'YbB6r',
+  EMAIL_ROW: 'jGG6V',
+  EMAIL_ROW_INNER_CONTAINER: 'zKDWD',
   EMAIL_COLUMN_CONTAINER: 'y1E5h',
   EMAIL_CONTAINER: 'q9iRC',
   EMAIL_DATE: 'hwyHQ',

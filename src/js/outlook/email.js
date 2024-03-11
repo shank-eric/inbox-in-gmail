@@ -94,6 +94,7 @@ export default class Email {
 
   processBundle() {
     if (!this.emailEl.querySelector(EMAIL_ROW_INNER_CONTAINER)) {
+      console.log(`Email row inner container (${EMAIL_ROW_INNER_CONTAINER}) not found for email`, this.emailEl);
       return;
     }
     const labels = this.getLabels(); // .filter(label => !tabs.includes(label.title));
