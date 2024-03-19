@@ -27,6 +27,13 @@ html[dir='ltr'] {
             overflow: visible;
             visibility: visible;
 
+            .s8wta {
+              display: flex;
+              button:nth-child(4) {
+                flex-grow: 1;
+              }
+            }
+
             //email list scroll container
             .jEpCF {
               padding-left: 0;
