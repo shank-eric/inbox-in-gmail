@@ -2,7 +2,7 @@ import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
-import { matchesMyEmail, setSelectedRow } from './outlookUtils.js';
+import { isInInbox, matchesMyEmail, setSelectedRow } from './outlookUtils.js';
 import { encodeBundleId, querySelectorText, querySelectorWithText, hasClass, queryParentSelector } from '../shared/utils.js';
 
 const { REMINDER_EMAIL_CLASS } = CLASSES;
@@ -94,6 +94,7 @@ export default class Email {
 
   processBundle() {
     if (!this.emailEl.querySelector(EMAIL_ROW_INNER_CONTAINER)) {
+      console.log(`Email row inner container (${EMAIL_ROW_INNER_CONTAINER}) not found for email`, this.emailEl);
       return;
     }
     const labels = this.getLabels(); // .filter(label => !tabs.includes(label.title));
@@ -102,7 +103,7 @@ export default class Email {
     const isStarred = this.emailEl.querySelector('[data-icon-name="PinFilled"]');
     const isUnbundled = labels.some(label => label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL));
 
-    if (labels.length && !isStarred && !isUnbundled) {
+    if (labels.length && !isStarred && !isUnbundled && isInInbox()) {
       let showEmail = this.emailEl.getAttribute('data-inbox') === 'show-bundled';
       const bundles = labels
         .map(label => {

@@ -39,7 +39,7 @@
 
   &.bundle-unread {
     .gMkyO,
-    .bundle-senders {
+    .bundle-senders .strong {
       font-weight: 600;
     }
   }
@@ -48,10 +48,5 @@
     border: 1px solid;
     padding: 2px 12px;
     display: inline-block;
-  }
-
-  // from column
-  .jHAG3 {
-    padding-left: 32px;
   }
 }

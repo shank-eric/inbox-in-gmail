@@ -36,6 +36,8 @@ export const matchesMyEmail = email => {
   return myAddress === address && myDomain === domain;
 };
 
+export const isInInbox = () => document.location.pathname === '/mail/' || document.location.pathname.match(/mail\/inbox/g);
+
 // export const openReminder = async () => {
 //   const myEmail = getMyEmailAddress();
 

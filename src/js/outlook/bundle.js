@@ -59,11 +59,11 @@ export default class Bundle {
       .split(' ')
       .map(word => word.substring(0, 1))
       .join('');
-    const archiveButtonPath =
-      'M6.5 8a.5.5 0 000 1h3a.5.5 0 000-1h-3zM1 3.5C1 2.67 1.67 2 2.5' +
-      ' 2h11c.83 0 1.5.67 1.5 1.5v1c0 .65-.42 1.2-1 1.41v5.59a2.5 2.5 0 01-2.5 2.5h-7A2.5 2.5 0' +
-      ' 012 11.5V5.91c-.58-.2-1-.76-1-1.41v-1zM2.5 3a.5.5 0 00-.5.5v1c0 .28.22.5.5.5h11a.5.5 0' +
-      ' 00.5-.5v-1a.5.5 0 00-.5-.5h-11zM3 6v5.5c0 .83.67 1.5 1.5 1.5h7c.83 0 1.5-.67 1.5-1.5V6H3z';
+    // const archiveButtonPath =
+    //   'M6.5 8a.5.5 0 000 1h3a.5.5 0 000-1h-3zM1 3.5C1 2.67 1.67 2 2.5' +
+    //   ' 2h11c.83 0 1.5.67 1.5 1.5v1c0 .65-.42 1.2-1 1.41v5.59a2.5 2.5 0 01-2.5 2.5h-7A2.5 2.5 0' +
+    //   ' 012 11.5V5.91c-.58-.2-1-.76-1-1.41v-1zM2.5 3a.5.5 0 00-.5.5v1c0 .28.22.5.5.5h11a.5.5 0' +
+    //   ' 00.5-.5v-1a.5.5 0 00-.5-.5h-11zM3 6v5.5c0 .83.67 1.5 1.5 1.5h7c.83 0 1.5-.67 1.5-1.5V6H3z';
 
     const bundleWrapper = htmlToElements(`
     <div>
@@ -79,12 +79,13 @@ export default class Bundle {
     >
       <div draggable="true">
         <div
-          class="${EMAIL_ROW_INNER_CONTAINER} YbB6r IKvQi IjQyD EhiOs JCRRb G1NES"
+          class="${EMAIL_ROW_INNER_CONTAINER} hDNlA lHRXq IjQyD JCRRb DLvHz"
           tabindex="-1"
         >
-          <div class="oJTdD">
+          <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
+          <div class="ZTnQq">
             <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-              <div class="jHAG3 XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
+              <div class="DMjcl XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
                 <div class="XG5Jd d1dnN B3KmY q0f8X"
                   tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                 >
@@ -117,10 +118,10 @@ export default class Bundle {
                   </div>
                 </div>
               </div>
-              <div class="r7Ra_ B3KmY"
+              <div class="dTBo0 xAXjl"
                 style="width: ${columnWidths[1][0]}; max-width: ${columnWidths[1][0]}; padding-left: ${columnWidths[1][1]};">
-                <div class="jN2P9 ">
-                  <div class="lMXAF gy2aJ Ejrkd bundle-senders">
+                <div class="gmffI ovvvr">
+                  <div class="gy2aJ Ejrkd bundle-senders">
                   </div>
                   <div class="YH9yX">
                     <div class="Zgp3k">
@@ -140,6 +141,7 @@ export default class Bundle {
               </div>
             </div>
           </div>
+          <div class="QpoLy"></div>
         </div>
       </div>
       <span class="hidden-selector"></span>
@@ -285,7 +287,7 @@ export default class Bundle {
       return false;
     });
 
-    const replacementHTML = `${uniqueSenders.map(sender => `<span class="${sender.isUnread ? 'strong' : ''}">${sender.name}</span>`).join(', ')}`;
+    const replacementHTML = `${uniqueSenders.map(sender => `<span class="${sender.isUnread ? 'strong' : ''}">${sender.name}</span>`).join(',&nbsp;')}`;
     this.replaceHtml('.bundle-senders', replacementHTML);
   }
 

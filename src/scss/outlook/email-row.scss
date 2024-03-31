@@ -1,5 +1,5 @@
 //email row
-.hcptT {
+.jGG6V {
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
 
   &[data-previewing='true'] {
@@ -42,19 +42,28 @@
   }
 
   // inner container
-  .nloVY {
-    position: relative;
 
-    //from column
-    > :nth-child(1) {
-      position: initial;
-    }
+  .bundle-senders {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 
-    .bundle-senders {
-      text-overflow: ellipsis;
-      overflow: auto;
-      white-space: nowrap;
+  //subject container
+  .dTBo0 {
+    max-width: unset !important;
+  }
+
+  // date container
+  .WP8_u {
+    span {
+      text-align: right;
     }
+  }
+
+  // pin/unread buttons container
+  .gaDEX button {
+    margin-bottom: 0;
   }
 
   // archive button container

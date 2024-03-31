@@ -1,6 +1,6 @@
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { hasClass, htmlToElements, replaceClass, observeForRemoval } from '../shared/utils.js';
+import { hasClass, htmlToElements, replaceClass, observeForElement, observeForRemoval } from '../shared/utils.js';
 import { checkImportantMarkers, getCurrentBundle, isInBundle, openBundle, openInbox, setCurrentBundle } from './emailUtils.js';
 
 import { getOptions } from '../shared/options.js';

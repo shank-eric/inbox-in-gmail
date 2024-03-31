@@ -1,7 +1,7 @@
 import Email from './email.js';
 import Bundle from './bundle.js';
 import { getTabs, getCurrentBundle, isInBundle, isInInbox, openInbox, setCurrentBundle } from './emailUtils.js';
-import { addClass, addPixels, encodeBundleId, hasClass, observeForCondition, observeForElement } from '../shared/utils.js';
+import { addClass, addPixels, encodeBundleId, observeForElement } from '../shared/utils.js';
 import dateLabels from './dateLabels.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 import { CLASSES, GMAIL_SELECTORS } from './constants.js';
