@@ -27,10 +27,21 @@ html[dir='ltr'] {
             overflow: visible;
             visibility: visible;
 
+            // email columns container
             .s8wta {
               display: flex;
               button:nth-child(4) {
                 flex-grow: 1;
+              }
+              button:nth-child(6) {
+                text-align: right;
+                padding-right: 44px;
+                display: flex;
+                flex-direction: row-reverse;
+                align-items: center;
+                i {
+                  padding-right: 4px;
+                }
               }
             }
 

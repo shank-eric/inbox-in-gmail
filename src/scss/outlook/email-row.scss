@@ -45,13 +45,20 @@
 
   .bundle-senders {
     text-overflow: ellipsis;
-    overflow: auto;
+    overflow: hidden;
     white-space: nowrap;
   }
 
   //subject container
   .dTBo0 {
     max-width: unset !important;
+  }
+
+  // date container
+  .WP8_u {
+    span {
+      text-align: right;
+    }
   }
 
   // pin/unread buttons container

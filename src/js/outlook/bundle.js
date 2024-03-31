@@ -79,13 +79,13 @@ export default class Bundle {
     >
       <div draggable="true">
         <div
-          class="${EMAIL_ROW_INNER_CONTAINER} IKvQi IjQyD EhiOs JCRRb G1NES"
+          class="${EMAIL_ROW_INNER_CONTAINER} hDNlA lHRXq IjQyD JCRRb DLvHz"
           tabindex="-1"
         >
           <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
-          <div class="oJTdD">
+          <div class="ZTnQq">
             <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-              <div class="jHAG3 XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
+              <div class="DMjcl XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
                 <div class="XG5Jd d1dnN B3KmY q0f8X"
                   tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                 >
@@ -120,8 +120,8 @@ export default class Bundle {
               </div>
               <div class="dTBo0 xAXjl"
                 style="width: ${columnWidths[1][0]}; max-width: ${columnWidths[1][0]}; padding-left: ${columnWidths[1][1]};">
-                <div class="ovvvr">
-                  <div class="a8OuZ gy2aJ Ejrkd bundle-senders">
+                <div class="gmffI ovvvr">
+                  <div class="gy2aJ Ejrkd bundle-senders">
                   </div>
                   <div class="YH9yX">
                     <div class="Zgp3k">
@@ -287,7 +287,7 @@ export default class Bundle {
       return false;
     });
 
-    const replacementHTML = `${uniqueSenders.map(sender => `<span class="TtcXM ${sender.isUnread ? 'strong' : ''}">${sender.name}</span>`).join(',&nbsp;')}`;
+    const replacementHTML = `${uniqueSenders.map(sender => `<span class="${sender.isUnread ? 'strong' : ''}">${sender.name}</span>`).join(',&nbsp;')}`;
     this.replaceHtml('.bundle-senders', replacementHTML);
   }
 
