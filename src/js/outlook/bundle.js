@@ -79,7 +79,7 @@ export default class Bundle {
     >
       <div draggable="true">
         <div
-          class="${EMAIL_ROW_INNER_CONTAINER} hDNlA lHRXq IjQyD JCRRb DLvHz"
+          class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz"
           tabindex="-1"
         >
           <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>

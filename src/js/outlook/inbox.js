@@ -110,6 +110,7 @@ export default {
     }
 
     document.querySelectorAll(TIME_ROW).forEach(timeRow => {
+      timeRow.style.pointerEvents = 'none';
       const nextVisibleRow = findNextVisibleRow(timeRow, true, true);
       if (!nextVisibleRow || hasClass(nextVisibleRow, TIME_ROW_CLASS)) {
         timeRow.style.display = 'none';
