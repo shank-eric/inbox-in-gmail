@@ -3,7 +3,7 @@ import { addClass, observeForElement } from '../shared/utils.js';
 import keyboard from './keyboard.js';
 
 async function setupOutlookNavigation() {
-  const buttonContainer = document.querySelector('.V2uYM');
+  const buttonContainer = document.querySelector('.bkYAr');
   const topBar = await observeForElement(document, '.Mezkw');
   topBar.appendChild(buttonContainer);
   addClass(topBar, 'top-bar');

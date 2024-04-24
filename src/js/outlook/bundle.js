@@ -85,8 +85,8 @@ export default class Bundle {
           <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
           <div class="ZTnQq">
             <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-              <div class="DMjcl XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
-                <div class="XG5Jd d1dnN B3KmY q0f8X"
+              <div class="DMjcl BevFE WA2af XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
+                <div class="XG5Jd XJ3XJ q0f8X XW8cf"
                   tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                 >
                   <span
@@ -112,13 +112,8 @@ export default class Bundle {
                     ${title}
                   </span>
                 </div>
-                <div class="">
-                  <div class="s93_XCYBPlIFwyUuLPd5 tTNd3pbNNouuyPAh49lU">
-                      <!--this is where the buttons are-->
-                  </div>
-                </div>
               </div>
-              <div class="dTBo0 xAXjl"
+              <div class="dTBo0 XW8cf TAT3V XG5Jd"
                 style="width: ${columnWidths[1][0]}; max-width: ${columnWidths[1][0]}; padding-left: ${columnWidths[1][1]};">
                 <div class="gmffI ovvvr">
                   <div class="gy2aJ Ejrkd bundle-senders">
