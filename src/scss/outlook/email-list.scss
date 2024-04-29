@@ -22,10 +22,12 @@ html[dir='ltr'] {
             height: auto;
             border: none;
             display: flex;
-            background-color: var(--neutralLighterAlt);
+            background-color: transparent;
             box-shadow: none;
             overflow: visible;
             visibility: visible;
+            z-index: 10;
+            pointer-events: none;
 
             // email columns container
             .s8wta {
@@ -45,6 +47,11 @@ html[dir='ltr'] {
               }
             }
 
+            // background covering the email preview
+            .X4w2q {
+              background: transparent;
+            }
+
             //email list scroll container
             .jEpCF {
               padding-left: 0;
@@ -53,6 +60,7 @@ html[dir='ltr'] {
               scrollbar-gutter: auto;
               overflow: visible !important;
               max-height: 400vh;
+              background: transparent;
 
               //email rows container
               > div {
@@ -62,6 +70,11 @@ html[dir='ltr'] {
                 position: initial;
                 > div {
                   position: unset !important;
+                  &.bundle-expanded {
+                    position: sticky !important;
+                    top: 0;
+                    z-index: 10;
+                  }
                 }
               }
             }
@@ -69,6 +82,7 @@ html[dir='ltr'] {
             .Cz7T5,
             .ONAp_ {
               overflow: visible;
+              background: transparent;
             }
 
             // email column headers
