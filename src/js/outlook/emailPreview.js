@@ -26,6 +26,9 @@ export default {
     return observeForElement(document, PREVIEW_PANE);
   },
   async emailClicked(clickedEmail) {
+    if (clickedEmail.getAttribute('data-preview-enabled') !== 'true') {
+      return;
+    }
     const previewPane = await this.getPreviewPane();
     const clickedCurrentEmail = clickedEmail && this.currentEmail && this.currentEmail === clickedEmail;
     if (clickedCurrentEmail) {
@@ -152,10 +155,13 @@ export default {
       previewPane.style.height = null;
       return;
     }
-    const selectedEmailOptions = previewPane.querySelector('.J7DEf');
+    const selectedEmailOptions = previewPane.querySelector('.DPXAn');
     if (selectedEmailOptions) {
       replaceClass(previewPane, 'show-preview', 'preview-compose');
       previewPane.style.height = null;
+      if (previewPlaceholder) {
+        previewPlaceholder.style.height = null;
+      }
       return;
     }
     replaceClass(previewPane, 'show-preview', 'preview-compose');

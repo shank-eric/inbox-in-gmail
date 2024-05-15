@@ -31,7 +31,7 @@ const CLASS_SELECTORS = buildSelectors(OUTLOOK_CLASSES);
 export const OUTLOOK_SELECTORS = {
   ...CLASS_SELECTORS,
   COMPOSE_NEW_MAIL_BUTTON: 'button[data-unique-id=Ribbon-588]',
-  COMPOSE_TO_ADDRESS: '.AtODR [role="combobox"]',
+  COMPOSE_TO_ADDRESS: '.AtODR [role="textbox"]',
   PREVIEW_PANE: `${CLASS_SELECTORS.PREVIEW_CONTAINER} #ReadingPaneContainerId`,
   SELECTED_EMAIL: `${CLASS_SELECTORS.EMAIL_ROW}[aria-selected="true"]`,
   EMAIL_PARTICIPANTS: `${CLASS_SELECTORS.EMAIL_PARTICIPANT_CONTAINERS} span, .ESO13 span, .uSUBc span`,

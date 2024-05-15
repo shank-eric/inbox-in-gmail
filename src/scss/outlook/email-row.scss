@@ -23,18 +23,20 @@
   }
 
   &[data-icon='reminder'] {
-    .ms-Persona-coin {
+    .fui-Avatar {
       background: url(https://res.cdn.office.net/todo/publicIcons/todo-metaos-32.png);
       background-size: 28px;
 
-      .ms-Persona-initials {
+      img,
+      .fui-Avatar__initials {
         display: none;
       }
     }
 
-    // email subject
-    .FqgPc {
-      display: none;
+    .uu6rV, // expand emails button
+    .FqgPc // email subject
+    {
+      visibility: hidden;
     }
   }
 

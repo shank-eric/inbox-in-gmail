@@ -1,5 +1,6 @@
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
-import { replaceClass, hasClass } from '../shared/utils.js';
+import { hasClass, replaceClass } from '../shared/utils.js';
+import { getOptions } from '../shared/options.js';
 
 const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, TIME_ROW } = OUTLOOK_CLASSES;
 const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
@@ -26,14 +27,23 @@ const deconstructEmail = email => {
   return { address, domain, tld };
 };
 
+const matchEmails = (email1, email2) => {
+  const { address: address1, domain: domain1 } = deconstructEmail(email1);
+  const { address: address2, domain: domain2 } = deconstructEmail(email2);
+  return address1 === address2 && domain1 === domain2;
+};
+
 export const matchesMyEmail = email => {
   const myEmail = getMyEmailAddress();
+  const { emailAliases } = getOptions();
   if (!myEmail || !email) {
     return false;
   }
-  const { address: myAddress, domain: myDomain } = deconstructEmail(myEmail);
-  const { address, domain } = deconstructEmail(email);
-  return myAddress === address && myDomain === domain;
+  const emails = [myEmail];
+  if (emailAliases) {
+    emails.push(...emailAliases.split(';'));
+  }
+  return emails.some(e => matchEmails(e, email));
 };
 
 export const isInInbox = () => document.location.pathname === '/mail/' || document.location.pathname.match(/mail\/inbox/g);

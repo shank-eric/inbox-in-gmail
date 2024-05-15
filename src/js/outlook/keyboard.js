@@ -65,9 +65,6 @@ export default {
     // },
     KeyN: ({ removeReminderClass }) => removeReminderClass(),
     KeyE: ({ currentRow, navigate, ...rest }) => {
-      if (emailPreview.previewShowing) {
-        emailPreview.emailClicked(currentRow);
-      }
       navigate({ currentRow, ...rest });
     },
     KeyT: async () => {
@@ -103,9 +100,9 @@ export default {
 
     if (rowToSelect) {
       setTimeout(() => {
-        const selector = rowToSelect;
-        selector.click(); // check the box to select the row
-        selector.click(); // check it again to uncheck the box, but leave it selected
+        rowToSelect.setAttribute('data-preview-enabled', false);
+        rowToSelect.click();
+        rowToSelect.setAttribute('data-preview-enabled', true);
         setSelectedRow(rowToSelect);
       });
     }
