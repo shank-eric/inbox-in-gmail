@@ -159,10 +159,22 @@
         bottom: calc(50% - 200px);
         right: calc(50% - 200px);
 
+        .AtODR {
+          // to address
+          min-height: 0;
+          height: 0;
+          [role='textbox'] {
+            position: absolute;
+            top: 25px;
+            width: 200px;
+            z-index: 100;
+            left: 150px;
+          }
+        }
         .infoBarDivClass, // sensitivity bar
         .QHw8J, // bcc button
         .SZoKq, // to button
-        .AtODR, // to address
+        .hIf0n, // a border under the to address
         .weeSc, // CC button
         .WWmQ_, // CC address
         .yz4r1, // body

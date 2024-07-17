@@ -43,8 +43,10 @@ export default {
   handlers: {
     Enter: ({ currentRow, currentBundle }) => {
       if (currentRow.getAttribute('data-inbox') === 'bundled') {
+        console.log('clicking currentBundle', currentBundle);
         currentBundle.click();
       } else {
+        console.log('clicking currentRow', currentRow);
         currentRow.click();
       }
     },
@@ -55,6 +57,7 @@ export default {
         const currentBundle = currentRow.getAttribute('data-bundles');
         if (currentBundle) {
           const bundleRow = document.querySelector(`[data-inbox="${currentBundle}"]`);
+          console.log('clicking bundleRow', bundleRow);
           bundleRow.click();
         }
       }
@@ -67,7 +70,8 @@ export default {
     KeyE: ({ currentRow, navigate, ...rest }) => {
       navigate({ currentRow, ...rest });
     },
-    KeyT: async () => {
+    KeyT: async ({ event }) => {
+      event.preventDefault();
       const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
       composeButton.click();
       const toAddress = await observeForElement(document, COMPOSE_TO_ADDRESS);
@@ -101,6 +105,7 @@ export default {
     if (rowToSelect) {
       setTimeout(() => {
         rowToSelect.setAttribute('data-preview-enabled', false);
+        console.log('clicking rowToSelect', rowToSelect);
         rowToSelect.click();
         rowToSelect.setAttribute('data-preview-enabled', true);
         setSelectedRow(rowToSelect);
