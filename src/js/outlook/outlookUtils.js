@@ -2,7 +2,7 @@ import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { hasClass, replaceClass } from '../shared/utils.js';
 import { getOptions } from '../shared/options.js';
 
-const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, TIME_ROW } = OUTLOOK_CLASSES;
+const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
 const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
@@ -102,19 +102,19 @@ export const setSelectedRow = row => {
   replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
 };
 
-export const findNextVisibleRow = (currentRow, searchNext = true, includeTimeRows = false) => {
+export const findNextVisibleRow = (currentRow, searchNext = true) => {
   const navigator = searchNext ? 'nextSibling' : 'previousSibling';
   const currentBundle = currentRow.getAttribute('data-bundles');
   let nextRow = currentRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
   if (!nextRow) return;
-  let isEmailOrTimeRow = hasClass(nextRow, EMAIL_ROW_CLASS) || (includeTimeRows && hasClass(nextRow, TIME_ROW));
+  let isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
   let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
   let isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
   // let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
-  while (nextRow && (!isEmailOrTimeRow || isEmailBundled || !isSameBundle)) {
+  while (nextRow && (!isEmail || isEmailBundled || !isSameBundle)) {
     nextRow = nextRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
     if (nextRow) {
-      isEmailOrTimeRow = hasClass(nextRow, EMAIL_ROW_CLASS) || (includeTimeRows && hasClass(nextRow, TIME_ROW));
+      isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
       isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
       isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
       // isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;

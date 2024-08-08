@@ -81,10 +81,12 @@ export default {
           previewPlaceholder.style.height = previewHeight;
           previewPane.style.height = previewHeight;
           previewPane.style.width = previewWidth;
+          const expandedEmails = Array.from(previewPane.querySelectorAll('.aVla3 div[aria-expanded="true"]'));
+          previewScrollTarget.style.top = addPixels(previewHeight, ...expandedEmails.map(el => -el.offsetHeight), -12, -44, -80);
           if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
             document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
             this.currentEmail.setAttribute('data-previewing', true);
-            setTimeout(() => previewScrollTarget.scrollIntoView({ behavior: 'smooth' }), 0);
+            setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);
           }
         }
       }
