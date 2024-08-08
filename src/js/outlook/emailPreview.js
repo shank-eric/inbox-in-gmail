@@ -13,7 +13,15 @@ import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_THREAD_ROW, PREVIEW_WRAPPER, EMAIL_CONTAINER, SELECTED_EMAILS_MENU_CONTAINER } = OUTLOOK_SELECTORS;
+const {
+  PREVIEW_CALENDAR_CONFLICT_CONTAINER,
+  PREVIEW_COMPOSE,
+  PREVIEW_PANE,
+  PREVIEW_THREAD_ROW,
+  PREVIEW_WRAPPER,
+  EMAIL_CONTAINER,
+  SELECTED_EMAILS_MENU_CONTAINER,
+} = OUTLOOK_SELECTORS;
 
 export default {
   currentEmail: null,
@@ -70,24 +78,22 @@ export default {
         previewPane.style.height = null;
         return;
       }
-      const previewWrapper = previewPane.querySelector(PREVIEW_WRAPPER);
-      if (previewWrapper?.childElementCount >= 1) {
-        const previewEls = Array.from(previewPane.querySelectorAll(`${PREVIEW_WRAPPER} > div`));
-        const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12, 44);
-        const previewWidth = getComputedStyle(previewPlaceholder).width;
-        const { height, width } = previewPlaceholder.style;
-        const sizeChanged = previewHeight !== height || previewWidth !== width;
-        if (sizeChanged) {
-          previewPlaceholder.style.height = previewHeight;
-          previewPane.style.height = previewHeight;
-          previewPane.style.width = previewWidth;
-          const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
-          previewScrollTarget.style.top = addPixels(previewHeight, ...expandedEmails.map(el => -el.offsetHeight), -12, -44, -80);
-          if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
-            document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
-            this.currentEmail.setAttribute('data-previewing', true);
-            setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);
-          }
+      const previewEls = Array.from(previewPane.querySelectorAll(`${PREVIEW_WRAPPER} > div,${PREVIEW_CALENDAR_CONFLICT_CONTAINER}`));
+      const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12);
+      // width is controlled by the window size, not by the email preview
+      const placeholderWidth = getComputedStyle(previewPlaceholder).width;
+      const { height: placeholderHeight } = previewPlaceholder.style;
+      const sizeChanged = previewHeight !== placeholderHeight;
+      if (sizeChanged) {
+        previewPlaceholder.style.height = previewHeight;
+        previewPane.style.height = previewHeight;
+        previewPane.style.width = placeholderWidth;
+        const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
+        previewScrollTarget.style.top = addPixels(previewHeight, ...expandedEmails.map(el => -el.offsetHeight), -12, -44, -80);
+        if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
+          document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
+          this.currentEmail.setAttribute('data-previewing', true);
+          setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);
         }
       }
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });

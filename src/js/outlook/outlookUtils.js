@@ -95,10 +95,10 @@ export const setSelectedRow = row => {
   // });
   // row.setAttribute('aria-selected', true);
   row.setAttribute('data-selected', true);
-  setTimeout(() => {
-    document.body.setAttribute('tabindex', '-1');
-    document.body.focus();
-  });
+  // setTimeout(() => {
+  //   document.body.setAttribute('tabindex', '-1');
+  //   document.body.focus();
+  // });
   replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
 };
 
