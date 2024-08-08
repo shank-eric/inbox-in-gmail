@@ -43,10 +43,8 @@ export default {
   handlers: {
     Enter: ({ currentRow, currentBundle }) => {
       if (currentRow.getAttribute('data-inbox') === 'bundled') {
-        console.log('clicking currentBundle', currentBundle);
         currentBundle.click();
       } else {
-        console.log('clicking currentRow', currentRow);
         currentRow.click();
       }
     },
@@ -57,7 +55,6 @@ export default {
         const currentBundle = currentRow.getAttribute('data-bundles');
         if (currentBundle) {
           const bundleRow = document.querySelector(`[data-inbox="${currentBundle}"]`);
-          console.log('clicking bundleRow', bundleRow);
           bundleRow.click();
         }
       }
@@ -105,7 +102,6 @@ export default {
     if (rowToSelect) {
       setTimeout(() => {
         rowToSelect.setAttribute('data-preview-enabled', false);
-        console.log('clicking rowToSelect', rowToSelect);
         rowToSelect.click();
         rowToSelect.setAttribute('data-preview-enabled', true);
         setSelectedRow(rowToSelect);

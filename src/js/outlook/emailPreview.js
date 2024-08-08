@@ -13,7 +13,7 @@ import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_WRAPPER, EMAIL_CONTAINER } = OUTLOOK_SELECTORS;
+const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_THREAD_ROW, PREVIEW_WRAPPER, EMAIL_CONTAINER, SELECTED_EMAILS_MENU_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default {
   currentEmail: null,
@@ -81,7 +81,7 @@ export default {
           previewPlaceholder.style.height = previewHeight;
           previewPane.style.height = previewHeight;
           previewPane.style.width = previewWidth;
-          const expandedEmails = Array.from(previewPane.querySelectorAll('.aVla3 div[aria-expanded="true"]'));
+          const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
           previewScrollTarget.style.top = addPixels(previewHeight, ...expandedEmails.map(el => -el.offsetHeight), -12, -44, -80);
           if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
             document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
@@ -157,7 +157,7 @@ export default {
       previewPane.style.height = null;
       return;
     }
-    const selectedEmailOptions = previewPane.querySelector('.DPXAn');
+    const selectedEmailOptions = previewPane.querySelector(SELECTED_EMAILS_MENU_CONTAINER);
     if (selectedEmailOptions) {
       replaceClass(previewPane, 'show-preview', 'preview-compose');
       previewPane.style.height = null;
