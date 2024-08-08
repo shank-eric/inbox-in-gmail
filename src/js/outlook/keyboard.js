@@ -11,8 +11,14 @@ const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS, SELEC
 export default {
   init() {
     window.addEventListener('keydown', this.handleKeyboardEvents.bind(this));
-    // const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
-    // composeButton.addEventListener('click', () => this.removeReminderClass());
+    window.addEventListener('focus', () => {
+      if (document.activeElement === window.document.body) {
+        const selectedEmail = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
+        if (selectedEmail) {
+          selectedEmail.focus();
+        }
+      }
+    });
   },
   handleKeyboardEvents(event) {
     const currentRow = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
@@ -59,11 +65,7 @@ export default {
         }
       }
     },
-    // KeyC: async () => {
-    //   const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
-    //   composeButton.click();
-    // },
-    KeyN: ({ removeReminderClass }) => removeReminderClass(),
+    KeyC: ({ removeReminderClass }) => removeReminderClass(),
     KeyE: ({ currentRow, navigate, ...rest }) => {
       navigate({ currentRow, ...rest });
     },
