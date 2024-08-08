@@ -1,16 +1,15 @@
 import { addClass, encodeBundleId, hasClass, removeClass, runObserver } from '../shared/utils.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 
-import { findNextVisibleRow, isInInbox } from './outlookUtils.js';
+import { isInInbox } from './outlookUtils.js';
 import { CLASSES } from '../shared/constants.js';
-import { OUTLOOK_CLASSES, findCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
+import { findCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 
 import Email from './email.js';
 import Bundle from './bundle.js';
 import emailPreview from './emailPreview.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { TIME_ROW: TIME_ROW_CLASS } = OUTLOOK_CLASSES;
 const { EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, TIME_ROW } = OUTLOOK_SELECTORS;
 
 export default {
@@ -110,13 +109,8 @@ export default {
     }
 
     document.querySelectorAll(TIME_ROW).forEach(timeRow => {
-      const nextVisibleRow = findNextVisibleRow(timeRow, true, true);
-      if (!nextVisibleRow || hasClass(nextVisibleRow, TIME_ROW_CLASS)) {
-        timeRow.style.display = 'none';
-      } else {
-        timeRow.style.display = null;
-        timeRow.style.order = parseInt(nextVisibleRow.style.order);
-      }
+      timeRow.style.pointerEvents = 'none';
+      timeRow.style.display = 'none';
     });
   },
   getBundledLabels() {

@@ -13,7 +13,7 @@ import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_WRAPPER, EMAIL_CONTAINER } = OUTLOOK_SELECTORS;
+const { PREVIEW_COMPOSE, PREVIEW_PANE, PREVIEW_THREAD_ROW, PREVIEW_WRAPPER, EMAIL_CONTAINER, SELECTED_EMAILS_MENU_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default {
   currentEmail: null,
@@ -26,6 +26,9 @@ export default {
     return observeForElement(document, PREVIEW_PANE);
   },
   async emailClicked(clickedEmail) {
+    if (clickedEmail.getAttribute('data-preview-enabled') !== 'true') {
+      return;
+    }
     const previewPane = await this.getPreviewPane();
     const clickedCurrentEmail = clickedEmail && this.currentEmail && this.currentEmail === clickedEmail;
     if (clickedCurrentEmail) {
@@ -78,10 +81,12 @@ export default {
           previewPlaceholder.style.height = previewHeight;
           previewPane.style.height = previewHeight;
           previewPane.style.width = previewWidth;
+          const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
+          previewScrollTarget.style.top = addPixels(previewHeight, ...expandedEmails.map(el => -el.offsetHeight), -12, -44, -80);
           if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
             document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
             this.currentEmail.setAttribute('data-previewing', true);
-            setTimeout(() => previewScrollTarget.scrollIntoView({ behavior: 'smooth' }), 0);
+            setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);
           }
         }
       }
@@ -152,10 +157,13 @@ export default {
       previewPane.style.height = null;
       return;
     }
-    const selectedEmailOptions = previewPane.querySelector('.J7DEf');
+    const selectedEmailOptions = previewPane.querySelector(SELECTED_EMAILS_MENU_CONTAINER);
     if (selectedEmailOptions) {
       replaceClass(previewPane, 'show-preview', 'preview-compose');
       previewPane.style.height = null;
+      if (previewPlaceholder) {
+        previewPlaceholder.style.height = null;
+      }
       return;
     }
     replaceClass(previewPane, 'show-preview', 'preview-compose');

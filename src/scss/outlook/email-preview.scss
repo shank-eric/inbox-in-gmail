@@ -19,26 +19,40 @@
     height: 48px;
     flex-direction: row;
     position: fixed;
-    top: 48px;
-    width: auto;
-    left: unset;
-    right: 120px;
+    bottom: 0;
+    width: 500px;
+    left: calc(50vw - 250px);
 
     img {
       display: none;
     }
 
+    // container of the buttons
     .w1MGJ {
       display: flex;
       flex-direction: row;
+      flex: 1 1 0;
+      background-color: var(--neutralLight);
 
       // count of selected conversations
       .ksePc {
         padding: 0;
+        width: auto;
+        flex: 1 1 0;
+      }
+
+      button {
+        flex: 1 1 0;
+        padding: 0;
+        border: 0;
+        > span {
+          justify-content: center;
+        }
       }
     }
 
-    .QICup {
+    // container for extra buttons
+    .VmtpC {
       display: none;
       margin: 0;
 
@@ -145,10 +159,22 @@
         bottom: calc(50% - 200px);
         right: calc(50% - 200px);
 
+        .AtODR {
+          // to address
+          min-height: 0;
+          height: 0;
+          [role='textbox'] {
+            position: absolute;
+            top: 25px;
+            width: 200px;
+            z-index: 100;
+            left: 150px;
+          }
+        }
         .infoBarDivClass, // sensitivity bar
         .QHw8J, // bcc button
         .SZoKq, // to button
-        .AtODR, // to address
+        .hIf0n, // a border under the to address
         .weeSc, // CC button
         .WWmQ_, // CC address
         .yz4r1, // body

@@ -1,6 +1,7 @@
 //email row
 .jGG6V {
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
+  pointer-events: all;
 
   &[data-previewing='true'] {
     position: sticky;
@@ -22,18 +23,20 @@
   }
 
   &[data-icon='reminder'] {
-    .ms-Persona-coin {
+    .fui-Avatar {
       background: url(https://res.cdn.office.net/todo/publicIcons/todo-metaos-32.png);
       background-size: 28px;
 
-      .ms-Persona-initials {
+      img,
+      .fui-Avatar__initials {
         display: none;
       }
     }
 
-    // email subject
-    .FqgPc {
-      display: none;
+    .uu6rV, // expand emails button
+    .FqgPc // email subject
+    {
+      visibility: hidden;
     }
   }
 
@@ -56,6 +59,7 @@
 
   // date container
   .WP8_u {
+    justify-content: right;
     span {
       text-align: right;
     }

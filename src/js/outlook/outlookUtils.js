@@ -1,7 +1,8 @@
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
-import { replaceClass, hasClass } from '../shared/utils.js';
+import { hasClass, replaceClass } from '../shared/utils.js';
+import { getOptions } from '../shared/options.js';
 
-const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, TIME_ROW } = OUTLOOK_CLASSES;
+const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
 const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
@@ -26,14 +27,23 @@ const deconstructEmail = email => {
   return { address, domain, tld };
 };
 
+const matchEmails = (email1, email2) => {
+  const { address: address1, domain: domain1 } = deconstructEmail(email1);
+  const { address: address2, domain: domain2 } = deconstructEmail(email2);
+  return address1 === address2 && domain1 === domain2;
+};
+
 export const matchesMyEmail = email => {
   const myEmail = getMyEmailAddress();
+  const { emailAliases } = getOptions();
   if (!myEmail || !email) {
     return false;
   }
-  const { address: myAddress, domain: myDomain } = deconstructEmail(myEmail);
-  const { address, domain } = deconstructEmail(email);
-  return myAddress === address && myDomain === domain;
+  const emails = [myEmail];
+  if (emailAliases) {
+    emails.push(...emailAliases.split(';'));
+  }
+  return emails.some(e => matchEmails(e, email));
 };
 
 export const isInInbox = () => document.location.pathname === '/mail/' || document.location.pathname.match(/mail\/inbox/g);
@@ -92,19 +102,19 @@ export const setSelectedRow = row => {
   replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
 };
 
-export const findNextVisibleRow = (currentRow, searchNext = true, includeTimeRows = false) => {
+export const findNextVisibleRow = (currentRow, searchNext = true) => {
   const navigator = searchNext ? 'nextSibling' : 'previousSibling';
   const currentBundle = currentRow.getAttribute('data-bundles');
   let nextRow = currentRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
   if (!nextRow) return;
-  let isEmailOrTimeRow = hasClass(nextRow, EMAIL_ROW_CLASS) || (includeTimeRows && hasClass(nextRow, TIME_ROW));
+  let isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
   let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
   let isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
   // let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
-  while (nextRow && (!isEmailOrTimeRow || isEmailBundled || !isSameBundle)) {
+  while (nextRow && (!isEmail || isEmailBundled || !isSameBundle)) {
     nextRow = nextRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
     if (nextRow) {
-      isEmailOrTimeRow = hasClass(nextRow, EMAIL_ROW_CLASS) || (includeTimeRows && hasClass(nextRow, TIME_ROW));
+      isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
       isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
       isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
       // isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;

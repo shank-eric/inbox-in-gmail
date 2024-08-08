@@ -65,12 +65,10 @@ export default {
     // },
     KeyN: ({ removeReminderClass }) => removeReminderClass(),
     KeyE: ({ currentRow, navigate, ...rest }) => {
-      if (emailPreview.previewShowing) {
-        emailPreview.emailClicked(currentRow);
-      }
       navigate({ currentRow, ...rest });
     },
-    KeyT: async () => {
+    KeyT: async ({ event }) => {
+      event.preventDefault();
       const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
       composeButton.click();
       const toAddress = await observeForElement(document, COMPOSE_TO_ADDRESS);
@@ -103,9 +101,9 @@ export default {
 
     if (rowToSelect) {
       setTimeout(() => {
-        const selector = rowToSelect;
-        selector.click(); // check the box to select the row
-        selector.click(); // check it again to uncheck the box, but leave it selected
+        rowToSelect.setAttribute('data-preview-enabled', false);
+        rowToSelect.click();
+        rowToSelect.setAttribute('data-preview-enabled', true);
         setSelectedRow(rowToSelect);
       });
     }

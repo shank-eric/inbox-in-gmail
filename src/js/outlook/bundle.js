@@ -67,87 +67,82 @@ export default class Bundle {
 
     const bundleWrapper = htmlToElements(`
     <div>
-    <div data-animatable="true" class="EeHm8">
-    <div
-      tabindex="-1"
-      class="${EMAIL_ROW} ${BUNDLE_WRAPPER_CLASS}"
-      aria-selected="false"
-      role="option"
-      style="order: ${email.order - 1}"
-      data-inbox=${encodedId}
-      data-show-emails="false"
-    >
-      <div draggable="true">
+      <div data-animatable="true" class="EeHm8">
         <div
-          class="${EMAIL_ROW_INNER_CONTAINER} hDNlA lHRXq IjQyD JCRRb DLvHz"
           tabindex="-1"
+          class="${EMAIL_ROW} ${BUNDLE_WRAPPER_CLASS}"
+          aria-selected="false"
+          role="option"
+          style="order: ${email.order - 1}"
+          data-inbox=${encodedId}
+          data-show-emails="false"
         >
-          <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
-          <div class="ZTnQq">
-            <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-              <div class="DMjcl XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
-                <div class="XG5Jd d1dnN B3KmY q0f8X"
-                  tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
-                >
-                  <span
-                    role="img" id="avatar-${encodedId}" class="fui-Avatar r81b29z mP9b0 oWYiS BQOiO ___15c0rxp f1w9dchk fxldao9 fy9rknc" aria-label="${title}"
-                  >
-                    <span id="avatar-${encodedId}__initials" class="fui-Avatar__initials rip04v ___456t1b0"
-                    style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}"
+          <div draggable="true">
+            <div
+              class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz hDNlA"
+              tabindex="-1"
+            >
+              <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
+              <div class="ZTnQq">
+                <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
+                  <div class="DMjcl BevFE WA2af XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
+                    <div class="XG5Jd XJ3XJ q0f8X XW8cf"
+                      tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                     >
-                    ${abbrev}</span>
-                  </span>
-                  <div class="ms-Checkbox is-enabled to0aR XG5Jd ${ROOT}">
-                    <input class="${INPUT}" type="checkbox" tabindex="-1" id="checkbox-${encodedId}" data-ktp-execute-target="true"/>
-                    <label class="ms-Checkbox-label ${LABEL}" for="${encodedId}">
-                      <div class="ms-Checkbox-checkbox gy2XW i7xzh ${CHECKBOX}" data-ktp-target="true">
-                        <i data-icon-name="CheckMark" aria-hidden="true" class="ms-Checkbox-checkmark M3Q9u ${CHECKMARK}"></i>
+                      <span
+                        role="img" id="avatar-${encodedId}" class="fui-Avatar r81b29z mP9b0 oWYiS BQOiO ___15c0rxp f1w9dchk fxldao9 fy9rknc" aria-label="${title}"
+                      >
+                        <span id="avatar-${encodedId}__initials" class="fui-Avatar__initials rip04v ___456t1b0"
+                        style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}"
+                        >
+                        ${abbrev}</span>
+                      </span>
+                      <div class="ms-Checkbox is-enabled to0aR XG5Jd ${ROOT}">
+                        <input class="${INPUT}" type="checkbox" tabindex="-1" id="checkbox-${encodedId}" data-ktp-execute-target="true"/>
+                        <label class="ms-Checkbox-label ${LABEL}" for="${encodedId}">
+                          <div class="ms-Checkbox-checkbox gy2XW i7xzh ${CHECKBOX}" data-ktp-target="true">
+                            <i data-icon-name="CheckMark" aria-hidden="true" class="ms-Checkbox-checkmark M3Q9u ${CHECKMARK}"></i>
+                          </div>
+                        </label>
                       </div>
-                    </label>
+                    </div>
+                    <div class="${EMAIL_PARTICIPANT_CONTAINERS} W3BHj Dc0o9 Ejrkd">
+                      <span class="label-link"
+                      style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}">
+                        ${title}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div class="${EMAIL_PARTICIPANT_CONTAINERS} W3BHj Dc0o9 Ejrkd">
-                  <span class="label-link"
-                  style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}">
-                    ${title}
-                  </span>
-                </div>
-                <div class="">
-                  <div class="s93_XCYBPlIFwyUuLPd5 tTNd3pbNNouuyPAh49lU">
-                      <!--this is where the buttons are-->
+                  <div class="dTBo0 XW8cf TAT3V XG5Jd"
+                    style="width: ${columnWidths[1][0]}; max-width: ${columnWidths[1][0]}; padding-left: ${columnWidths[1][1]};">
+                    <div class="gmffI ovvvr">
+                      <div class="gy2aJ Ejrkd bundle-senders">
+                      </div>
+                      <div class="YH9yX">
+                        <div class="Zgp3k">
+                          <span class="FqgPc gy2aJ Ejrkd"></span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="dTBo0 xAXjl"
-                style="width: ${columnWidths[1][0]}; max-width: ${columnWidths[1][0]}; padding-left: ${columnWidths[1][1]};">
-                <div class="gmffI ovvvr">
-                  <div class="gy2aJ Ejrkd bundle-senders">
-                  </div>
-                  <div class="YH9yX">
-                    <div class="Zgp3k">
-                      <span class="FqgPc gy2aJ Ejrkd"></span>
+                  <div class="WP8_u" style="width: ${columnWidths[2][0]}; max-width: ${columnWidths[2][0]};">
+                    <div class="lulAg">
+                      <span
+                        class="${EMAIL_DATE} B3KmY qq2gS IHjSF D8iyG _rWRU Ejrkd hwyHQ B3KmY"
+                      >
+                        ${email.getDate()}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="WP8_u" style="width: ${columnWidths[2][0]}; max-width: ${columnWidths[2][0]};">
-                <div class="lulAg">
-                  <span
-                    class="${EMAIL_DATE} B3KmY qq2gS IHjSF D8iyG _rWRU Ejrkd hwyHQ B3KmY"
-                  >
-                    ${email.getDate()}
-                  </span>
-                </div>
-              </div>
+              <div class="QpoLy"></div>
             </div>
           </div>
-          <div class="QpoLy"></div>
+          <span class="hidden-selector"></span>
         </div>
+        <div class="bundle-spacer"></div>
       </div>
-      <span class="hidden-selector"></span>
-      <div class="bundle-spacer"></div>
-    </div>
-    </div>
     </div>
     `);
 
@@ -254,6 +249,7 @@ export default class Bundle {
     this.addCount();
     this.addSenders();
     this.checkUnread();
+    this.checkExpanded();
     this.updateColumnWidths();
     this.updateCheckbox();
   }
@@ -298,6 +294,15 @@ export default class Bundle {
     } else {
       removeClass(this.element, 'bundle-unread');
       removeClass(this.element.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), UNREAD_EMAIL_ROW);
+    }
+  }
+
+  checkExpanded() {
+    const expanded = this.element.getAttribute('data-show-emails') === 'true';
+    if (expanded) {
+      addClass(this.element.parentElement.parentElement, 'bundle-expanded');
+    } else {
+      removeClass(this.element.parentElement.parentElement, 'bundle-expanded');
     }
   }
 
