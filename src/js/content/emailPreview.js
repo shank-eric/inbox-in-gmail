@@ -136,8 +136,8 @@ export default {
   },
   previewMatchesSelected(previewPane, selectedEmail) {
     const previewThreadId = getThreadId(previewPane, 'data-thread-perm-id');
-    const selectedThreadId = getThreadId(selectedEmail);
-    return `#${previewThreadId}` === selectedThreadId;
+    const selectedThreadId = getThreadId(selectedEmail).split('#')[1];
+    return previewThreadId === selectedThreadId;
   },
   checkPreview() {
     const previewPane = this.getPreviewPane();
