@@ -3,7 +3,7 @@ import { CLASSES } from '../shared/constants.js';
 
 export const DEFAULT_PROFILE_URL = '';
 export const OUTLOOK_CLASSES = {
-  COMPOSE_SUBJECT_LINE: 'TK0zZ',
+  COMPOSE_SUBJECT_LINE: 'aSCRs',
   EMAIL_ROW: 'jGG6V',
   EMAIL_ROW_INNER_CONTAINER: 'lHRXq',
   EMAIL_COLUMN_CONTAINER: 'hQj7T',
@@ -36,7 +36,7 @@ const CLASS_SELECTORS = buildSelectors(OUTLOOK_CLASSES);
 export const OUTLOOK_SELECTORS = {
   ...CLASS_SELECTORS,
   COMPOSE_NEW_MAIL_BUTTON: 'button[data-unique-id=Ribbon-588]',
-  COMPOSE_TO_ADDRESS: '.AtODR [role="textbox"]',
+  COMPOSE_TO_ADDRESS: '.FO1cd div:nth-child(3) [role="textbox"]',
   PREVIEW_PANE: `${CLASS_SELECTORS.PREVIEW_CONTAINER} #ReadingPaneContainerId`,
   SELECTED_EMAIL: `${CLASS_SELECTORS.EMAIL_ROW}[aria-selected="true"]`,
   EMAIL_PARTICIPANTS: `${CLASS_SELECTORS.EMAIL_PARTICIPANT_CONTAINERS} span, .ESO13 span, .uSUBc span`,
