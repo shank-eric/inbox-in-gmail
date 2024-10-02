@@ -67,13 +67,12 @@ export default class Bundle {
 
     const bundleWrapper = htmlToElements(`
     <div>
-      <div data-animatable="true" class="EeHm8">
+      <div>
         <div
           tabindex="-1"
           class="${EMAIL_ROW} ${BUNDLE_WRAPPER_CLASS}"
           aria-selected="false"
           role="option"
-          style="order: ${email.order - 1}"
           data-inbox=${encodedId}
           data-show-emails="false"
         >
