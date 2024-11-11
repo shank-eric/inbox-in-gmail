@@ -1,6 +1,6 @@
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { hasClass, htmlToElements, replaceClass, observeForElement, observeForRemoval } from '../shared/utils.js';
+import { hasClass, htmlToElements, replaceClass, observeForElement, observeForRemoval, randomNumber } from '../shared/utils.js';
 import { checkImportantMarkers, getCurrentBundle, isInBundle, openBundle, openInbox, setCurrentBundle } from './emailUtils.js';
 
 import { getOptions } from '../shared/options.js';
@@ -34,13 +34,18 @@ export default class Bundle {
       });
       return;
     }
+    const randomStart = randomNumber(5, 25);
+    const randomEnd = randomNumber(65, 95);
+
+    const backgroundGradient = `background: linear-gradient(90deg, rgba(0,0,0,0) 0%, ${label.labelBGColorWithAlpha} ${randomStart}%, rgba(0,0,0,0) ${randomEnd}%);`;
 
     const bundleWrapper = htmlToElements(`
-        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox="${encodedId}" data-date-label="${dateLabel}" data-show-emails="false">
+        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox="${encodedId}" data-date-label="${dateLabel}" data-show-emails="false" style="">
           <div class="PF xY"></div>
           <div class="apU xY"></div>
           <div class="WA xY ${importantMarkerClass}"></div>
-          <div class="yX xY label-link .yW" style="color: ${label.textColor}">${title}</div>
+          <div class="qj aEe xY aid" style="background-color:${label.labelBGColor};"></div>
+          <div class="yX xY label-link .yW" style="color: ${label.labelTextColor}; ${backgroundGradient}">${title}</div>
           <div class="xY a4W">
             <div class="xS">
               <div class="xT">

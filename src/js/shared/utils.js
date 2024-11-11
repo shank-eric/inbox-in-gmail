@@ -121,3 +121,5 @@ export const replaceClass = (element, classToAdd, classToRemove) => {
   removeClass(element, classToRemove);
   addClass(element, classToAdd);
 };
+
+export const randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
