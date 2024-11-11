@@ -32,16 +32,18 @@ export default class Email {
       const labelTitle = labelEl.getAttribute('title');
       const labelText = labelContainer.querySelector(EMAIL_LABEL_TEXTS);
       const whiteText = labelText.style.color === 'rgb(255, 255, 255)';
-      const rawBGColors = labelEl.style.backgroundColor.replace('rgb(', '').replace(')', '').split(',');
-      const labelBGColorWithAlpha = `rgba(${[...rawBGColors, ' 0.75'].join(',')})`;
+      const bgColor = labelEl.style.backgroundColor;
+      const rawBGColors = bgColor.replace('rgb(', '').replace(')', '').split(',');
+      const darkerBg = isDarkMode() ? !whiteText : whiteText;
 
       return {
         title: labelTitle,
         encodedId: encodeBundleId(labelTitle),
-        textColor: isDarkMode() || whiteText ? labelEl.style.backgroundColor : labelText.style.color,
-        labelTextColor: labelText.style.color,
+        textColor: labelText.style.color,
+        darkerBg,
+        rawBGColors,
+        whiteText,
         labelBGColor: labelEl.style.backgroundColor,
-        labelBGColorWithAlpha,
         element: labelEl,
       };
     });

@@ -7,7 +7,8 @@ import keyboard from './keyboard.js';
 async function checkForDarkMode() {
   const backgroundEl = await observeForElement(document, '.wl');
   const backgroundColor = getComputedStyle(backgroundEl).getPropertyValue('background-color');
-  const darkThemeColors = [ 'rgb(17, 17, 17)', 'rgb(13, 14, 14)' ];
+  const darkThemeColors = ['rgb(0, 0, 0)', 'rgb(24, 26, 27)', 'rgb(17, 17, 17)', 'rgb(13, 14, 14)', 'rgb(34, 34, 34)'];
+  // console.log(`body bg: ${backgroundColor}`);
   const gmailDarkTheme = darkThemeColors.includes(backgroundColor);
   if (gmailDarkTheme) {
     addClass(document.body, 'dark-mode');
