@@ -35,7 +35,8 @@
     {
       "matches": [
         "https://outlook.office.com/mail/*",
-        "https://outlook.office365.com/mail/*"
+        "https://outlook.office365.com/mail/*",
+        "https://outlook.office.com.mcas.ms/mail/*"
       ],
       "css": [
         "css/outlook.css"
@@ -55,7 +56,8 @@
       "matches": [
         "https://mail.google.com/*",
         "https://outlook.office.com/*",
-        "https://outlook.office365.com/*"
+        "https://outlook.office365.com/*",
+        "https://outlook.office.com.mcas.ms/*"
       ]
     }
   ]
