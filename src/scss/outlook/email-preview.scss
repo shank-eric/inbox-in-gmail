@@ -71,7 +71,7 @@
     }
 
     &.show-preview {
-      left: 2px;
+      left: 0px;
     }
 
     // message header
@@ -120,6 +120,7 @@
       border: 1px solid;
       z-index: 15;
       max-height: calc(100% - 41px);
+      height: auto;
       width: unset !important;
       @media (max-width: 1375px) {
         left: calc(100vw - 1000px) !important;
@@ -190,7 +191,7 @@
 
     &.bundle-preview {
       &:not(.preview-compose) {
-        left: 14px;
+        left: 12px;
       }
 
       .AJYpX,
