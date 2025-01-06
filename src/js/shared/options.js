@@ -4,8 +4,8 @@ import { addClass, removeClass } from './utils.js';
 let options = {};
 export const getOptions = () => options;
 export const reloadOptions = async () => {
-  const storage = await chrome.storage.local.get('options') || {};
-  options = storage.options;
+  const storage = !!chrome.storage?.local ? await chrome.storage?.local.get('options') : {};
+  options = storage.options || {};
   options.reminderTreatment = options.reminderTreatment || 'containing-word';
   options.emailBundling = options.emailBundling || 'enabled';
   options.showAvatar = options.showAvatar || 'enabled';
