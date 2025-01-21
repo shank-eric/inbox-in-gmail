@@ -86,6 +86,9 @@
     // custom scrollbar container
     .yyYQP {
       scrollbar-gutter: auto;
+      > div {
+        height: auto !important;
+      }
     }
 
     // show more messages button
@@ -160,15 +163,16 @@
         bottom: calc(50% - 200px);
         right: calc(50% - 200px);
 
-        .FO1cd {
+        .to-address {
           // to address
           position: absolute;
-          top: 5px;
-          left: 125px;
+          top: 35px;
+          left: 0;
           min-height: 0;
           height: 0;
-          .fui-Input {
-            border-bottom: none;
+          border-bottom: none;
+          .fui-Input__contentBefore {
+            display: none;
           }
           [role='textbox'] {
             width: 200px;
@@ -179,8 +183,8 @@
         .YNxxt, // bcc button
         .SZoKq, // to button
         .hIf0n, // a border under the to address
-        .Ss04u, // CC button
-        .QAAin, // CC address
+        .iP72H, // CC button
+        .zjzhQ, // CC address
         .yz4r1, // body
         .QH6of //some bottom margin
         {

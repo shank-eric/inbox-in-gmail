@@ -6,19 +6,11 @@ import { findNextVisibleRow, setSelectedRow } from './outlookUtils.js';
 
 const { EMAIL_ROW: EMAIL_ROW_CLASS } = OUTLOOK_CLASSES;
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS, SELECTED_EMAIL, EMAIL_ROW } = OUTLOOK_SELECTORS;
+const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS_CONTAINER, SELECTED_EMAIL, EMAIL_ROW } = OUTLOOK_SELECTORS;
 
 export default {
   init() {
     window.addEventListener('keydown', this.handleKeyboardEvents.bind(this));
-    window.addEventListener('focus', () => {
-      if (document.activeElement === window.document.body) {
-        const selectedEmail = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
-        if (selectedEmail) {
-          selectedEmail.focus();
-        }
-      }
-    });
   },
   handleKeyboardEvents(event) {
     const currentRow = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
@@ -73,14 +65,16 @@ export default {
       event.preventDefault();
       const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
       composeButton.click();
-      const toAddress = await observeForElement(document, COMPOSE_TO_ADDRESS);
-      toAddress.innerHTML = 'eric@everfi.com';
-      const sensitivityMenuButton = await observeForElement(document, '.tDDbL');
-      sensitivityMenuButton.click();
-      const internalOption = await observeForElement(document, '.ms-ContextualMenu-list li:nth-child(2) button');
-      internalOption.click();
-      const subjectLine = document.querySelector(COMPOSE_SUBJECT_LINE);
+      const toAddressContainer = await observeForElement(document, COMPOSE_TO_ADDRESS_CONTAINER);
       addClass(document.querySelector('.preview-compose'), 'reminder-compose');
+      addClass(toAddressContainer, 'to-address');
+      const toAddress = await observeForElement(toAddressContainer, '[role="textbox"]');
+      toAddress.innerHTML = 'eric@everfi.com';
+      const sensitivityMenuButton = await observeForElement(document, '.eU3xR button:nth-child(1)');
+      sensitivityMenuButton.click();
+      const internalOption = await observeForElement(document, '[role="menu"] [role="menuitemcheckbox"]:nth-child(3)');
+      internalOption.click();
+      const subjectLine = await observeForElement(document, COMPOSE_SUBJECT_LINE);
       setTimeout(() => {
         subjectLine.focus();
         subjectLine.value = '';
