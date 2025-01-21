@@ -10,8 +10,8 @@ const { LEFT_MENU_BUTTON } = GMAIL_SELECTORS;
 const { BUNDLE_PAGE_CLASS } = CLASSES;
 
 export default {
-  init() {
-    reloadOptions();
+  async init() {
+    await reloadOptions();
     this.updateFloatingButtons();
     this.updateHeader();
     if (!isInInbox()) {

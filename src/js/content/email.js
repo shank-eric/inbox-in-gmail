@@ -1,39 +1,16 @@
-import {
-  buildAvatar,
-  getMyEmailAddress,
-  getTabs,
-  isDarkMode,
-  isInBundle,
-  isInInbox,
-  openInbox
-} from './emailUtils.js';
+import { buildAvatar, getMyEmailAddress, getTabs, isDarkMode, isInBundle, isInInbox, openInbox } from './emailUtils.js';
 import dateLabels from './dateLabels.js';
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import calendar from './calendar.js';
 import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
 
-import {
-  addClass,
-  encodeBundleId,
-  querySelectorText,
-  querySelectorWithText,
-  hasClass,
-  queryParentSelector,
-  observeForRemoval
-} from '../shared/utils.js';
+import { addClass, encodeBundleId, querySelectorText, querySelectorWithText, hasClass, queryParentSelector, observeForRemoval } from '../shared/utils.js';
 
-const IGNORE_CLICK_COLUMNS = [ 'oZ-x3', 'apU', 'bq4' ];
+const IGNORE_CLICK_COLUMNS = ['oZ-x3', 'apU', 'bq4'];
 const { REMINDER_EMAIL_CLASS, UNBUNDLED_PARENT_LABEL } = CLASSES;
 const { UNREAD_EMAIL_ROW } = GMAIL_CLASSES;
-const {
-  EMAIL_DATE,
-  EMAIL_LABEL_CONTAINERS,
-  EMAIL_LABEL_TEXTS,
-  EMAIL_LABELS,
-  EMAIL_PARTICIPANTS,
-  EMAIL_SUBJECT
-} = GMAIL_SELECTORS;
+const { EMAIL_DATE, EMAIL_LABEL_CONTAINERS, EMAIL_LABEL_TEXTS, EMAIL_LABELS, EMAIL_PARTICIPANTS, EMAIL_SUBJECT } = GMAIL_SELECTORS;
 
 export default class Email {
   constructor(emailEl, prevDate) {
@@ -55,12 +32,19 @@ export default class Email {
       const labelTitle = labelEl.getAttribute('title');
       const labelText = labelContainer.querySelector(EMAIL_LABEL_TEXTS);
       const whiteText = labelText.style.color === 'rgb(255, 255, 255)';
+      const bgColor = labelEl.style.backgroundColor;
+      const rawBGColors = bgColor.replace('rgb(', '').replace(')', '').split(',');
+      const darkerBg = isDarkMode() ? !whiteText : whiteText;
 
       return {
         title: labelTitle,
         encodedId: encodeBundleId(labelTitle),
-        textColor: isDarkMode() || whiteText ? labelEl.style.backgroundColor : labelText.style.color,
-        element: labelEl
+        textColor: labelText.style.color,
+        darkerBg,
+        rawBGColors,
+        whiteText,
+        labelBGColor: labelEl.style.backgroundColor,
+        element: labelEl,
       };
     });
   }
@@ -71,7 +55,7 @@ export default class Email {
   }
 
   isBundled() {
-    return [ 'bundled', 'show-bundled' ].includes(this.emailEl.getAttribute('data-inbox'));
+    return ['bundled', 'show-bundled'].includes(this.emailEl.getAttribute('data-inbox'));
   }
 
   isReminder() {
@@ -154,7 +138,7 @@ export default class Email {
       date,
       dateLabel,
       dateDisplay,
-      rawDate
+      rawDate,
     };
 
     this.emailEl.setAttribute('data-date-label', dateLabel);
@@ -210,8 +194,8 @@ export default class Email {
     if (subject) {
       if (subject.toLowerCase() === 'reminder') {
         subjectEl.outerHTML = '';
-        this.emailEl.querySelectorAll('.Zt').forEach(node => { node.outerHTML = ''; });
-        this.emailEl.querySelectorAll('.y2').forEach(node => { node.style.color = '#202124'; });
+        this.emailEl.querySelectorAll('.Zt').forEach(node => (node.outerHTML = ''));
+        this.emailEl.querySelectorAll('.y2').forEach(node => (node.style.color = '#202124'));
       } else if (this.isCalendarReminder()) {
         if (subject.indexOf('Notification: ') >= 0) {
           let newSubject = subject.replace('Notification: ', '');
@@ -222,7 +206,7 @@ export default class Email {
       }
     }
     // replace email with Reminder
-    this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS).forEach(node => { node.innerHTML = 'Reminder'; });
+    this.emailEl.querySelectorAll(EMAIL_PARTICIPANTS).forEach(node => (node.innerHTML = 'Reminder'));
     const options = getOptions();
     if (options.showAvatar === 'enabled') {
       this.addAvatar();

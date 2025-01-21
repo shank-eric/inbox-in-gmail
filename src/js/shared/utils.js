@@ -121,3 +121,13 @@ export const replaceClass = (element, classToAdd, classToRemove) => {
   removeClass(element, classToRemove);
   addClass(element, classToAdd);
 };
+
+export const randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+export const createRgba = (r, g, b, a) => {
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+export const createGradient = (colors, direction = 'to right') => {
+  const gradient = `linear-gradient(${direction}, ${colors.join(', ')})`;
+  return gradient;
+};

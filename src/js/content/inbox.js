@@ -16,7 +16,7 @@ const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 export default {
   async observeEmails() {
     const mainContainer = await observeForElement(document, '.AO');
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver(async () => {
       observer.disconnect();
       if (isInInbox()) {
         let inbox = document.querySelector(`${EMAIL_CONTAINER}[role=main][data-pane="inbox"]`);
@@ -36,7 +36,7 @@ export default {
           inbox.style.display = 'none';
         }
       }
-      reloadOptions();
+      await reloadOptions();
       this.moveBundleElement();
       emailPreview.checkPreview();
       this.processEmails();

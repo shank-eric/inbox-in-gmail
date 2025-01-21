@@ -38,7 +38,7 @@ function saveOptions() {
 }
 
 async function restoreOptions() {
-  const { options } = (await chrome.storage.local.get('options')) || {};
+  const { options } = !!chrome.storage?.local ? await chrome.storage?.local.get('options') : {};
   selectRadioWithValue(REMINDER_TREATMENT_SELECTOR, options.reminderTreatment);
   selectRadioWithValue(BUNDLED_EMAIL_SELECTOR, options.emailBundling);
   selectRadioWithValue(AVATAR_SELECTOR, options.showAvatar);

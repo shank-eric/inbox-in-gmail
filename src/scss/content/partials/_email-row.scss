@@ -27,6 +27,11 @@
     margin-top: 23px;
   }
 
+  .oZ-x3 {
+    padding: 0;
+    margin: 0 15px;
+  }
+
   .avatar {
     left: -6px; //shift left to line up with the checkbox underneath it
     flex: 32px 0 0;
@@ -73,6 +78,7 @@
 
   //subject-column
   .a4W {
+    margin-left: 15px;
     //inline-label
     .ar {
       height: 22px;

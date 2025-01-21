@@ -1,6 +1,6 @@
 import { CLASSES, GMAIL_CLASSES, GMAIL_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { hasClass, htmlToElements, replaceClass, observeForElement, observeForRemoval } from '../shared/utils.js';
+import { createRgba, hasClass, htmlToElements, replaceClass, observeForElement, observeForRemoval, randomNumber } from '../shared/utils.js';
 import { checkImportantMarkers, getCurrentBundle, isInBundle, openBundle, openInbox, setCurrentBundle } from './emailUtils.js';
 
 import { getOptions } from '../shared/options.js';
@@ -25,6 +25,7 @@ export default class Bundle {
     const { email, emailEl, encodedId, title } = this.attrs;
     const labels = this.attrs.email.getLabels();
     const label = labels.find(lab => lab.encodedId === encodedId);
+    const { darkerBg, labelBGColor, rawBGColors, textColor } = label;
     const { dateLabel, dateDisplay, rawDate } = email.dateInfo;
     const options = getOptions();
     const showEmail = this.attrs.count === 1 && !options.bundleOne;
@@ -34,13 +35,33 @@ export default class Bundle {
       });
       return;
     }
+    const randomStart = randomNumber(5, 19);
+    const titlePx = title.length * 6;
+    const randomMid = randomNumber(randomStart + titlePx, randomStart + titlePx + 25);
+    const randomEnd = randomNumber(randomMid, randomMid + 25);
+    const bgOpacities = darkerBg ? ['0.25', '0.75', '1'] : ['0.10', '0.5', '0.9'];
+    const [lighterBgColor, darkerBgColor, darkestBgColor] = bgOpacities.map(opacity => createRgba(...rawBGColors, opacity));
+    const gradientColors = [
+      `${lighterBgColor} 0%`,
+      `${darkerBgColor} ${randomStart}px`,
+      `${darkestBgColor} ${randomMid}px`,
+      `${lighterBgColor} ${randomEnd}%`,
+      'rgba(0, 0, 0, 0) 100%',
+    ];
+
+    const backgroundGradient = `background: linear-gradient(90deg, ${gradientColors.join(', ')});`;
 
     const bundleWrapper = htmlToElements(`
-        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox="${encodedId}" data-date-label="${dateLabel}" data-show-emails="false">
+        <div class="${EMAIL_ROW} yO ${BUNDLE_WRAPPER_CLASS}" data-inbox="${encodedId}" data-date-label="${dateLabel}" data-show-emails="false" style="">
           <div class="PF xY"></div>
           <div class="apU xY"></div>
           <div class="WA xY ${importantMarkerClass}"></div>
-          <div class="yX xY label-link .yW" style="color: ${label.textColor}">${title}</div>
+          <div class="qj aEe xY oZ-x3" style="background-color:${labelBGColor};"></div>
+          <div class="yX xY " role="gridcell" tabindex="-1">
+            <div id=":2f" class="yW label-link" style="color: ${textColor}; ${backgroundGradient};">
+              ${title}
+            </div>
+          </div>
           <div class="xY a4W">
             <div class="xS">
               <div class="xT">
