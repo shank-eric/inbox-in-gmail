@@ -54,7 +54,7 @@ export default {
 
       // Collect senders, message count and unread stats for each label
       if (emailLabels.length && email.isBundled()) {
-        const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0].name;
+        const firstParticipant = email.isReminder() ? 'Reminder' : email.getParticipants()[0]?.name;
         emailLabels.forEach(label => {
           const encodedId = encodeBundleId(label);
           if (!labelStats[encodedId]) {
