@@ -5,6 +5,11 @@ html[dir='ltr'] {
       .G8_Dc {
         overflow-y: auto;
         height: auto;
+
+        // inbox header row, moved into top bar on init, outlook recreates it when navigating around
+        .bkYAr {
+          display: none;
+        }
       }
 
       // element directly inside of data-max-width

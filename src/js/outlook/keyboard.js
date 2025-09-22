@@ -70,10 +70,10 @@ export default {
       addClass(toAddressContainer, 'to-address');
       const toAddress = await observeForElement(toAddressContainer, '[role="textbox"]');
       toAddress.innerHTML = 'eric@everfi.com';
-      const sensitivityMenuButton = await observeForElement(document, '.eU3xR button:nth-child(1)');
-      sensitivityMenuButton.click();
-      const internalOption = await observeForElement(document, '[role="menu"] [role="menuitemcheckbox"]:nth-child(3)');
-      internalOption.click();
+      // const sensitivityMenuButton = await observeForElement(document, '.eU3xR button:nth-child(1)');
+      // sensitivityMenuButton.click();
+      // const internalOption = await observeForElement(document, '[role="menu"] [role="menuitemcheckbox"]:nth-child(3)');
+      // internalOption.click();
       const subjectLine = await observeForElement(document, COMPOSE_SUBJECT_LINE);
       setTimeout(() => {
         subjectLine.focus();

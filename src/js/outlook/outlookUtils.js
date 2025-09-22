@@ -46,6 +46,7 @@ export const matchesMyEmail = email => {
   return emails.some(e => matchEmails(e, email));
 };
 
+export const isSearchResults = () => !!document.querySelector('#topSearchInput')?.value;
 export const isInInbox = () => document.location.pathname === '/mail/' || document.location.pathname.match(/mail\/inbox/g);
 
 // export const openReminder = async () => {
