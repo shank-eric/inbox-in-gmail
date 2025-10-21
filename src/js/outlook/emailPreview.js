@@ -115,7 +115,7 @@ export default {
     const childrenHeight = Array.from(children)
       .map(child => (hasClass(child, 'preview-placeholder') ? 0 : child.offsetHeight))
       .reduce((a, b) => a + b, 0);
-    const totalTop = addPixels(offsetTop, childrenHeight, 39);
+    const totalTop = addPixels(offsetTop, childrenHeight, 45);
     if (previewPane.style.top !== totalTop) {
       previewPane.style.top = totalTop;
     }

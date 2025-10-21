@@ -65,6 +65,7 @@
   #ReadingPaneContainerId {
     position: absolute;
     box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
+    z-index: 10; // this causes the preview to cover the sticky email and bundle header rows, but is needed to ensure links in the email are clickable
 
     &:not(.show-preview):not(.preview-compose) {
       display: none;
@@ -114,54 +115,17 @@
     }
 
     &.preview-compose {
-      display: flex;
-      flex: initial;
-      align-items: flex-end;
       bottom: 41px;
-      left: unset;
       right: 18px;
       border: 1px solid;
       z-index: 15;
-      max-height: calc(100% - 41px);
-      height: auto;
-      width: unset !important;
-      @media (max-width: 1375px) {
-        left: calc(100vw - 1000px) !important;
-        right: unset !important;
-      }
-
-      .soZTT {
-        position: initial;
-        width: 600px;
-        max-height: calc(100vh - 200px);
-
-        &.compose-reminder {
-          top: calc(50vh - 150px);
-          left: calc(50vw - 400px);
-          position: fixed !important;
-          width: 800px;
-
-          .iZH92 {
-            margin-top: 0;
-          }
-
-          // formatting bar
-          .h04ZZ,
-          // body
-          // to/cc container
-          .JpOD6 {
-            display: none;
-          }
-        }
-      }
-
-      .pvlo9 {
-        height: 20px;
-      }
+      max-height: calc(100vh - 600px);
+      width: 800px !important;
 
       &.reminder-compose {
-        bottom: calc(50% - 200px);
-        right: calc(50% - 200px);
+        bottom: calc(50% - 75px);
+        right: calc(50% - 400px);
+        max-height: 150px;
 
         .to-address {
           // to address
