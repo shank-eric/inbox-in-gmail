@@ -1,7 +1,7 @@
 import { addClass, encodeBundleId, hasClass, removeClass, runObserver } from '../shared/utils.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 
-import { isInInbox } from './outlookUtils.js';
+import { isInInbox, isSearchResults } from './outlookUtils.js';
 import { CLASSES } from '../shared/constants.js';
 import { findCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 
@@ -91,7 +91,7 @@ export default {
     }
 
     // Update bundle stats
-    if (options.emailBundling === 'enabled' && isInInbox()) {
+    if (options.emailBundling === 'enabled' && isInInbox() && !isSearchResults()) {
       document.querySelectorAll(`.${BUNDLE_WRAPPER_CLASS}`).forEach(el => (el.style.display = 'block'));
       Object.values(labelStats).forEach(stats => {
         const bundle = new Bundle(stats);

@@ -176,7 +176,7 @@ export default {
     this.hideIfCurrentEmailRemoved(previewPane);
 
     const nothingSelected = previewPane.querySelector('.QYrHp');
-    const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS})`);
+    const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS}):not(button)`);
     if (selectedEmails.length === 1 && !nothingSelected) {
       const selectedEmail = selectedEmails[0];
       const selectedEmailIsBundled = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled';
