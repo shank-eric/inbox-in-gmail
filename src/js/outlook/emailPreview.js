@@ -167,9 +167,7 @@ export default {
     if (selectedEmailOptions) {
       replaceClass(previewPane, 'show-preview', 'preview-compose');
       previewPane.style.height = null;
-      if (previewPlaceholder) {
-        previewPlaceholder.style.height = null;
-      }
+      this.hidePreviewPane(previewPane);
       return;
     }
     replaceClass(previewPane, 'show-preview', 'preview-compose');
