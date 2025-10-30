@@ -1,5 +1,6 @@
 .preview-placeholder {
   position: relative;
+  pointer-events: none;
   .preview-scroll-target {
     position: absolute;
     top: -80px;
@@ -65,7 +66,6 @@
   #ReadingPaneContainerId {
     position: absolute;
     box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
-    z-index: 10; // this causes the preview to cover the sticky email and bundle header rows, but is needed to ensure links in the email are clickable
 
     &:not(.show-preview):not(.preview-compose) {
       display: none;
@@ -138,7 +138,7 @@
           .fui-Input__contentBefore {
             display: none;
           }
-          [role='textbox'] {
+          [contenteditable='true'] {
             width: 200px;
             z-index: 100;
           }

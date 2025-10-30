@@ -106,20 +106,21 @@ export const setSelectedRow = row => {
 export const findNextVisibleRow = (currentRow, searchNext = true) => {
   const navigator = searchNext ? 'nextSibling' : 'previousSibling';
   const currentBundle = currentRow.getAttribute('data-bundles');
-  let nextRow = currentRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
+  let nextRow = currentRow.parentNode[navigator]?.firstElementChild;
   if (!nextRow) return;
   let isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-  let isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
   let isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-  // let isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
-  while (nextRow && (!isEmail || isEmailBundled || !isSameBundle)) {
-    nextRow = nextRow.parentNode.parentNode[navigator]?.firstElementChild?.firstElementChild;
+  let hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
+  let selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
+
+  while (!selectableRow) {
+    nextRow = nextRow.parentNode[navigator]?.firstElementChild;
     if (nextRow) {
       isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-      isEmailBundled = nextRow.getAttribute('data-inbox') === 'bundled';
       isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-      // isPreviousBundle = previousEmail.getAttribute('data-inbox') === 'bundled' && nextRow === previousBundle;
+      hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
     }
+    selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
   }
   return nextRow;
 };

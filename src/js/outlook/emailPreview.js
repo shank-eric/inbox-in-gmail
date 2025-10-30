@@ -38,7 +38,8 @@ export default {
       return;
     }
     const previewPane = await this.getPreviewPane();
-    const clickedCurrentEmail = clickedEmail && this.currentEmail && this.currentEmail === clickedEmail;
+    const clickedEmailContainer = clickedEmail?.querySelector('[data-convid]');
+    const clickedCurrentEmail = clickedEmail && this.currentEmail && this.currentEmail === clickedEmailContainer;
     if (clickedCurrentEmail) {
       if (this.previewShowing) {
         this.showPreview = false;
@@ -177,8 +178,8 @@ export default {
     const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS}):not(button)`);
     if (selectedEmails.length === 1 && !nothingSelected) {
       const selectedEmail = selectedEmails[0];
-      const selectedEmailIsBundled = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled';
-      const previewBundledEmail = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'show-bundled';
+      const selectedEmailIsBundled = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'bundled';
+      const previewBundledEmail = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
       const currentEmailChanged = this.currentEmail !== selectedEmail;
 
       if (previewBundledEmail) {

@@ -7,14 +7,14 @@ import { encodeBundleId, querySelectorText, querySelectorWithText, hasClass, que
 
 const { REMINDER_EMAIL_CLASS } = CLASSES;
 const { UNREAD_EMAIL_ROW } = OUTLOOK_CLASSES;
-const { EMAIL_LABELS, EMAIL_PARTICIPANTS, EMAIL_SUBJECT, EMAIL_DATE, EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
+const { EMAIL_LABELS, EMAIL_PARTICIPANTS, EMAIL_SUBJECT, EMAIL_DATE, EMAIL_ROW, EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default class Email {
   constructor(emailEl, emailIndex) {
     this.emailEl = emailEl;
     this.order = emailIndex * 100;
-    if (!this.emailEl.parentNode.parentNode.style.order) {
-      this.emailEl.parentNode.parentNode.style.order = this.order;
+    if (!this.emailEl.parentNode.style.order) {
+      this.emailEl.parentNode.style.order = this.order;
     }
 
     const options = getOptions();
@@ -93,10 +93,6 @@ export default class Email {
   }
 
   processBundle() {
-    if (!this.emailEl.querySelector(EMAIL_ROW_INNER_CONTAINER)) {
-      console.log(`Email row inner container (${EMAIL_ROW_INNER_CONTAINER}) not found for email`, this.emailEl);
-      return;
-    }
     const labels = this.getLabels(); // .filter(label => !tabs.includes(label.title));
 
     // only process bundles on the inbox page
@@ -121,7 +117,7 @@ export default class Email {
       this.emailEl.setAttribute('data-bundles', bundles); // labels.map(label => encodeBundleId(label.title)).join('||'));
     } else {
       this.emailEl.setAttribute('data-inbox', 'email');
-      this.emailEl.parentNode.parentNode.style.order = this.order;
+      this.emailEl.parentNode.style.order = this.order;
       if (isUnbundled) {
         labels.forEach(label => {
           if (label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL)) {
@@ -174,7 +170,7 @@ export default class Email {
       return;
     }
     setSelectedRow(this.emailEl);
-    const conversationEmail = queryParentSelector(event.target, '[role="treeitem"]');
+    const conversationEmail = queryParentSelector(event.target, EMAIL_ROW);
     if (conversationEmail) {
       emailPreview.emailClicked(conversationEmail);
     } else {

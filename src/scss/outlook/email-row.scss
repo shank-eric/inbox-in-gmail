@@ -1,12 +1,14 @@
 //email row
-.Tq8Mt {
+.EeHm8 {
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
-  pointer-events: all;
 
-  &[data-previewing='true'] {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  .jGG6V {
+    pointer-events: all;
+    &[data-previewing='true'] {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
   }
 
   &[data-inbox='bundled'] {
@@ -17,7 +19,7 @@
     width: calc(100% - 24px);
     margin: 0 auto;
 
-    &[data-previewing='true'] {
+    .jGG6V[data-previewing='true'] {
       top: 36px;
     }
   }

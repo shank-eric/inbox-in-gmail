@@ -3,7 +3,8 @@ import { CLASSES } from '../shared/constants.js';
 
 export const DEFAULT_PROFILE_URL = '';
 export const OUTLOOK_CLASSES = {
-  EMAIL_ROW: 'Tq8Mt',
+  EMAIL_ROW: 'EeHm8',
+  EMAIL_ROW_OUTER_CONTAINER: 'jGG6V',
   EMAIL_ROW_INNER_CONTAINER: 'lHRXq',
   EMAIL_COLUMN_CONTAINER: 'hQj7T',
   EMAIL_CONTAINER: 'q9iRC',

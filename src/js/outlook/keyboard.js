@@ -1,12 +1,11 @@
-import { addClass, hasClass, isTypable, observeForCondition, observeForElement, removeClass } from '../shared/utils.js';
+import { addClass, isTypable, observeForCondition, observeForElement, removeClass } from '../shared/utils.js';
 import emailPreview from './emailPreview.js';
 import { CLASSES } from '../shared/constants.js';
-import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
+import { OUTLOOK_SELECTORS } from './constants.js';
 import { findNextVisibleRow, setSelectedRow } from './outlookUtils.js';
 
-const { EMAIL_ROW: EMAIL_ROW_CLASS } = OUTLOOK_CLASSES;
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS_CONTAINER, SELECTED_EMAIL, EMAIL_ROW } = OUTLOOK_SELECTORS;
+const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS_CONTAINER, SELECTED_EMAIL, EMAIL_ROW, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default {
   init() {
@@ -65,41 +64,45 @@ export default {
       event.preventDefault();
       const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
       composeButton.click();
-      const toAddressContainer = await observeForElement(document, COMPOSE_TO_ADDRESS_CONTAINER);
-      addClass(document.querySelector('.preview-compose'), 'reminder-compose');
-      addClass(toAddressContainer, 'to-address');
-      const toAddress = await observeForElement(toAddressContainer, '[role="textbox"]');
-      toAddress.innerHTML = 'eric@everfi.com';
+      const composeContainer = await observeForElement(document, '.preview-compose');
+      addClass(composeContainer, 'reminder-compose');
       // const sensitivityMenuButton = await observeForElement(document, '.eU3xR button:nth-child(1)');
       // sensitivityMenuButton.click();
       // const internalOption = await observeForElement(document, '[role="menu"] [role="menuitemcheckbox"]:nth-child(3)');
       // internalOption.click();
       const subjectLine = await observeForElement(document, COMPOSE_SUBJECT_LINE);
-      setTimeout(() => {
-        subjectLine.focus();
-        subjectLine.value = '';
+      setTimeout(async () => {
+        const toAddressContainer = await observeForElement(document, COMPOSE_TO_ADDRESS_CONTAINER);
+        addClass(toAddressContainer, 'to-address');
+        const toAddress = await observeForElement(toAddressContainer, '[contenteditable="true"]');
+        toAddress.innerHTML = 'eric@everfi.com';
+        setTimeout(() => {
+          subjectLine.focus();
+          subjectLine.value = '';
+        }, 0);
       }, 500);
     },
     Quote: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? -250 : -25),
     Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25),
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
-  async navigate({ currentRow, keyCode, target }) {
+  async navigate({ currentRow, keyCode }) {
+    const currentOuterRow = currentRow ? currentRow.querySelector(EMAIL_ROW_OUTER_CONTAINER) : null;
     const searchNext = ['ArrowDown', 'KeyJ', 'KeyE'].includes(keyCode);
-    const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(EMAIL_ROW);
-    if (hasClass(target, EMAIL_ROW_CLASS)) {
-      await observeForCondition(document, () => {
-        const outlookSelectedRow = document.querySelector('[aria-selected="true"]');
-        const matches = outlookSelectedRow === target;
-        return !matches;
-      });
-    }
+    const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(`${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
+    await observeForCondition(document, () => {
+      const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
+      const matches = outlookSelectedRow === currentOuterRow;
+      return !matches;
+    });
 
     if (rowToSelect) {
       setTimeout(() => {
-        rowToSelect.setAttribute('data-preview-enabled', false);
-        rowToSelect.click();
-        rowToSelect.setAttribute('data-preview-enabled', true);
+        const rowToSelectOuterRow = rowToSelect.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+        const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
+        if (rowToSelectOuterRow !== outlookSelectedRow) {
+          rowToSelectOuterRow.click();
+        }
         setSelectedRow(rowToSelect);
       });
     }
