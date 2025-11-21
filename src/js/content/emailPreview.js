@@ -135,8 +135,8 @@ export default {
     }
   },
   previewMatchesSelected(previewPane, selectedEmail) {
-    const previewThreadId = getThreadId(previewPane, 'data-thread-perm-id');
-    const selectedThreadId = getThreadId(selectedEmail).split('#')[1];
+    const previewThreadId = getThreadId(previewPane, 'data-legacy-thread-id');
+    const selectedThreadId = getThreadId(selectedEmail, 'data-legacy-thread-id');
     return previewThreadId === selectedThreadId;
   },
   checkPreview() {
