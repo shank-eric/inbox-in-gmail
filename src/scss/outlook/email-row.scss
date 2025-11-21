@@ -2,6 +2,7 @@
 .EeHm8 {
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
 
+  .gDC9O,
   .jGG6V {
     pointer-events: all;
     &[data-previewing='true'] {
@@ -19,8 +20,11 @@
     width: calc(100% - 24px);
     margin: 0 auto;
 
-    .jGG6V[data-previewing='true'] {
-      top: 36px;
+    .gDC9O,
+    .jGG6V {
+      &[data-previewing='true'] {
+        top: 36px;
+      }
     }
   }
 

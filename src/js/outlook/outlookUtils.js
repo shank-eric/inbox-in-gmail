@@ -114,12 +114,14 @@ export const findNextVisibleRow = (currentRow, searchNext = true) => {
   let selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
 
   while (!selectableRow) {
-    nextRow = nextRow.parentNode[navigator]?.firstElementChild;
-    if (nextRow) {
-      isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-      isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-      hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
+    nextRow = nextRow?.parentNode[navigator]?.firstElementChild;
+    if (!nextRow) {
+      return;
     }
+
+    isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
+    isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
+    hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
     selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
   }
   return nextRow;
