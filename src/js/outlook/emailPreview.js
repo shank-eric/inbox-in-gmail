@@ -38,7 +38,8 @@ export default {
       return;
     }
     const previewPane = await this.getPreviewPane();
-    const clickedCurrentEmail = clickedEmail && this.currentEmail && this.currentEmail === clickedEmail;
+    const clickedEmailContainer = clickedEmail?.querySelector('[data-convid]');
+    const clickedCurrentEmail = clickedEmail && this.currentEmail && this.currentEmail === clickedEmailContainer;
     if (clickedCurrentEmail) {
       if (this.previewShowing) {
         this.showPreview = false;
@@ -115,7 +116,7 @@ export default {
     const childrenHeight = Array.from(children)
       .map(child => (hasClass(child, 'preview-placeholder') ? 0 : child.offsetHeight))
       .reduce((a, b) => a + b, 0);
-    const totalTop = addPixels(offsetTop, childrenHeight, 39);
+    const totalTop = addPixels(offsetTop, childrenHeight, 45);
     if (previewPane.style.top !== totalTop) {
       previewPane.style.top = totalTop;
     }
@@ -167,9 +168,7 @@ export default {
     if (selectedEmailOptions) {
       replaceClass(previewPane, 'show-preview', 'preview-compose');
       previewPane.style.height = null;
-      if (previewPlaceholder) {
-        previewPlaceholder.style.height = null;
-      }
+      this.hidePreviewPane(previewPane);
       return;
     }
     replaceClass(previewPane, 'show-preview', 'preview-compose');
@@ -179,8 +178,8 @@ export default {
     const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS}):not(button)`);
     if (selectedEmails.length === 1 && !nothingSelected) {
       const selectedEmail = selectedEmails[0];
-      const selectedEmailIsBundled = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'bundled';
-      const previewBundledEmail = selectedEmail && selectedEmail.getAttribute('data-inbox') === 'show-bundled';
+      const selectedEmailIsBundled = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'bundled';
+      const previewBundledEmail = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
       const currentEmailChanged = this.currentEmail !== selectedEmail;
 
       if (previewBundledEmail) {

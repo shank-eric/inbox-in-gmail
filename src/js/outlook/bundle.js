@@ -29,7 +29,7 @@ export default class Bundle {
     this.attrs = attrs;
     this.element = document.querySelector(`${EMAIL_CONTAINER} .${BUNDLE_WRAPPER_CLASS}[data-inbox="${attrs.encodedId}"]`);
     if (attrs.count === 0 && this.element) {
-      this.element.parentNode.parentNode.remove();
+      this.element.parentNode.remove();
     } else if (!this.element) {
       this.element = this.buildBundleWrapper();
     }
@@ -67,15 +67,15 @@ export default class Bundle {
 
     const bundleWrapper = htmlToElements(`
     <div>
-      <div>
-        <div
-          tabindex="-1"
-          class="${EMAIL_ROW} ${BUNDLE_WRAPPER_CLASS}"
-          aria-selected="false"
-          role="option"
-          data-inbox=${encodedId}
-          data-show-emails="false"
-        >
+      <div
+        tabindex="-1"
+        class="${EMAIL_ROW} ${BUNDLE_WRAPPER_CLASS}"
+        aria-selected="false"
+        role="option"
+        data-inbox=${encodedId}
+        data-show-emails="false"
+      >
+        <div class="jGG6V gDC9O">
           <div draggable="true">
             <div
               class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz hDNlA"
@@ -124,7 +124,7 @@ export default class Bundle {
                       </div>
                     </div>
                   </div>
-                  <div class="WP8_u" style="width: ${columnWidths[2][0]}; max-width: ${columnWidths[2][0]};">
+                  <div class="VuThs" style="width: ${columnWidths[2][0]}; max-width: ${columnWidths[2][0]};">
                     <div class="lulAg">
                       <span
                         class="${EMAIL_DATE} B3KmY qq2gS IHjSF D8iyG _rWRU Ejrkd hwyHQ B3KmY"
@@ -148,7 +148,7 @@ export default class Bundle {
     bundleWrapper.onclick = e => this.handleBundleClick(e);
 
     if (emailEl && emailEl.parentNode) {
-      const emailWrapper = emailEl.parentNode.parentNode;
+      const emailWrapper = emailEl.parentNode;
       emailWrapper.parentElement.insertBefore(bundleWrapper, emailWrapper);
     }
     return bundleWrapper;
@@ -162,7 +162,7 @@ export default class Bundle {
     }
 
     const { encodedId } = this.attrs;
-    const order = parseInt(this.element.parentNode.parentNode.style.order);
+    const order = parseInt(this.element.parentNode.style.order);
     emailPreview.hidePreview();
     const currentlyShowing = bundleRow.getAttribute('data-show-emails') === 'true';
     if (currentlyShowing) {
@@ -178,7 +178,7 @@ export default class Bundle {
       const bundledEmails = document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`);
       bundledEmails.forEach((emailRow, index) => {
         emailRow.setAttribute('data-inbox', 'show-bundled');
-        emailRow.parentNode.parentNode.style.order = order + index + 1;
+        emailRow.parentNode.style.order = order + index + 1;
         if (index === 0) {
           setSelectedRow(emailRow);
         }
@@ -233,11 +233,11 @@ export default class Bundle {
   updateStats({ email, emailEl }) {
     this.email = email;
     this.emailEl = emailEl;
-    this.element.parentNode.parentNode.style.order = email.order - 1;
+    this.element.parentNode.style.order = email.order - 1;
     const { encodedId } = this.attrs;
-    const order = parseInt(this.element.parentNode.parentNode.style.order);
+    const order = parseInt(this.element.parentNode.style.order);
     document.querySelectorAll(`[data-inbox="show-bundled"][data-${encodedId}]`).forEach((emailRow, index) => {
-      emailRow.parentNode.parentNode.style.order = order + index + 1;
+      emailRow.parentNode.style.order = order + index + 1;
     });
 
     const options = getOptions();
@@ -299,9 +299,9 @@ export default class Bundle {
   checkExpanded() {
     const expanded = this.element.getAttribute('data-show-emails') === 'true';
     if (expanded) {
-      addClass(this.element.parentElement.parentElement, 'bundle-expanded');
+      addClass(this.element.parentElement, 'bundle-expanded');
     } else {
-      removeClass(this.element.parentElement.parentElement, 'bundle-expanded');
+      removeClass(this.element.parentElement, 'bundle-expanded');
     }
   }
 

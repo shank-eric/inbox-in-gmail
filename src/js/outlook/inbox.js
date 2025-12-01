@@ -10,7 +10,7 @@ import Bundle from './bundle.js';
 import emailPreview from './emailPreview.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { EMAIL_CONTAINER, EMAIL_ROW, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, TIME_ROW } = OUTLOOK_SELECTORS;
+const { EMAIL_CONTAINER, EMAIL_ROW, EMAIL_ROW_INNER_CONTAINER, HIDDEN_EMAIL_ROW, SELECTED_EMAIL, TIME_ROW } = OUTLOOK_SELECTORS;
 
 export default {
   async observeEmails() {
@@ -48,6 +48,10 @@ export default {
     // TODO: this for loop is an area that might be able to be shared with gmail
     for (let i = emailElements.length - 1; i >= 0; i--) {
       const emailElement = emailElements[i];
+      if (!emailElement.querySelector(EMAIL_ROW_INNER_CONTAINER)) {
+        // there's an extra empty email container, skip it
+        continue;
+      }
       const email = new Email(emailElement, i);
 
       const emailLabels = email.getLabels().map(label => label.title);
@@ -116,7 +120,7 @@ export default {
   getBundledLabels() {
     const bundleRows = Array.from(document.querySelectorAll(`${EMAIL_CONTAINER} .${BUNDLE_WRAPPER_CLASS}`));
     return bundleRows.reduce((bundles, el) => {
-      bundles[el.getAttribute('data-inbox')] = el.parentNode.parentNode;
+      bundles[el.getAttribute('data-inbox')] = el.parentNode;
       return bundles;
     }, {});
   },
