@@ -103,26 +103,24 @@ export const setSelectedRow = row => {
   replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
 };
 
+const selectableRow = (row, currentBundle) => {
+  const isSameBundle = row.getAttribute('data-bundles') === currentBundle;
+  const isEmail = hasClass(row, EMAIL_ROW_CLASS) && !hasClass(row, BUNDLE_WRAPPER_CLASS);
+  const hasInnerContainer = row.querySelector(EMAIL_ROW_INNER_CONTAINER);
+  return row && isEmail && hasInnerContainer && isSameBundle;
+};
+
 export const findNextVisibleRow = (currentRow, searchNext = true) => {
   const navigator = searchNext ? 'nextSibling' : 'previousSibling';
   const currentBundle = currentRow.getAttribute('data-bundles');
   let nextRow = currentRow.parentNode[navigator]?.firstElementChild;
   if (!nextRow) return;
-  let isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-  let isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-  let hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
-  let selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
 
-  while (!selectableRow) {
+  while (!selectableRow(nextRow, currentBundle)) {
     nextRow = nextRow?.parentNode[navigator]?.firstElementChild;
     if (!nextRow) {
       return;
     }
-
-    isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-    isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-    hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
-    selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
   }
   return nextRow;
 };
