@@ -74,12 +74,10 @@ html[dir='ltr'] {
 
               //email rows container
               > div {
-                display: flex;
                 height: unset !important;
-                flex-direction: column;
-                position: initial;
                 > div {
-                  position: unset !important;
+                  display: flex;
+                  flex-direction: column;
                   &.bundle-expanded {
                     position: sticky !important;
                     top: 0;

@@ -13,7 +13,8 @@
   }
 
   &[data-inbox='bundled'] {
-    display: none !important;
+    height: 0 !important;
+    opacity: 0;
   }
 
   &[data-inbox='show-bundled'] {
@@ -48,6 +49,9 @@
 
   &.bundle-last-email:not([data-previewing='true']) {
     margin-bottom: 12px;
+    &[data-inbox='bundled'] {
+      margin-bottom: 0;
+    }
   }
 
   // inner container
