@@ -79,7 +79,7 @@ export default class Bundle {
         data-inbox=${encodedId}
         data-show-emails="false"
       >
-        <div class="jGG6V gDC9O">
+        <div class="Tq8Mt">
           <div draggable="true">
             <div
               class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz hDNlA"
