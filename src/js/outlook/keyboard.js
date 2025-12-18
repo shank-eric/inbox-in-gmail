@@ -101,10 +101,12 @@ export default {
     if (rowToSelect) {
       // console.log('Found rowToSelect', rowToSelect);
       setTimeout(() => {
+        rowToSelectOuterRow.click();
         const rowToSelectOuterRow = rowToSelect.querySelector(EMAIL_ROW_OUTER_CONTAINER);
         const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
         // console.log(`rowToSelectOuterRow matches outlookSelectedRow: ${rowToSelectOuterRow === outlookSelectedRow}`, rowToSelectOuterRow, outlookSelectedRow);
         if (rowToSelectOuterRow !== outlookSelectedRow) {
+          // if they match, first click would collapse the row, click again to re-expand
           rowToSelectOuterRow.click();
         }
         setSelectedRow(rowToSelect);
