@@ -3,7 +3,7 @@ import { hasClass, replaceClass } from '../shared/utils.js';
 import { getOptions } from '../shared/options.js';
 
 const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
-const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
+const { EMAIL_ROW_INNER_CONTAINER, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
 const findEmailInLink = () => {
@@ -105,9 +105,10 @@ export const setSelectedRow = row => {
 
 const selectableRow = (row, currentBundle) => {
   const isSameBundle = row.getAttribute('data-bundles') === currentBundle;
+  const isInCollapsedBundle = row.getAttribute('data-inbox') === 'bundled';
   const isEmail = hasClass(row, EMAIL_ROW_CLASS) && !hasClass(row, BUNDLE_WRAPPER_CLASS);
-  const hasInnerContainer = row.querySelector(EMAIL_ROW_INNER_CONTAINER);
-  return row && isEmail && hasInnerContainer && isSameBundle;
+  const hasOuterContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+  return row && isEmail && hasOuterContainer && isSameBundle && !isInCollapsedBundle;
 };
 
 export const findNextVisibleRow = (currentRow, searchNext = true) => {

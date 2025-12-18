@@ -87,24 +87,30 @@ export default {
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
   async navigate({ currentRow, keyCode }) {
-    const currentOuterRow = currentRow ? currentRow.querySelector(EMAIL_ROW_OUTER_CONTAINER) : null;
+    // const currentOuterRow = currentRow ? currentRow.querySelector(EMAIL_ROW_OUTER_CONTAINER) : null;
     const searchNext = ['ArrowDown', 'KeyJ', 'KeyE'].includes(keyCode);
     const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(`${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
-    await observeForCondition(document, () => {
-      const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
-      const matches = outlookSelectedRow === currentOuterRow;
-      return !matches;
-    });
+    // if (currentRow) {
+    //   await observeForCondition(document, () => {
+    //     const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
+    //     const matches = outlookSelectedRow === currentOuterRow;
+    //     return !matches;
+    //   });
+    // }
 
     if (rowToSelect) {
+      // console.log('Found rowToSelect', rowToSelect);
       setTimeout(() => {
         const rowToSelectOuterRow = rowToSelect.querySelector(EMAIL_ROW_OUTER_CONTAINER);
         const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
+        // console.log(`rowToSelectOuterRow matches outlookSelectedRow: ${rowToSelectOuterRow === outlookSelectedRow}`, rowToSelectOuterRow, outlookSelectedRow);
         if (rowToSelectOuterRow !== outlookSelectedRow) {
           rowToSelectOuterRow.click();
         }
         setSelectedRow(rowToSelect);
       });
+      // } else {
+      //   console.log("couldn't find rowToSelect");
     }
   },
   async removeReminderClass() {

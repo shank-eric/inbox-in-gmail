@@ -137,9 +137,6 @@ export default {
     if (this.previewObserver) {
       this.previewObserver.disconnect();
     }
-    if (this.rowObserver) {
-      this.rowObserver.disconnect();
-    }
     if (previewPane) {
       previewPane.style['margin-top'] = 0;
     }
