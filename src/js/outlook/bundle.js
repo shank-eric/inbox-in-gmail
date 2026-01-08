@@ -8,6 +8,7 @@ import { setSelectedRow } from './outlookUtils.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const {
+  EMAIL_ROW_OUTER_CONTAINER,
   EMAIL_ROW_INNER_CONTAINER,
   EMAIL_COLUMN_CONTAINER,
   EMAIL_DATE,
@@ -79,7 +80,7 @@ export default class Bundle {
         data-inbox=${encodedId}
         data-show-emails="false"
       >
-        <div class="Tq8Mt">
+        <div class="${EMAIL_ROW_OUTER_CONTAINER}">
           <div draggable="true">
             <div
               class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz hDNlA"

@@ -69,6 +69,7 @@ export default {
     this.movePreviewPane(previewPane);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     const previewScrollTarget = document.querySelector('.preview-scroll-target');
+    const listScrollContainer = document.querySelector('.jEpCF > div');
     addClass(previewPane, 'show-preview');
     this.previewShowing = true;
     const adjustPreviewSize = () => {
@@ -87,6 +88,7 @@ export default {
       const sizeChanged = previewHeight !== placeholderHeight;
       if (sizeChanged) {
         previewPlaceholder.style.height = previewHeight;
+        listScrollContainer.style.maxHeight = `calc(100vh + ${previewHeight})`;
         previewPane.style.height = previewHeight;
         previewPane.style.width = placeholderWidth;
         const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
@@ -139,6 +141,10 @@ export default {
     }
     if (previewPane) {
       previewPane.style['margin-top'] = 0;
+    }
+    const listScrollContainer = document.querySelector('.jEpCF > div');
+    if (listScrollContainer) {
+      listScrollContainer.style.maxHeight = '100vh';
     }
   },
   hideIfCurrentEmailRemoved(previewPane) {

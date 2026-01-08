@@ -1,4 +1,4 @@
-import { addClass, isTypable, observeForCondition, observeForElement, removeClass } from '../shared/utils.js';
+import { addClass, isTypable, observeForElement, removeClass } from '../shared/utils.js';
 import emailPreview from './emailPreview.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
@@ -101,11 +101,11 @@ export default {
     if (rowToSelect) {
       // console.log('Found rowToSelect', rowToSelect);
       setTimeout(() => {
-        rowToSelectOuterRow.click();
         const rowToSelectOuterRow = rowToSelect.querySelector(EMAIL_ROW_OUTER_CONTAINER);
         const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
         // console.log(`rowToSelectOuterRow matches outlookSelectedRow: ${rowToSelectOuterRow === outlookSelectedRow}`, rowToSelectOuterRow, outlookSelectedRow);
         if (rowToSelectOuterRow !== outlookSelectedRow) {
+          rowToSelectOuterRow.click();
           // if they match, first click would collapse the row, click again to re-expand
           rowToSelectOuterRow.click();
         }

@@ -36,7 +36,7 @@ html[dir='ltr'] {
 
             #MailList {
               overflow: visible;
-              min-height: 100vh;
+              min-height: calc(100vh - 170px);
             }
 
             // email columns container
@@ -76,6 +76,7 @@ html[dir='ltr'] {
               //email rows container
               > div {
                 height: unset !important;
+                max-height: 200vh;
                 display: flex;
                 flex-direction: column;
                 position: initial;
