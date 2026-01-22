@@ -144,7 +144,7 @@ export default {
     }
     const listScrollContainer = document.querySelector('.jEpCF > div');
     if (listScrollContainer) {
-      listScrollContainer.style.maxHeight = '100vh';
+      listScrollContainer.style.maxHeight = '';
     }
   },
   hideIfCurrentEmailRemoved(previewPane) {

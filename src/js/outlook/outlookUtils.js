@@ -100,6 +100,8 @@ export const setSelectedRow = row => {
   //   document.body.setAttribute('tabindex', '-1');
   //   document.body.focus();
   // });
+  const outerContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+  outerContainer.focus();
   replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
 };
 

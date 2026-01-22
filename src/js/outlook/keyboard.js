@@ -2,7 +2,7 @@ import { addClass, isTypable, observeForElement, removeClass } from '../shared/u
 import emailPreview from './emailPreview.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
-import { findNextVisibleRow, setSelectedRow } from './outlookUtils.js';
+import { findNextVisibleRow } from './outlookUtils.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS_CONTAINER, SELECTED_EMAIL, EMAIL_ROW, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
@@ -109,7 +109,7 @@ export default {
           // if they match, first click would collapse the row, click again to re-expand
           rowToSelectOuterRow.click();
         }
-        setSelectedRow(rowToSelect);
+        // setSelectedRow(rowToSelect);
       });
       // } else {
       //   console.log("couldn't find rowToSelect");

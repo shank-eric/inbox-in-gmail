@@ -2,7 +2,8 @@
 .EeHm8 {
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 4px;
 
-  .gDC9O {
+  .gDC9O,
+  .jGG6V {
     pointer-events: all;
     &[data-previewing='true'] {
       position: sticky;
@@ -20,7 +21,8 @@
     width: calc(100% - 24px);
     margin: 0 auto;
 
-    .gDC9O {
+    .gDC9O,
+    .jGG6V {
       &[data-previewing='true'] {
         top: 36px;
       }
