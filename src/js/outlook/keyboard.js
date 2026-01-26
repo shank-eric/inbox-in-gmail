@@ -90,6 +90,7 @@ export default {
     // const currentOuterRow = currentRow ? currentRow.querySelector(EMAIL_ROW_OUTER_CONTAINER) : null;
     const searchNext = ['ArrowDown', 'KeyJ', 'KeyE'].includes(keyCode);
     const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(`${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
+    const convId = rowToSelect ? rowToSelect.querySelector('[data-convid]').getAttribute('data-convid') : null;
     // if (currentRow) {
     //   await observeForCondition(document, () => {
     //     const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
@@ -99,9 +100,8 @@ export default {
     // }
 
     if (rowToSelect) {
-      // console.log('Found rowToSelect', rowToSelect);
-      setTimeout(() => {
-        const rowToSelectOuterRow = rowToSelect.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+      setTimeout(async () => {
+        const rowToSelectOuterRow = await observeForElement(document, `[data-convid="${convId}"]`);
         const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
         // console.log(`rowToSelectOuterRow matches outlookSelectedRow: ${rowToSelectOuterRow === outlookSelectedRow}`, rowToSelectOuterRow, outlookSelectedRow);
         if (rowToSelectOuterRow !== outlookSelectedRow) {
