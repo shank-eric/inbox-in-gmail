@@ -88,6 +88,9 @@ export const queryParentSelector = (el, selector) => {
     if (!parent) {
       return null;
     }
+    if (parent.matches(selector)) {
+      return parent;
+    }
   }
   return parent;
 };

@@ -25,74 +25,62 @@
       }
     }
 
-    .top-bar {
-      display: flex;
-      background-color: var(--neutralLighter);
+    // moved bar with filter and select all
+    .bkYAr {
+      border-bottom: none;
+      background: transparent;
+      position: absolute;
+      pointer-events: all;
+      // inner container in Inbox bar
+      .rEzfP {
+        padding: 0;
 
-      > div:nth-child(1) {
-        flex-grow: 1;
-      }
+        // another container in Inbox bar
+        .brFj8 {
+          height: 40px;
+          margin-bottom: 0;
+        }
 
-      // moved bar with filter and select all
-      .bkYAr {
-        border-bottom: none;
-        background: transparent;
+        // Inbox span
+        .vlQVl {
+          display: none;
+        }
 
-        // inner container in Inbox bar
-        .rEzfP {
-          padding: 0;
+        // enable checkboxes button
+        .ac0xq {
+          display: none;
+        }
+        // select all container
+        .ZYym6 {
+          margin: 0;
+          height: 40px;
+          visibility: visible;
 
-          // another container in Inbox bar
-          .brFj8 {
-            height: 40px;
-            margin-bottom: 0;
-          }
+          [role='checkbox'] {
+            margin-left: 0;
 
-          // Inbox span
-          .vlQVl {
-            display: none;
-          }
-
-          // enable checkboxes button
-          .ac0xq {
-            display: none;
-          }
-          // select all container
-          .ZYym6 {
-            margin: 0;
-            height: 40px;
-            visibility: visible;
-
-            [role='checkbox'] {
-              margin-left: 0;
-
-              &:hover {
-                background-color: var(--neutralLight);
-              }
-            }
-
-            [role='button'] {
-              border-radius: 0;
-
-              &:hover {
-                background-color: var(--neutralLight);
-              }
-            }
-          }
-          // set favorite (star) container
-          .IG8s8 {
-            display: none;
-            margin: 0 !important;
-            padding: 0;
-          }
-          // filter container
-          .p4pwT {
-            position: initial;
-            padding-right: 15px;
-            [role='button']:hover {
+            &:hover {
               background-color: var(--neutralLight);
             }
           }
+
+          [role='button'] {
+            border-radius: 0;
+
+            &:hover {
+              background-color: var(--neutralLight);
+            }
+          }
+        }
+        // set favorite (star) container
+        .IG8s8 {
+          display: none;
+          margin: 0 !important;
+          padding: 0;
+        }
+        // filter container
+        .p4pwT {
+          display: none;
         }
       }
     }

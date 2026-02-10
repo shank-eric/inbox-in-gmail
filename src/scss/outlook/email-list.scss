@@ -5,10 +5,9 @@ html[dir='ltr'] {
       .G8_Dc {
         overflow-y: auto;
         height: auto;
-
-        // inbox header row, moved into top bar on init, outlook recreates it when navigating around
-        .bkYAr {
-          display: none;
+        .rRhzD {
+          height: unset;
+          max-height: unset;
         }
       }
 
@@ -34,8 +33,12 @@ html[dir='ltr'] {
             z-index: 10;
             pointer-events: none;
 
-            #MailList {
+            .Cz7T5,
+            .ONAp_ {
               overflow: visible;
+              background: transparent;
+            }
+            #MailList {
               min-height: calc(100vh - 170px);
             }
 
@@ -95,12 +98,6 @@ html[dir='ltr'] {
                 top: 0;
                 z-index: 10;
               }
-            }
-
-            .Cz7T5,
-            .ONAp_ {
-              overflow: visible;
-              background: transparent;
             }
 
             // email column headers
