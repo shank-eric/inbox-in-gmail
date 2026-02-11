@@ -8,6 +8,8 @@ import { setSelectedRow } from './outlookUtils.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const {
+  EMAIL_ROW_OUTER_CONTAINER_PRIMARY,
+  EMAIL_ROW_OUTER_CONTAINER_SECONDARY,
   EMAIL_ROW_INNER_CONTAINER,
   EMAIL_COLUMN_CONTAINER,
   EMAIL_DATE,
@@ -52,7 +54,11 @@ export default class Bundle {
 
     const { UNCHECKED_CHECKBOX_CLASSES } = getCheckboxClasses();
     const { ROOT, INPUT, LABEL, CHECKBOX, CHECKMARK } = UNCHECKED_CHECKBOX_CLASSES;
-    const columnWidths = Array.from(emailEl.querySelectorAll(`.${EMAIL_COLUMN_CONTAINER} > div`)).map(el => [el.style.width, el.style.paddingLeft]);
+    const columnWidths = Array.from(emailEl.querySelectorAll(`.${EMAIL_COLUMN_CONTAINER} > div`)).map(el => ({
+      width: el.style.width,
+      paddingLeft: el.style.paddingLeft,
+      marginLeft: el.style.marginLeft,
+    }));
     emailEl.style.width = '';
     addClass(emailEl, 'bundle-email');
     const abbrev = title
@@ -75,7 +81,7 @@ export default class Bundle {
         data-inbox=${encodedId}
         data-show-emails="false"
       >
-        <div class="jGG6V gDC9O">
+        <div class="${EMAIL_ROW_OUTER_CONTAINER_PRIMARY} ${EMAIL_ROW_OUTER_CONTAINER_SECONDARY}">
           <div draggable="true">
             <div
               class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz hDNlA"
@@ -84,7 +90,7 @@ export default class Bundle {
               <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
               <div class="ZTnQq">
                 <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-                  <div class="DMjcl BevFE WA2af XG5Jd" style="width: ${columnWidths[0][0]}; max-width: ${columnWidths[0][0]};">
+                  <div class="DMjcl BevFE XG5Jd gi0cv" style="width: ${columnWidths[0].width}; max-width: ${columnWidths[0].width};">
                     <div class="XG5Jd XJ3XJ q0f8X XW8cf"
                       tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                     >
@@ -112,8 +118,8 @@ export default class Bundle {
                       </span>
                     </div>
                   </div>
-                  <div class="dTBo0 XW8cf TAT3V XG5Jd"
-                    style="width: ${columnWidths[1][0]}; max-width: ${columnWidths[1][0]}; padding-left: ${columnWidths[1][1]};">
+                  <div class="dTBo0 XW8cf XG5Jd oegl4"
+                    style="width: ${columnWidths[1].width}; max-width: ${columnWidths[1].width}; padding-left: ${columnWidths[1].paddingLeft};">
                     <div class="gmffI ovvvr">
                       <div class="gy2aJ Ejrkd bundle-senders">
                       </div>
@@ -124,7 +130,7 @@ export default class Bundle {
                       </div>
                     </div>
                   </div>
-                  <div class="VuThs" style="width: ${columnWidths[2][0]}; max-width: ${columnWidths[2][0]};">
+                  <div class="VuThs" style="width: ${columnWidths[2].width}; max-width: ${columnWidths[2].width}; margin-left: ${columnWidths[2].marginLeft};">
                     <div class="lulAg">
                       <span
                         class="${EMAIL_DATE} B3KmY qq2gS IHjSF D8iyG _rWRU Ejrkd hwyHQ B3KmY"

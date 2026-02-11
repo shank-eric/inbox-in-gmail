@@ -3,7 +3,7 @@ import { hasClass, replaceClass } from '../shared/utils.js';
 import { getOptions } from '../shared/options.js';
 
 const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
-const { EMAIL_ROW_INNER_CONTAINER } = OUTLOOK_SELECTORS;
+const { EMAIL_ROW_INNER_CONTAINER, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
 const findEmailInLink = () => {
@@ -100,7 +100,17 @@ export const setSelectedRow = row => {
   //   document.body.setAttribute('tabindex', '-1');
   //   document.body.focus();
   // });
+  const outerContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+  outerContainer.focus();
   replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
+};
+
+const selectableRow = (row, currentBundle) => {
+  const isSameBundle = row.getAttribute('data-bundles') === currentBundle;
+  const isInCollapsedBundle = row.getAttribute('data-inbox') === 'bundled';
+  const isEmail = hasClass(row, EMAIL_ROW_CLASS) && !hasClass(row, BUNDLE_WRAPPER_CLASS);
+  const hasOuterContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+  return row && isEmail && hasOuterContainer && isSameBundle && !isInCollapsedBundle;
 };
 
 export const findNextVisibleRow = (currentRow, searchNext = true) => {
@@ -108,21 +118,12 @@ export const findNextVisibleRow = (currentRow, searchNext = true) => {
   const currentBundle = currentRow.getAttribute('data-bundles');
   let nextRow = currentRow.parentNode[navigator]?.firstElementChild;
   if (!nextRow) return;
-  let isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-  let isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-  let hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
-  let selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
 
-  while (!selectableRow) {
+  while (!selectableRow(nextRow, currentBundle)) {
     nextRow = nextRow?.parentNode[navigator]?.firstElementChild;
     if (!nextRow) {
       return;
     }
-
-    isEmail = hasClass(nextRow, EMAIL_ROW_CLASS) && !hasClass(nextRow, BUNDLE_WRAPPER_CLASS);
-    isSameBundle = nextRow.getAttribute('data-bundles') === currentBundle;
-    hasInnerContainer = nextRow.querySelector(EMAIL_ROW_INNER_CONTAINER);
-    selectableRow = nextRow && isEmail && hasInnerContainer && isSameBundle;
   }
   return nextRow;
 };

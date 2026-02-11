@@ -1,15 +1,15 @@
-import { addClass, isTypable, observeForCondition, observeForElement, removeClass } from '../shared/utils.js';
+import { addClass, hasClass, isTypable, observeForElement, removeClass } from '../shared/utils.js';
 import emailPreview from './emailPreview.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
-import { findNextVisibleRow, setSelectedRow } from './outlookUtils.js';
+import { findNextVisibleRow } from './outlookUtils.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS_CONTAINER, SELECTED_EMAIL, EMAIL_ROW, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
 
 export default {
   init() {
-    window.addEventListener('keydown', this.handleKeyboardEvents.bind(this));
+    window.addEventListener('keydown', this.handleKeyboardEvents.bind(this), true);
   },
   handleKeyboardEvents(event) {
     const currentRow = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
@@ -49,7 +49,7 @@ export default {
       if (emailPreview.previewShowing) {
         emailPreview.emailClicked(currentRow);
       } else {
-        const currentBundle = currentRow.getAttribute('data-bundles');
+        const currentBundle = currentRow?.getAttribute('data-bundles');
         if (currentBundle) {
           const bundleRow = document.querySelector(`[data-inbox="${currentBundle}"]`);
           bundleRow.click();
@@ -87,23 +87,27 @@ export default {
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
   async navigate({ currentRow, keyCode }) {
-    const currentOuterRow = currentRow ? currentRow.querySelector(EMAIL_ROW_OUTER_CONTAINER) : null;
     const searchNext = ['ArrowDown', 'KeyJ', 'KeyE'].includes(keyCode);
     const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(`${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
-    await observeForCondition(document, () => {
-      const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
-      const matches = outlookSelectedRow === currentOuterRow;
-      return !matches;
-    });
+    if (hasClass(rowToSelect, BUNDLE_WRAPPER_CLASS)) {
+      rowToSelect.click();
+      return;
+    }
+    const convId = rowToSelect ? rowToSelect.querySelector('[data-convid]')?.getAttribute('data-convid') : null;
+    if (!convId) {
+      console.log('No convId found for rowToSelect', rowToSelect);
+      return;
+    }
 
     if (rowToSelect) {
-      setTimeout(() => {
-        const rowToSelectOuterRow = rowToSelect.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+      setTimeout(async () => {
+        const rowToSelectOuterRow = await observeForElement(document, `[data-convid="${convId}"]`);
         const outlookSelectedRow = document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`);
         if (rowToSelectOuterRow !== outlookSelectedRow) {
           rowToSelectOuterRow.click();
+          // if they match, first click would collapse the row, click again to re-expand
+          rowToSelectOuterRow.click();
         }
-        setSelectedRow(rowToSelect);
       });
     }
   },

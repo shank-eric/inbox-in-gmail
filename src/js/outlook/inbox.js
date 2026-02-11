@@ -96,7 +96,7 @@ export default {
 
     // Update bundle stats
     if (options.emailBundling === 'enabled' && isInInbox() && !isSearchResults()) {
-      document.querySelectorAll(`.${BUNDLE_WRAPPER_CLASS}`).forEach(el => (el.style.display = 'block'));
+      document.querySelectorAll(`.${BUNDLE_WRAPPER_CLASS}`).forEach(el => (el.style.display = 'flex'));
       Object.values(labelStats).forEach(stats => {
         const bundle = new Bundle(stats);
         bundle.updateStats(stats);

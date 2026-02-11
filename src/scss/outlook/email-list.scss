@@ -5,10 +5,10 @@ html[dir='ltr'] {
       .G8_Dc {
         overflow-y: auto;
         height: auto;
-
-        // inbox header row, moved into top bar on init, outlook recreates it when navigating around
-        .bkYAr {
-          display: none;
+        .rRhzD {
+          height: unset;
+          max-height: unset;
+          // min-height: calc(100vh - 140px);
         }
       }
 
@@ -22,7 +22,7 @@ html[dir='ltr'] {
         .G8_Dc {
           //main email list
           .XW2m0 {
-            min-height: calc(100% - 41px);
+            // min-height: calc(100% - 41px);
             max-height: unset;
             height: auto;
             border: none;
@@ -33,6 +33,15 @@ html[dir='ltr'] {
             visibility: visible;
             z-index: 10;
             pointer-events: none;
+
+            .Cz7T5,
+            .ONAp_ {
+              overflow: visible;
+              background: transparent;
+            }
+            // #MailList {
+            //   min-height: calc(100vh - 170px);
+            // }
 
             // email columns container
             .s8wta {
@@ -61,11 +70,11 @@ html[dir='ltr'] {
             //email list scroll container
             .jEpCF {
               padding-left: 0;
+              max-height: 400vh;
               height: unset !important;
               width: unset !important;
               scrollbar-gutter: auto;
               overflow: visible !important;
-              max-height: 400vh;
               background: transparent;
 
               //email rows container
@@ -76,19 +85,19 @@ html[dir='ltr'] {
                 position: initial;
                 > div {
                   position: unset !important;
-                  &.bundle-expanded {
-                    position: sticky !important;
-                    top: 0;
-                    z-index: 10;
-                  }
                 }
               }
-            }
 
-            .Cz7T5,
-            .ONAp_ {
-              overflow: visible;
-              background: transparent;
+              .bundle-expanded,
+              .sticky-email,
+              .sticky-bundle-email {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 10;
+              }
+              .sticky-bundle-email {
+                top: 36px !important;
+              }
             }
 
             // email column headers

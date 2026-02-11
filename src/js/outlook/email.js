@@ -163,7 +163,7 @@ export default class Email {
   }
 
   async emailClicked(event) {
-    const isButton = queryParentSelector(event.target, '.ms-Button');
+    const isButton = queryParentSelector(event.target, 'button');
     const isCheckbox = queryParentSelector(event.target, '.ms-Checkbox');
     const isSelector = hasClass(event.target, 'hidden-selector');
     if (isButton || isCheckbox || isSelector) {
