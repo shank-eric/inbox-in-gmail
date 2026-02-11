@@ -78,20 +78,15 @@ html[dir='ltr'] {
 
               //email rows container
               > div {
-                height: unset !important;
                 display: flex;
+                height: unset !important;
                 flex-direction: column;
                 position: initial;
                 > div {
                   position: unset !important;
                 }
               }
-              &[data-virtuoso-scroller='true'] {
-                > div > div {
-                  display: flex;
-                  flex-direction: column;
-                }
-              }
+
               .bundle-expanded,
               .sticky-email,
               .sticky-bundle-email {

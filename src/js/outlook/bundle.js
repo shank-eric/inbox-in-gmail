@@ -303,21 +303,12 @@ export default class Bundle {
   }
 
   checkExpanded() {
-    // emailPreview.pauseObserver();
     const expanded = this.element.getAttribute('data-show-emails') === 'true';
     if (expanded) {
-      // if (this.element.parentElement.style.height !== '') {
-      //   this.element.parentElement.style.height = '';
-      // }
       addClass(this.element.parentElement, 'bundle-expanded');
     } else {
-      // const height = addPixels(37, -this.attrs.count);
-      // if (this.element.parentElement.style.height !== height) {
-      //   this.element.parentElement.style.height = height;
-      // }
       removeClass(this.element.parentElement, 'bundle-expanded');
     }
-    // emailPreview.checkPreview();
   }
 
   replaceHtml(selector, html) {

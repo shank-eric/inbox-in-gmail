@@ -96,10 +96,8 @@ export default {
         if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
           document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
           this.currentEmail.setAttribute('data-previewing', true);
-          document.querySelectorAll('.sticky-email').forEach(el => {
-            removeClass(el, 'sticky-email');
-            removeClass(el, 'sticky-bundle-email');
-          });
+          document.querySelectorAll('.sticky-email').forEach(el => removeClass(el, 'sticky-email'));
+          document.querySelectorAll('.sticky-bundle-email').forEach(el => removeClass(el, 'sticky-bundle-email'));
           const isBundled = this.currentEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
           addClass(this.currentEmail.parentNode.parentNode, isBundled ? 'sticky-bundle-email' : 'sticky-email');
           setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);

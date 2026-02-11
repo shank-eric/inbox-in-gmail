@@ -13,7 +13,7 @@
   }
 
   &[data-inbox='bundled'] {
-    height: 0 !important;
+    display: none !important;
     opacity: 0;
   }
 
