@@ -5,6 +5,9 @@
     position: absolute;
     top: -80px;
   }
+  &.bundle-preview-placeholder {
+    width: calc(100% - 24px);
+  }
 }
 
 // email-preview

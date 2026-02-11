@@ -20,13 +20,6 @@
   &[data-inbox='show-bundled'] {
     width: calc(100% - 24px);
     margin: 0 auto;
-
-    .gDC9O,
-    .jGG6V {
-      &[data-previewing='true'] {
-        top: 36px;
-      }
-    }
   }
 
   &[data-icon='reminder'] {

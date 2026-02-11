@@ -8,6 +8,7 @@ html[dir='ltr'] {
         .rRhzD {
           height: unset;
           max-height: unset;
+          // min-height: calc(100vh - 140px);
         }
       }
 
@@ -21,7 +22,7 @@ html[dir='ltr'] {
         .G8_Dc {
           //main email list
           .XW2m0 {
-            min-height: calc(100% - 41px);
+            // min-height: calc(100% - 41px);
             max-height: unset;
             height: auto;
             border: none;
@@ -38,9 +39,9 @@ html[dir='ltr'] {
               overflow: visible;
               background: transparent;
             }
-            #MailList {
-              min-height: calc(100vh - 170px);
-            }
+            // #MailList {
+            //   min-height: calc(100vh - 170px);
+            // }
 
             // email columns container
             .s8wta {
@@ -73,13 +74,11 @@ html[dir='ltr'] {
               width: unset !important;
               scrollbar-gutter: auto;
               overflow: visible !important;
-              max-height: 400vh;
               background: transparent;
 
               //email rows container
               > div {
                 height: unset !important;
-                max-height: 200vh;
                 display: flex;
                 flex-direction: column;
                 position: initial;
@@ -93,10 +92,15 @@ html[dir='ltr'] {
                   flex-direction: column;
                 }
               }
-              .bundle-expanded {
+              .bundle-expanded,
+              .sticky-email,
+              .sticky-bundle-email {
                 position: sticky !important;
-                top: 0;
+                top: 0 !important;
                 z-index: 10;
+              }
+              .sticky-bundle-email {
+                top: 36px !important;
               }
             }
 

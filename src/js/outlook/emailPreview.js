@@ -62,14 +62,15 @@ export default {
     if (!previewPlaceholder) {
       previewPlaceholder = htmlToElements('<div class="preview-placeholder"><div class="preview-scroll-target"></div></div>');
     }
-    this.currentEmail.parentNode.insertBefore(previewPlaceholder, this.currentEmail.nextSibling);
+    const parentContainer = this.currentEmail.parentNode.parentNode;
+    parentContainer.parentNode.insertBefore(previewPlaceholder, parentContainer.nextSibling);
+    previewPlaceholder.style.order = this.currentEmail.parentNode.parentNode.style.order;
     this.setPreviewPosition(previewPane);
   },
   showPreviewPane(previewPane) {
     this.movePreviewPane(previewPane);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
     const previewScrollTarget = document.querySelector('.preview-scroll-target');
-    const listScrollContainer = document.querySelector('.jEpCF > div');
     addClass(previewPane, 'show-preview');
     this.previewShowing = true;
     const adjustPreviewSize = () => {
@@ -88,7 +89,6 @@ export default {
       const sizeChanged = previewHeight !== placeholderHeight;
       if (sizeChanged) {
         previewPlaceholder.style.height = previewHeight;
-        listScrollContainer.style.maxHeight = `calc(100vh + ${previewHeight})`;
         previewPane.style.height = previewHeight;
         previewPane.style.width = placeholderWidth;
         const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
@@ -96,6 +96,12 @@ export default {
         if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
           document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
           this.currentEmail.setAttribute('data-previewing', true);
+          document.querySelectorAll('.sticky-email').forEach(el => {
+            removeClass(el, 'sticky-email');
+            removeClass(el, 'sticky-bundle-email');
+          });
+          const isBundled = this.currentEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
+          addClass(this.currentEmail.parentNode.parentNode, isBundled ? 'sticky-bundle-email' : 'sticky-email');
           setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);
         }
       }
@@ -113,12 +119,8 @@ export default {
       return;
     }
     const previewPlaceholder = document.querySelector('.preview-placeholder');
-    const { offsetTop } = previewPlaceholder.parentNode.parentNode;
-    const { children } = previewPlaceholder.parentNode;
-    const childrenHeight = Array.from(children)
-      .map(child => (hasClass(child, 'preview-placeholder') ? 0 : child.offsetHeight))
-      .reduce((a, b) => a + b, 0);
-    const totalTop = addPixels(offsetTop, childrenHeight, 45);
+    const { offsetTop } = previewPlaceholder;
+    const totalTop = addPixels(offsetTop, 45);
     if (previewPane.style.top !== totalTop) {
       previewPane.style.top = totalTop;
     }
@@ -141,10 +143,6 @@ export default {
     }
     if (previewPane) {
       previewPane.style['margin-top'] = 0;
-    }
-    const listScrollContainer = document.querySelector('.jEpCF > div');
-    if (listScrollContainer) {
-      listScrollContainer.style.maxHeight = '';
     }
   },
   hideIfCurrentEmailRemoved(previewPane) {
