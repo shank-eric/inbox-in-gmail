@@ -133,6 +133,15 @@ export default {
     }
 
     dateLabels.addDateLabels();
+
+    const imgData = options.emptyInboxImage || '';
+    if (isInInboxFlag) {
+      if (emailElements.length === 0 && imgData) {
+        document.documentElement.style.setProperty('--empty-inbox-image', `url("${imgData}")`);
+      } else {
+        document.documentElement.style.removeProperty('--empty-inbox-image');
+      }
+    }
   },
   getBundledLabels() {
     const bundleRows = Array.from(document.querySelectorAll(`${EMAIL_CONTAINER}[role=main] .${BUNDLE_WRAPPER_CLASS}`));

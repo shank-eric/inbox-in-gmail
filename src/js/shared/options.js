@@ -10,6 +10,7 @@ export const reloadOptions = async () => {
   options.emailBundling = options.emailBundling || 'enabled';
   options.showAvatar = options.showAvatar || 'enabled';
   options.bundleOne = options.bundleOne || false;
+  options.emptyInboxImage = options.emptyInboxImage || '';
 
   // Add option classes to body for css styling, removes avatars when disabled
   if (options.showAvatar === 'enabled') {
