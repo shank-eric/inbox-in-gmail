@@ -14,8 +14,6 @@
 .Mq3cC {
   //preview elements have margin-left: 8px and margin-right: 19px
   //make this preview container wider so that the right margin looks like it's 8px
-  left: 0;
-  right: 0;
   position: static;
 
   //menu when multiple items selected
@@ -72,6 +70,7 @@
 
     &:not(.show-preview):not(.preview-compose) {
       display: none;
+      height: 0;
     }
 
     &.show-preview {
@@ -100,22 +99,22 @@
     .PCN7W {
       margin: 0 !important;
       border-radius: 0;
-      //keeps ,argins from collapsing
+      //keeps margins from collapsing
       border: 1px solid transparent;
       border-bottom-color: var(--themeLighter);
     }
 
     // messages in the thread
-    ._xWdq,
-    .eIxcM,
-    .SlLx9,
-    .GjFKx {
-      width: calc(100% - 24px) !important;
-      margin: 0 !important;
-      border-radius: 0;
-      border: none;
-      border-bottom: 1px solid var(--themeLighter);
-    }
+    // ._xWdq,
+    // .eIxcM,
+    // .SlLx9,
+    // .GjFKx {
+    //   width: calc(100% - 24px) !important;
+    //   margin: 0 !important;
+    //   border-radius: 0;
+    //   border: none;
+    //   border-bottom: 1px solid var(--themeLighter);
+    // }
 
     &.preview-compose {
       bottom: 41px;
@@ -133,22 +132,25 @@
         .to-address {
           // to address
           position: absolute;
-          top: 35px;
-          left: 0;
+          top: 25px;
+          right: 0;
+          width: auto;
           min-height: 0;
           height: 0;
           border-bottom: none;
+          text-align: right;
+          z-index: 100;
           .fui-Input__contentBefore {
             display: none;
           }
-          [contenteditable='true'] {
-            width: 200px;
-            z-index: 100;
+          .LCArn {
+            display: inline;
           }
         }
         .infoBarDivClass, // sensitivity bar
         .YNxxt, // bcc button
         .SZoKq, // to button
+        .g9LP8, // from address
         .hIf0n, // a border under the to address
         .iP72H, // CC button
         .zjzhQ, // CC address

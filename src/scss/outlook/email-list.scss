@@ -2,16 +2,6 @@ html[dir='ltr'] {
   body {
     //main inbox element, has data-max-width on it
     .q9iRC {
-      .G8_Dc {
-        overflow-y: auto;
-        height: auto;
-        .rRhzD {
-          height: unset;
-          max-height: unset;
-          // min-height: calc(100vh - 140px);
-        }
-      }
-
       // element directly inside of data-max-width
       .HOVUa {
         max-width: 2400px;
@@ -20,6 +10,14 @@ html[dir='ltr'] {
 
         //wrapper around email list and preview pane
         .G8_Dc {
+          overflow-y: auto;
+          height: auto;
+          // .rRhzD {
+          //   height: unset;
+          //   max-height: unset;
+          //   min-height: calc(100vh - 140px);
+          // }
+
           //main email list
           .XW2m0 {
             // min-height: calc(100% - 41px);
@@ -79,11 +77,12 @@ html[dir='ltr'] {
 
               //email rows container
               > div {
-                display: flex;
+                min-height: calc(100vh - 170px);
                 height: unset !important;
-                flex-direction: column;
                 position: initial;
                 > div {
+                  display: flex;
+                  flex-direction: column;
                   position: unset !important;
                 }
               }
