@@ -46,7 +46,7 @@ export const matchesMyEmail = email => {
   return emails.some(e => matchEmails(e, email));
 };
 
-export const isSearchResults = () => !!document.querySelector('#owaSearchBox [data-icon-name="ArrowLeftRegular"]');
+export const isSearchResults = () => !!document.querySelector('#searchBoxId-Mail [data-icon-name="ArrowLeftRegular"]');
 export const isInInbox = () => document.location.pathname === '/mail/' || document.location.pathname.match(/mail\/inbox/g);
 
 // export const openReminder = async () => {
