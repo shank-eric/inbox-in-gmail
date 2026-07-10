@@ -152,10 +152,24 @@
     //pin-icon
     .aXw {
       display: none;
+      &:hover {
+        display: flex;
+      }
     }
 
     > .T-KT::after {
       transform: scale(1);
+    }
+  }
+
+  // row-hovered
+  &.aqw {
+    //pin-star-column
+    .apU {
+      //pin-icon
+      .aXw {
+        display: flex;
+      }
     }
   }
 
@@ -174,38 +188,8 @@
     margin-right: 10px;
   }
 
-  //option on the body
-  .show-avatar-enabled & {
-    //checkbox-column
-    .oZ-x3 {
-      //checkbox
-      .T-Jo {
-        display: none;
-      }
-    }
-  }
-
   &[data-inbox='bundled'] {
     display: none;
-  }
-
-  // row-hovered
-  &.aqw {
-    //checkbox-column
-    .oZ-x3 {
-      //checkbox
-      .T-Jo {
-        display: inline;
-      }
-    }
-
-    //pin-star-column
-    .apU {
-      //pin-icon
-      .aXw {
-        display: flex;
-      }
-    }
   }
 
   //keyboard-selected-email
