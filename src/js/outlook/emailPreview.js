@@ -74,14 +74,6 @@ export default {
     if (!this.previewShowing) {
       addClass(previewPane, 'show-preview');
       this.previewShowing = true;
-      setTimeout(async () => {
-        await observeForElement(document, `${PREVIEW_THREAD_ROW}#focused`);
-        // need to click twice to hide each unfocused row, needed because our styling confuses outlook into thinking it should expand all preview rows
-        document.querySelectorAll(`${PREVIEW_THREAD_ROW}:not(#focused) .lAKmW`).forEach(c => {
-          c.click();
-          c.click();
-        });
-      });
     }
 
     const adjustPreviewSize = async () => {
@@ -110,7 +102,9 @@ export default {
           const isBundled = this.currentEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
           addClass(this.currentEmail.parentNode.parentNode, isBundled ? 'sticky-bundle-email' : 'sticky-email');
           const focusedEmail = await observeForElement(document, `${PREVIEW_THREAD_ROW}#focused`);
-          focusedEmail.scrollIntoViewIfNeeded({ behavior: 'smooth' });
+          // the focused row is zero-size when its message renders expanded
+          const scrollTarget = focusedEmail.offsetHeight ? focusedEmail : document.querySelector('.preview-scroll-target');
+          scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
@@ -134,12 +128,15 @@ export default {
     }
   },
   hidePreviewPane(previewPane) {
-    const previewingEmail = document.querySelector('[data-previewing]');
-    if (previewingEmail) {
-      previewingEmail.removeAttribute('data-previewing');
-    }
+    document.querySelectorAll('[data-previewing]').forEach(el => el.removeAttribute('data-previewing'));
+    document.querySelectorAll('.sticky-email').forEach(el => removeClass(el, 'sticky-email'));
+    document.querySelectorAll('.sticky-bundle-email').forEach(el => removeClass(el, 'sticky-bundle-email'));
     if (previewPane) {
       removeClass(previewPane, 'show-preview');
+      // clear inline sizing so the native reading pane isn't constrained while our styling is inactive
+      previewPane.style.height = null;
+      previewPane.style.width = null;
+      previewPane.style.top = null;
     }
     this.previewShowing = false;
     const previewPlaceholder = document.querySelector('.preview-placeholder');

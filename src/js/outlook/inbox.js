@@ -22,7 +22,14 @@ export default {
       options,
       async () => {
         reloadOptions();
-        await emailPreview.checkPreview();
+        // kill-switch: if outlook floods our full-height list with rows, fall back to its native list before the page locks up
+        const runawayRows = document.querySelectorAll(EMAIL_ROW).length > 300;
+        document.body.classList.toggle('native-list-fallback', runawayRows);
+        if (runawayRows) {
+          await emailPreview.hidePreview();
+        } else {
+          await emailPreview.checkPreview();
+        }
         this.processEmails();
       },
       true
