@@ -88,10 +88,8 @@ export default class Bundle {
               tabindex="-1"
             >
               <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
-              <div class="ZTnQq">
-                <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-                  <div class="DMjcl BevFE XG5Jd gi0cv" style="width: ${columnWidths[0].width}; max-width: ${columnWidths[0].width};">
-                    <div class="XG5Jd XJ3XJ q0f8X XW8cf"
+              <div class="XG5Jd ap3u6 WO8ox Yhp01 ORB1S jO6nB">
+                    <div class="XG5Jd XJ3XJ q0f8X XW8cf DoCKv vbEPJ"
                       tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                     >
                       <span
@@ -111,6 +109,10 @@ export default class Bundle {
                         </label>
                       </div>
                     </div>
+                  </div>
+              <div class="ZTnQq XG5Jd Wamaz ap3u6 WO8ox">
+                <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd hQj7T">
+                  <div class="DMjcl BevFE XG5Jd gi0cv" style="width: ${columnWidths[0].width}; max-width: ${columnWidths[0].width};">
                     <div class="${EMAIL_PARTICIPANT_CONTAINERS} W3BHj Dc0o9 Ejrkd">
                       <span class="label-link"
                       style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}">

@@ -1,5 +1,7 @@
 html[dir='ltr'] {
-  body {
+  //native-list-fallback is a kill-switch: restores outlook's fixed-height list
+  //if it floods our full-height list with rows
+  body:not(.native-list-fallback) {
     //main inbox element, has data-max-width on it
     .q9iRC {
       // element directly inside of data-max-width
@@ -12,11 +14,14 @@ html[dir='ltr'] {
         .G8_Dc {
           overflow-y: auto;
           height: auto;
-          // .rRhzD {
-          //   height: unset;
-          //   max-height: unset;
-          //   min-height: calc(100vh - 140px);
-          // }
+          //email list stacking wrapper: above the preview pane (z-index: 10) so
+          //pinned rows can cover it, below the compose popup (z-index: 15);
+          //click-transparent so its box doesn't eat clicks where it overlaps
+          //the top of the preview (email rows re-enable pointer events)
+          .rRhzD {
+            z-index: 11;
+            pointer-events: none;
+          }
 
           //main email list
           .XW2m0 {
@@ -34,6 +39,13 @@ html[dir='ltr'] {
 
             .Cz7T5,
             .ONAp_ {
+              overflow: visible;
+              background: transparent;
+            }
+
+            //scrollbar wrapper: its overflow: hidden breaks pinned rows (wrong
+            //sticky scrollport) and its background covers the email preview
+            .zXLz3 {
               overflow: visible;
               background: transparent;
             }

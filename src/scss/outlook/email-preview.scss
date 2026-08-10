@@ -78,6 +78,18 @@
       z-index: 10;
     }
 
+    // focused thread message: scroll to just below the pinned email row
+    .SlLx9#focused {
+      scroll-margin-top: 45px;
+    }
+
+    // bodies of non-focused thread messages: outlook mounts collapsed messages
+    // with bodies rendered because our pane looks tall enough to fit everything;
+    // clicking a row still expands it (#focused follows the click)
+    .SlLx9:not(#focused) .XbIp4 {
+      display: none;
+    }
+
     // message header
     .XV5zJ,
     .NTPm6 {
@@ -166,6 +178,11 @@
     &.bundle-preview {
       &:not(.preview-compose) {
         left: 12px;
+      }
+
+      // taller pinned stack: bundle header + email row
+      .SlLx9#focused {
+        scroll-margin-top: 81px;
       }
 
       .AJYpX,
