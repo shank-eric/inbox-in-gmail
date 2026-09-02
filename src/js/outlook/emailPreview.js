@@ -85,7 +85,7 @@ export default {
         return;
       }
       const previewEls = Array.from(previewPane.querySelectorAll(`${PREVIEW_WRAPPER} > div,${PREVIEW_CALENDAR_CONFLICT_CONTAINER}`));
-      const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12, 60); //42 for the copilot summary button
+      const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12);
       // width is controlled by the window size, not by the email preview
       const placeholderWidth = getComputedStyle(previewPlaceholder).width;
       const { height: placeholderHeight } = previewPlaceholder.style;
@@ -105,6 +105,7 @@ export default {
           // the focused row is zero-size when its message renders expanded
           const scrollTarget = focusedEmail.offsetHeight ? focusedEmail : document.querySelector('.preview-scroll-target');
           scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // thread + subject header; the copilot summary banner is hidden by css
         }
       }
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
