@@ -33,8 +33,8 @@
       }
     }
 
-    .uu6rV, // expand emails button
-    .FqgPc // email subject
+    .uu6rV // expand emails button
+    // .yg0l0 // email subject
     {
       visibility: hidden;
     }
@@ -56,36 +56,15 @@
   }
 
   // date container
-  .WP8_u {
+  .VuThs {
     justify-content: right;
     span {
       text-align: right;
     }
   }
 
-  // pin/unread buttons container
-  .gaDEX button {
+  // hover actions (mark read / pin / archive)
+  .bvdCQ button {
     margin-bottom: 0;
-  }
-
-  // archive button container
-  .QpoLy {
-    align-items: center;
-    height: 36px;
-
-    button {
-      background-color: transparent;
-      color: unset;
-      width: 24px;
-      height: 24px;
-
-      i {
-        margin: 0;
-      }
-    }
-
-    &:hover button {
-      background-color: var(--neutralLight);
-    }
   }
 }

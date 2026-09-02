@@ -5,7 +5,15 @@ import { OUTLOOK_SELECTORS } from './constants.js';
 import { findNextVisibleRow } from './outlookUtils.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
-const { COMPOSE_NEW_MAIL_BUTTON, COMPOSE_SUBJECT_LINE, COMPOSE_TO_ADDRESS_CONTAINER, SELECTED_EMAIL, EMAIL_ROW, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
+const {
+  COMPOSE_NEW_MAIL_BUTTON,
+  COMPOSE_SUBJECT_LINE,
+  COMPOSE_TO_ADDRESS_CONTAINER,
+  LIST_SCROLL_CONTAINER,
+  SELECTED_EMAIL,
+  EMAIL_ROW,
+  EMAIL_ROW_OUTER_CONTAINER,
+} = OUTLOOK_SELECTORS;
 
 export default {
   init() {
@@ -14,7 +22,7 @@ export default {
   handleKeyboardEvents(event) {
     const currentRow = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
     const currentBundle = document.querySelector(`${SELECTED_EMAIL}.${BUNDLE_WRAPPER_CLASS}`);
-    const mainContainer = document.querySelector('.AO');
+    const mainContainer = document.querySelector(LIST_SCROLL_CONTAINER);
     const parameters = {
       ...this,
       currentBundle,
@@ -82,8 +90,8 @@ export default {
         }, 0);
       }, 500);
     },
-    Quote: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? -250 : -25),
-    Semicolon: ({ mainContainer, shiftKey }) => mainContainer.scrollBy(0, shiftKey ? 250 : 25),
+    Quote: ({ mainContainer, shiftKey }) => mainContainer?.scrollBy(0, shiftKey ? -250 : -25),
+    Semicolon: ({ mainContainer, shiftKey }) => mainContainer?.scrollBy(0, shiftKey ? 250 : 25),
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
   async navigate({ currentRow, keyCode }) {

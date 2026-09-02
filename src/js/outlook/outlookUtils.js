@@ -1,11 +1,12 @@
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
-import { hasClass, replaceClass } from '../shared/utils.js';
+import { addClass, hasClass, removeClass } from '../shared/utils.js';
 import { getOptions } from '../shared/options.js';
 
-const { SELECTED_ROW, UNSELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
-const { EMAIL_ROW_INNER_CONTAINER, EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
+const { SELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
+const { EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const findEmailInLink = () => {
   const brandLink = document.querySelector('#O365_AppName');
   if (brandLink) {
@@ -13,10 +14,16 @@ const findEmailInLink = () => {
     return brandUrl.searchParams.get('login_hint');
   }
 };
+// the folder pane's mailbox root is titled with the account email
+const findEmailInFolderPane = () => {
+  const mailboxRoot = document.querySelector('[id^="primaryMailboxRoot"]');
+  const title = mailboxRoot?.getAttribute('title') || mailboxRoot?.textContent.trim();
+  return EMAIL_REGEX.test(title || '') ? title : undefined;
+};
 
 export const getMyEmailAddress = () => {
   if (!foundEmail) {
-    foundEmail = findEmailInLink();
+    foundEmail = findEmailInLink() || findEmailInFolderPane();
   }
   return foundEmail;
 };
@@ -88,7 +95,7 @@ export const isInInbox = () => document.location.pathname === '/mail/' || docume
 export const setSelectedRow = row => {
   document.querySelectorAll('[data-selected]').forEach(selectedEl => {
     selectedEl.setAttribute('data-selected', false);
-    replaceClass(selectedEl.querySelector(EMAIL_ROW_INNER_CONTAINER), UNSELECTED_ROW, SELECTED_ROW);
+    removeClass(selectedEl.querySelector(EMAIL_ROW_OUTER_CONTAINER), SELECTED_ROW);
   });
   // document.querySelectorAll('[aria-selected]').forEach(selectedEl => {
   //   selectedEl.setAttribute('aria-selected', false);
@@ -102,7 +109,7 @@ export const setSelectedRow = row => {
   // });
   const outerContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
   outerContainer.focus();
-  replaceClass(row.querySelector(EMAIL_ROW_INNER_CONTAINER), SELECTED_ROW, UNSELECTED_ROW);
+  addClass(outerContainer, SELECTED_ROW);
 };
 
 const selectableRow = (row, currentBundle) => {
