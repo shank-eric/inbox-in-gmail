@@ -3,9 +3,31 @@ import { addClass, removeClass } from './utils.js';
 
 let options = {};
 export const getOptions = () => options;
+
+// after an extension reload, scripts still running in open tabs lose their chrome.* APIs
+const isExtensionContextValid = () => !!chrome.runtime?.id;
+const readStoredOptions = async () => {
+  if (!isExtensionContextValid()) {
+    return null;
+  }
+  if (!chrome.storage?.local) {
+    return {};
+  }
+  try {
+    const storage = await chrome.storage.local.get('options');
+    return storage.options || {};
+  } catch (error) {
+    return null;
+  }
+};
+
 export const reloadOptions = async () => {
-  const storage = !!chrome.storage?.local ? await chrome.storage?.local.get('options') : {};
-  options = storage.options || {};
+  const storedOptions = await readStoredOptions();
+  if (!storedOptions) {
+    // keep the last known options
+    return;
+  }
+  options = storedOptions;
   options.reminderTreatment = options.reminderTreatment || 'containing-word';
   options.emailBundling = options.emailBundling || 'enabled';
   options.showAvatar = options.showAvatar || 'enabled';
