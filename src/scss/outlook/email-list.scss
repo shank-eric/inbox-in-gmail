@@ -72,7 +72,7 @@ html[dir='ltr'] {
             }
 
             // background covering the email preview
-            .X4w2q {
+            .Xhguk {
               overflow: visible;
               background: transparent;
             }
@@ -107,13 +107,14 @@ html[dir='ltr'] {
                 z-index: 10;
               }
               .sticky-bundle-email {
-                top: 36px !important;
+                top: 37px !important;
               }
             }
 
             // email column headers
             > div:nth-child(2) {
               box-shadow: rgb(0 0 0 / 24%) -2px -2px 4px;
+              // fallback; emailPreview.js sets the measured height inline
               padding: 0 !important;
             }
 

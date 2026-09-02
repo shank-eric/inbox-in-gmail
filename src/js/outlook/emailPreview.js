@@ -5,7 +5,6 @@ import {
   hasClass,
   htmlToElements,
   observeForElement,
-  observeForRemoval,
   removeClass,
   runObserver,
 } from '../shared/utils.js';
@@ -18,6 +17,7 @@ const {
   PREVIEW_COMPOSE,
   PREVIEW_PANE,
   PREVIEW_THREAD_ROW,
+  PREVIEW_CONVERSATION_CONTAINER,
   PREVIEW_WRAPPER,
   EMAIL_CONTAINER,
   SELECTED_EMAILS_MENU_CONTAINER,
@@ -52,7 +52,7 @@ export default {
       // clicking the email changes the selected email automatically
       // set showPreview so that checkPreview will make it visible
       // when it processes the new selected email
-      await observeForRemoval(previewPane, '.QYrHp');
+      await observeForElement(previewPane, PREVIEW_CONVERSATION_CONTAINER);
       this.previewShowing = false;
       this.showPreview = true;
     }
@@ -180,7 +180,8 @@ export default {
     replaceClass(previewPane, 'show-preview', 'preview-compose');
     this.hideIfCurrentEmailRemoved(previewPane);
 
-    const nothingSelected = previewPane.querySelector('.QYrHp');
+    // the conversation container only exists once an email is selected
+    const nothingSelected = !previewPane.querySelector(PREVIEW_CONVERSATION_CONTAINER);
     const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS}):not(button)`);
     if (selectedEmails.length === 1 && !nothingSelected) {
       const selectedEmail = selectedEmails[0];
