@@ -12,6 +12,7 @@
     }
   }
 
+  //1px, never 0 or display none: outlook's virtualized list drops zero-height rows
   &[data-inbox='bundled'] {
     height: 1px;
     opacity: 0;
@@ -40,7 +41,13 @@
     }
   }
 
-  &.bundle-last-email:not([data-previewing='true']) {
+  // seam between cards; none while pinned above the preview
+  &:not([data-inbox='bundled']):not(:has([data-previewing='true'])) {
+    margin-bottom: 2px;
+  }
+
+  // data-previewing is on the outer row container
+  &.bundle-last-email:not(:has([data-previewing='true'])) {
     margin-bottom: 12px;
     &[data-inbox='bundled'] {
       margin-bottom: 0;

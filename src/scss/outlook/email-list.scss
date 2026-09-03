@@ -4,6 +4,8 @@ html[dir='ltr'] {
   body:not(.native-list-fallback) {
     //main inbox element, has data-max-width on it
     .q9iRC {
+      //page colour (outlook's wrappers are transparent); dark palette in dark-mode.scss
+      background-color: #f2f2f2;
       // element directly inside of data-max-width
       .HOVUa {
         max-width: 2400px;
@@ -95,6 +97,12 @@ html[dir='ltr'] {
                 > div {
                   display: flex;
                   flex-direction: column;
+
+                  // tuck hidden emails' 1px wrappers under the item above so they don't stack into
+                  // a gap; must be on the wrapper, a margin on the row collapses it to 0 (flicker)
+                  > div:has(> .l8vF9[data-inbox='bundled']) {
+                    margin-top: -1px;
+                  }
                   position: unset !important;
                 }
               }

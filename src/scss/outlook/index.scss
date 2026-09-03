@@ -1,4 +1,5 @@
 @import 'email-list';
+@import 'dark-mode';
 
 #app {
   #LeftRail {
@@ -33,13 +34,13 @@
       pointer-events: all;
       top: -5px;
       left: 20px;
-      // inner container in Inbox bar
 
       // copilot "Your morning briefing" card
       .DBn2N {
         display: none;
       }
 
+      // inner container in Inbox bar
       .rEzfP {
         padding: 0;
 
