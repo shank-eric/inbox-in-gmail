@@ -106,6 +106,7 @@ html[dir='ltr'] {
                 top: 0 !important;
                 z-index: 10;
               }
+              // fallback; emailPreview.js sets the measured height inline
               .sticky-bundle-email {
                 top: 37px !important;
               }
@@ -114,7 +115,6 @@ html[dir='ltr'] {
             // email column headers
             > div:nth-child(2) {
               box-shadow: rgb(0 0 0 / 24%) -2px -2px 4px;
-              // fallback; emailPreview.js sets the measured height inline
               padding: 0 !important;
             }
 

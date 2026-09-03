@@ -12,12 +12,15 @@ import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
+// the placeholder's height transition, defined once in email-preview.scss
+const previewResizeMs = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--inbox-reborn-preview-resize')) || 0;
 const {
   PREVIEW_CALENDAR_CONFLICT_CONTAINER,
   PREVIEW_COMPOSE,
+  LIST_SCROLL_CONTAINER,
+  PREVIEW_CONVERSATION_CONTAINER,
   PREVIEW_PANE,
   PREVIEW_THREAD_ROW,
-  PREVIEW_CONVERSATION_CONTAINER,
   PREVIEW_WRAPPER,
   EMAIL_CONTAINER,
   SELECTED_EMAILS_MENU_CONTAINER,
@@ -61,11 +64,21 @@ export default {
     // this creates a space for the preview and uses absolute positioning to make it look like it's under the current email
     let previewPlaceholder = document.querySelector('.preview-placeholder');
     if (!previewPlaceholder) {
-      previewPlaceholder = htmlToElements('<div class="preview-placeholder"><div class="preview-scroll-target"></div></div>');
+      previewPlaceholder = htmlToElements('<div class="preview-placeholder"></div>');
     }
     const parentContainer = this.currentEmail.parentNode.parentNode;
+    // moving the placeholder from above the clicked row to below it removes that much space above
+    // the viewport; compensate so the row stays put (by flex order: a pinned row's rect misleads)
+    const placeholderHeight = previewPlaceholder.getBoundingClientRect().height;
+    const wasAbove = placeholderHeight > 0 && parseFloat(previewPlaceholder.style.order) < parseFloat(parentContainer.style.order);
     parentContainer.parentNode.insertBefore(previewPlaceholder, parentContainer.nextSibling);
-    previewPlaceholder.style.order = this.currentEmail.parentNode.parentNode.style.order;
+    previewPlaceholder.style.order = parentContainer.style.order;
+    if (wasAbove) {
+      const scroller = document.querySelector(LIST_SCROLL_CONTAINER);
+      if (scroller) {
+        scroller.scrollTop -= placeholderHeight;
+      }
+    }
     this.setPreviewPosition(previewPane);
   },
   showPreviewPane(previewPane) {
@@ -77,6 +90,10 @@ export default {
     }
 
     const adjustPreviewSize = async () => {
+      // hidden while a mutation was pending; sizing now would leave a gap in the list
+      if (!this.previewShowing) {
+        return;
+      }
       if (hasClass(previewPane, 'preview-compose')) {
         document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
         previewPlaceholder.style.height = null;
@@ -84,28 +101,47 @@ export default {
         previewPane.style.height = null;
         return;
       }
+      // thread + subject header; the copilot summary banner is hidden by css
       const previewEls = Array.from(previewPane.querySelectorAll(`${PREVIEW_WRAPPER} > div,${PREVIEW_CALENDAR_CONFLICT_CONTAINER}`));
       const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12);
       // width is controlled by the window size, not by the email preview
       const placeholderWidth = getComputedStyle(previewPlaceholder).width;
       const { height: placeholderHeight } = previewPlaceholder.style;
       const sizeChanged = previewHeight !== placeholderHeight;
+      const firstPass = this.currentEmail.getAttribute('data-previewing') !== 'true';
       if (sizeChanged) {
         previewPlaceholder.style.height = previewHeight;
         previewPane.style.height = previewHeight;
         previewPane.style.width = placeholderWidth;
-        if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
+      }
+      if (firstPass || sizeChanged) {
+        if (firstPass) {
           document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
           this.currentEmail.setAttribute('data-previewing', true);
           document.querySelectorAll('.sticky-email').forEach(el => removeClass(el, 'sticky-email'));
           document.querySelectorAll('.sticky-bundle-email').forEach(el => removeClass(el, 'sticky-bundle-email'));
           const isBundled = this.currentEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
           addClass(this.currentEmail.parentNode.parentNode, isBundled ? 'sticky-bundle-email' : 'sticky-email');
+          // pin the email under its bundle row
+          const bundleRow = isBundled ? document.querySelector(`.${BUNDLE_WRAPPER_CLASS}[data-show-emails="true"]`) : null;
+          const bundleRowHeight = bundleRow ? bundleRow.getBoundingClientRect().height : 0;
+          if (bundleRow) {
+            this.currentEmail.parentNode.parentNode.style.setProperty('top', `${bundleRowHeight}px`, 'important');
+          }
+          this.pinnedHeight = bundleRowHeight + this.currentEmail.getBoundingClientRect().height;
+          this.previewOpenedAt = Date.now();
           const focusedEmail = await observeForElement(document, `${PREVIEW_THREAD_ROW}#focused`);
-          // the focused row is zero-size when its message renders expanded
-          const scrollTarget = focusedEmail.offsetHeight ? focusedEmail : document.querySelector('.preview-scroll-target');
-          scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // thread + subject header; the copilot summary banner is hidden by css
+          // hidden while waiting for the message to render
+          if (!this.previewShowing) {
+            return;
+          }
+          this.scrollMessageIntoView(focusedEmail, previewPane);
+        } else if (Date.now() - this.previewOpenedAt < 2000) {
+          // the body usually renders after the first size pass; follow it
+          const focusedEmail = previewPane.querySelector(`${PREVIEW_THREAD_ROW}#focused`);
+          if (focusedEmail) {
+            this.scrollMessageIntoView(focusedEmail, previewPane);
+          }
         }
       }
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
@@ -114,6 +150,39 @@ export default {
     adjustPreviewSize();
 
     this.setPreviewPosition(previewPane);
+  },
+  // scroll only as far as needed to show the opened message below the pinned rows:
+  // its bottom if it fits, its top if it is taller than the viewport
+  async scrollMessageIntoView(messageEl, previewPane) {
+    const scroller = document.querySelector(LIST_SCROLL_CONTAINER);
+    if (!scroller) {
+      return;
+    }
+    // let the placeholder's height transition finish so the scroll range is final
+    await new Promise(resolve => setTimeout(resolve, previewResizeMs() + 20));
+    if (!this.previewShowing) {
+      return;
+    }
+    // the focused row is zero-size when its message renders expanded; the pane ends with it
+    const target = messageEl.offsetHeight ? messageEl : previewPane;
+    const { top, bottom } = target.getBoundingClientRect();
+    const scrollerRect = scroller.getBoundingClientRect();
+    const visibleTop = scrollerRect.top + this.pinnedHeight;
+    const visibleBottom = scrollerRect.bottom - 12;
+    let delta = 0;
+    if (bottom - top > visibleBottom - visibleTop || top < visibleTop) {
+      delta = top - visibleTop;
+    } else if (bottom > visibleBottom) {
+      delta = bottom - visibleBottom;
+    }
+    // never scroll the conversation's subject header (the top of the pane) under the pinned rows
+    const headerRoom = previewPane.getBoundingClientRect().top - visibleTop;
+    if (delta > 0 && headerRoom < delta) {
+      delta = Math.max(0, headerRoom);
+    }
+    if (Math.abs(delta) > 1) {
+      scroller.scrollBy({ top: delta, behavior: 'smooth' });
+    }
   },
   setPreviewPosition(previewPane) {
     if (hasClass(previewPane, 'preview-compose')) {
@@ -189,7 +258,6 @@ export default {
       const selectedEmailIsBundled = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'bundled';
       const previewBundledEmail = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
       const currentEmailChanged = this.currentEmail !== selectedEmail;
-
       if (previewBundledEmail) {
         addClass(previewPane, 'bundle-preview');
         addClass(previewPlaceholder, 'bundle-preview-placeholder');
