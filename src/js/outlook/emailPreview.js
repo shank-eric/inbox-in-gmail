@@ -1,5 +1,6 @@
 import {
   addClass,
+  doesElementByIdExist,
   replaceClass,
   addPixels,
   hasClass,
@@ -10,8 +11,11 @@ import {
 } from '../shared/utils.js';
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
+import { findReplacementRow, getOutlookSelectedRow, rowOrder, selectRow } from './outlookUtils.js';
 
 const { BUNDLE_WRAPPER_CLASS } = CLASSES;
+// hold when outlook moves the selection on its own; an archived row's removal follows in ~300ms
+const SELECTION_HOLD_MS = 600;
 // the placeholder's height transition, defined once in email-preview.scss
 const previewResizeMs = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--inbox-reborn-preview-resize')) || 0;
 const {
@@ -23,6 +27,7 @@ const {
   PREVIEW_THREAD_ROW,
   PREVIEW_WRAPPER,
   EMAIL_CONTAINER,
+  EMAIL_ROW,
   SELECTED_EMAILS_MENU_CONTAINER,
 } = OUTLOOK_SELECTORS;
 
@@ -197,7 +202,21 @@ export default {
       previewPane.style.top = totalTop;
     }
   },
-  hidePreviewPane(previewPane) {
+  // `instant` skips the height transition; `keepRow` stays put on screen as the placeholder collapses
+  hidePreviewPane(previewPane, { instant = false, keepRow = null } = {}) {
+    const previewPlaceholder = document.querySelector('.preview-placeholder');
+    if (instant && previewPlaceholder) {
+      const placeholderHeight = previewPlaceholder.getBoundingClientRect().height;
+      previewPlaceholder.style.transition = 'none';
+      previewPlaceholder.style.height = 0;
+      requestAnimationFrame(() => {
+        previewPlaceholder.style.transition = '';
+      });
+      const scroller = document.querySelector(LIST_SCROLL_CONTAINER);
+      if (scroller && keepRow && placeholderHeight > 0 && parseFloat(previewPlaceholder.style.order) < rowOrder(keepRow)) {
+        scroller.scrollTop -= placeholderHeight;
+      }
+    }
     document.querySelectorAll('[data-previewing]').forEach(el => el.removeAttribute('data-previewing'));
     document.querySelectorAll('.sticky-email').forEach(el => removeClass(el, 'sticky-email'));
     document.querySelectorAll('.sticky-bundle-email').forEach(el => removeClass(el, 'sticky-bundle-email'));
@@ -209,7 +228,6 @@ export default {
       previewPane.style.top = null;
     }
     this.previewShowing = false;
-    const previewPlaceholder = document.querySelector('.preview-placeholder');
     if (previewPlaceholder) {
       previewPlaceholder.style.height = 0;
     }
@@ -220,13 +238,44 @@ export default {
       previewPane.style['margin-top'] = 0;
     }
   },
-  hideIfCurrentEmailRemoved(previewPane) {
-    if (this.currentEmail) {
-      const currentEmailEl = document.getElementById(this.currentEmail.getAttribute('id'));
-      if (!currentEmailEl) {
-        this.currentEmail = null;
-        this.hidePreviewPane(previewPane);
-      }
+  // called from the row click handler so a selection change that follows a click is expected
+  noteExpectedSelection() {
+    this.expectedSelectionUntil = Date.now() + 1000;
+  },
+  // no click behind it and it leaves the bundle (or hits a hidden row): outlook's post-archive pick
+  isUnexpectedSelection(selectedEmail) {
+    if (!this.currentEmail || !this.currentEmailRow || Date.now() < this.expectedSelectionUntil) {
+      return false;
+    }
+    const newRow = selectedEmail.closest(EMAIL_ROW);
+    const sameBundle = newRow.getAttribute('data-bundles') === this.currentEmailRow.getAttribute('data-bundles');
+    return !sameBundle || newRow.getAttribute('data-inbox') === 'bundled';
+  },
+  // after an archive, outlook selects its own next item, sometimes before the row leaves the dom
+  handleRemovedEmail(previewPane) {
+    // outlook detaches the inner container, so use the rows captured while it was attached
+    let removedRow = null;
+    if (this.currentEmail && !doesElementByIdExist(this.currentEmail)) {
+      removedRow = this.currentEmailRow;
+      this.currentEmail = null;
+      this.hidePreviewPane(previewPane, { instant: true, keepRow: findReplacementRow(removedRow) });
+    } else if (this.lastEmail && !doesElementByIdExist(this.lastEmail) && Date.now() - this.lastEmailChangedAt < 2000) {
+      // the selection moved off this row just before it was removed
+      removedRow = this.lastEmailRow;
+    }
+    if (!removedRow) {
+      return;
+    }
+    this.lastEmail = null;
+    // stay on the neighbour in the same bundle unless outlook already picked one
+    const replacement = findReplacementRow(removedRow);
+    if (replacement) {
+      const bundles = removedRow.getAttribute('data-bundles');
+      const stayedInBundle = () => {
+        const picked = getOutlookSelectedRow();
+        return !!picked && picked.getAttribute('data-bundles') === bundles && picked.getAttribute('data-inbox') !== 'bundled';
+      };
+      selectRow(replacement, stayedInBundle);
     }
   },
   async checkPreview() {
@@ -248,7 +297,7 @@ export default {
       return;
     }
     replaceClass(previewPane, 'show-preview', 'preview-compose');
-    this.hideIfCurrentEmailRemoved(previewPane);
+    this.handleRemovedEmail(previewPane);
 
     // the conversation container only exists once an email is selected
     const nothingSelected = !previewPane.querySelector(PREVIEW_CONVERSATION_CONTAINER);
@@ -258,6 +307,20 @@ export default {
       const selectedEmailIsBundled = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'bundled';
       const previewBundledEmail = selectedEmail && selectedEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
       const currentEmailChanged = this.currentEmail !== selectedEmail;
+      if (currentEmailChanged && this.isUnexpectedSelection(selectedEmail)) {
+        // hold; handleRemovedEmail takes over if the row is removed, else the change is accepted
+        if (!this.selectionHoldUntil) {
+          this.selectionHoldUntil = Date.now() + SELECTION_HOLD_MS;
+          // close now instead of showing outlook's pick under the departing row
+          this.hidePreviewPane(previewPane, { instant: true, keepRow: findReplacementRow(this.currentEmailRow) });
+          setTimeout(() => this.checkPreview(), SELECTION_HOLD_MS + 20);
+        }
+        if (Date.now() < this.selectionHoldUntil) {
+          return;
+        }
+      }
+      this.selectionHoldUntil = null;
+
       if (previewBundledEmail) {
         addClass(previewPane, 'bundle-preview');
         addClass(previewPlaceholder, 'bundle-preview-placeholder');
@@ -267,7 +330,11 @@ export default {
       }
 
       if (currentEmailChanged) {
+        this.lastEmail = this.currentEmail;
+        this.lastEmailRow = this.currentEmailRow;
+        this.lastEmailChangedAt = Date.now();
         this.currentEmail = selectedEmail;
+        this.currentEmailRow = selectedEmail.closest(EMAIL_ROW);
         this.movePreviewPane(previewPane);
       }
 

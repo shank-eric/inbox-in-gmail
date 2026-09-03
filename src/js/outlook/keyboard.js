@@ -35,21 +35,21 @@ export default {
       target: event.target,
     };
 
-    const navKeys = ['ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK', 'KeyE'];
+    const navKeys = ['ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK'];
     if (isTypable(event.target)) {
       return;
     }
     if (this.handlers[event.code]) {
       this.handlers[event.code](parameters);
     } else if (navKeys.includes(event.code)) {
+      // outlook's list would also step its selection, in its own order; only ours should move
+      event.preventDefault();
+      event.stopPropagation();
       this.navigate(parameters);
     }
   },
   handlers: {
     Enter: ({ currentRow, currentBundle }) => {
-      // outlook's list would also step its selection, in its own order; only ours should move
-      event.preventDefault();
-      event.stopPropagation();
       if (currentRow.getAttribute('data-inbox') === 'bundled') {
         currentBundle.click();
       } else {
@@ -68,9 +68,6 @@ export default {
       }
     },
     KeyC: ({ removeReminderClass }) => removeReminderClass(),
-    KeyE: ({ currentRow, navigate, ...rest }) => {
-      navigate({ currentRow, ...rest });
-    },
     KeyT: async ({ event }) => {
       event.preventDefault();
       const composeButton = await document.querySelector(COMPOSE_NEW_MAIL_BUTTON);
@@ -98,7 +95,7 @@ export default {
     // Space: ({ currentRow }) => currentRow.querySelector('.aid [role="checkbox"]').click()
   },
   async navigate({ currentRow, keyCode }) {
-    const searchNext = ['ArrowDown', 'KeyJ', 'KeyE'].includes(keyCode);
+    const searchNext = ['ArrowDown', 'KeyJ'].includes(keyCode);
     const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(`${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
     if (hasClass(rowToSelect, BUNDLE_WRAPPER_CLASS)) {
       rowToSelect.click();
