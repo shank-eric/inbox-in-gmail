@@ -47,6 +47,9 @@ export default {
   },
   handlers: {
     Enter: ({ currentRow, currentBundle }) => {
+      // outlook's list would also step its selection, in its own order; only ours should move
+      event.preventDefault();
+      event.stopPropagation();
       if (currentRow.getAttribute('data-inbox') === 'bundled') {
         currentBundle.click();
       } else {

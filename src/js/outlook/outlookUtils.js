@@ -120,17 +120,14 @@ const selectableRow = (row, currentBundle) => {
   return row && isEmail && hasOuterContainer && isSameBundle && !isInCollapsedBundle;
 };
 
-export const findNextVisibleRow = (currentRow, searchNext = true) => {
-  const navigator = searchNext ? 'nextSibling' : 'previousSibling';
-  const currentBundle = currentRow.getAttribute('data-bundles');
-  let nextRow = currentRow.parentNode[navigator]?.firstElementChild;
-  if (!nextRow) return;
+// rows are laid out by flex order, not dom order (outlook appends new mail at the end of the dom)
+export const rowOrder = row => parseFloat(row.parentNode?.style.order) || 0;
 
-  while (!selectableRow(nextRow, currentBundle)) {
-    nextRow = nextRow?.parentNode[navigator]?.firstElementChild;
-    if (!nextRow) {
-      return;
-    }
-  }
-  return nextRow;
+export const findNextVisibleRow = (currentRow, searchNext = true) => {
+  const currentBundle = currentRow.getAttribute('data-bundles');
+  const currentOrder = rowOrder(currentRow);
+  const rows = Array.from(document.querySelectorAll(`.${EMAIL_ROW_CLASS}`))
+    .filter(row => selectableRow(row, currentBundle))
+    .sort((a, b) => rowOrder(a) - rowOrder(b));
+  return searchNext ? rows.find(row => rowOrder(row) > currentOrder) : rows.filter(row => rowOrder(row) < currentOrder).pop();
 };
