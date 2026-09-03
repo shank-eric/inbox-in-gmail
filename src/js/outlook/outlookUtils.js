@@ -92,6 +92,8 @@ export const isInInbox = () => document.location.pathname === '/mail/' || docume
 //   composeContainer.addEventListener('focus', focusListener, true);
 // };
 
+export const getOutlookSelectedRow = () => document.querySelector(`${EMAIL_ROW_OUTER_CONTAINER}[aria-selected="true"]`)?.closest(`.${EMAIL_ROW_CLASS}`);
+
 export const setSelectedRow = row => {
   document.querySelectorAll('[data-selected]').forEach(selectedEl => {
     selectedEl.setAttribute('data-selected', false);
@@ -130,4 +132,34 @@ export const findNextVisibleRow = (currentRow, searchNext = true) => {
     .filter(row => selectableRow(row, currentBundle))
     .sort((a, b) => rowOrder(a) - rowOrder(b));
   return searchNext ? rows.find(row => rowOrder(row) > currentOrder) : rows.filter(row => rowOrder(row) < currentOrder).pop();
+};
+
+// the neighbour that takes a removed (archived, deleted) row's place within its bundle
+export const findReplacementRow = removedRow => findNextVisibleRow(removedRow, true) || findNextVisibleRow(removedRow, false);
+
+// true while selectRow dispatches its click, so the row's click handler can leave the preview alone
+let programmaticSelection = false;
+export const isProgrammaticSelection = () => programmaticSelection;
+
+// select a row through outlook (click) without toggling the preview, and mark it as ours.
+// outlook auto-selects its own next item shortly after a removal, so apply now and once more
+// after that has settled; `acceptCurrent` can approve outlook's pick and skip the override
+export const selectRow = (row, acceptCurrent = () => false) => {
+  [0, 400].forEach(delay =>
+    setTimeout(() => {
+      const outerContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+      if (!outerContainer || !outerContainer.isConnected || acceptCurrent()) {
+        return;
+      }
+      if (outerContainer.getAttribute('aria-selected') !== 'true') {
+        programmaticSelection = true;
+        try {
+          outerContainer.click();
+        } finally {
+          programmaticSelection = false;
+        }
+      }
+      setSelectedRow(row);
+    }, delay)
+  );
 };

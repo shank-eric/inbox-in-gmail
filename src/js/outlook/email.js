@@ -2,7 +2,7 @@ import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
-import { isInInbox, isSearchResults, matchesMyEmail, setSelectedRow } from './outlookUtils.js';
+import { isInInbox, isProgrammaticSelection, isSearchResults, matchesMyEmail, setSelectedRow } from './outlookUtils.js';
 import { encodeBundleId, querySelectorText, querySelectorWithText, hasClass, queryParentSelector } from '../shared/utils.js';
 
 const { REMINDER_EMAIL_CLASS } = CLASSES;
@@ -170,6 +170,11 @@ export default class Email {
       return;
     }
     setSelectedRow(this.emailEl);
+    emailPreview.noteExpectedSelection();
+    // a programmatic selection (e.g. after an archive) must not change whether the preview shows
+    if (isProgrammaticSelection()) {
+      return;
+    }
     const conversationEmail = queryParentSelector(event.target, EMAIL_ROW);
     if (conversationEmail) {
       emailPreview.emailClicked(conversationEmail);
