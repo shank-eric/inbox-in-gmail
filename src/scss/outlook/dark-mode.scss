@@ -1,0 +1,52 @@
+//dark palette (outlook adds .dark to <html>, dark reader adds data-darkreader-scheme).
+//literal colours: dark reader flattens outlook's variables
+html[dir='ltr'].dark,
+html[dir='ltr'][data-darkreader-scheme='dark'] {
+  body:not(.native-list-fallback) {
+    //main inbox element
+    .q9iRC {
+      background-color: #1a1a1a;
+
+      //email row: cards lighter than the page (gmail's hairlines read as a grid on 37px rows)
+      .l8vF9 {
+        &,
+        &:hover {
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+
+        //row containers; outlook keeps its selected and hover colours
+        .gDC9O,
+        .jGG6V {
+          //outlook's separator turns tan under dark reader
+          border-bottom-color: rgba(255, 255, 255, 0.3) !important;
+
+          &:not(.epBmH):not(:hover) {
+            //read email
+            background-color: #2b2b2b;
+
+            //unread email: darker, like gmail's
+            &:has(.DLvHz) {
+              background-color: #101010;
+            }
+          }
+        }
+
+        //bundle rows pin above their emails; every state needs an opaque fill
+        &.bundle-wrapper {
+          .gDC9O:not(.epBmH),
+          .jGG6V:not(.epBmH) {
+            background-color: #2b2b2b;
+
+            &:has(.DLvHz) {
+              background-color: #101010;
+            }
+
+            &:hover {
+              background-color: #3a3a3a;
+            }
+          }
+        }
+      }
+    }
+  }
+}
