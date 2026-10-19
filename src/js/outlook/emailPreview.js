@@ -5,7 +5,6 @@ import {
   hasClass,
   htmlToElements,
   observeForElement,
-  observeForRemoval,
   removeClass,
   runObserver,
 } from '../shared/utils.js';
@@ -18,6 +17,7 @@ const {
   PREVIEW_COMPOSE,
   PREVIEW_PANE,
   PREVIEW_THREAD_ROW,
+  PREVIEW_CONVERSATION_CONTAINER,
   PREVIEW_WRAPPER,
   EMAIL_CONTAINER,
   SELECTED_EMAILS_MENU_CONTAINER,
@@ -52,7 +52,8 @@ export default {
       // clicking the email changes the selected email automatically
       // set showPreview so that checkPreview will make it visible
       // when it processes the new selected email
-      await observeForRemoval(previewPane, '.QYrHp');
+      await observeForElement(previewPane, PREVIEW_CONVERSATION_CONTAINER);
+      this.previewShowing = false;
       this.showPreview = true;
     }
   },
@@ -70,10 +71,12 @@ export default {
   showPreviewPane(previewPane) {
     this.movePreviewPane(previewPane);
     const previewPlaceholder = document.querySelector('.preview-placeholder');
-    const previewScrollTarget = document.querySelector('.preview-scroll-target');
-    addClass(previewPane, 'show-preview');
-    this.previewShowing = true;
-    const adjustPreviewSize = () => {
+    if (!this.previewShowing) {
+      addClass(previewPane, 'show-preview');
+      this.previewShowing = true;
+    }
+
+    const adjustPreviewSize = async () => {
       if (hasClass(previewPane, 'preview-compose')) {
         document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
         previewPlaceholder.style.height = null;
@@ -82,7 +85,7 @@ export default {
         return;
       }
       const previewEls = Array.from(previewPane.querySelectorAll(`${PREVIEW_WRAPPER} > div,${PREVIEW_CALENDAR_CONFLICT_CONTAINER}`));
-      const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12);
+      const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12, 60); //42 for the copilot summary button
       // width is controlled by the window size, not by the email preview
       const placeholderWidth = getComputedStyle(previewPlaceholder).width;
       const { height: placeholderHeight } = previewPlaceholder.style;
@@ -91,8 +94,6 @@ export default {
         previewPlaceholder.style.height = previewHeight;
         previewPane.style.height = previewHeight;
         previewPane.style.width = placeholderWidth;
-        const expandedEmails = Array.from(previewPane.querySelectorAll(`${PREVIEW_THREAD_ROW} div[aria-expanded="true"]`));
-        previewScrollTarget.style.top = addPixels(previewHeight, ...expandedEmails.map(el => -el.offsetHeight), -12, -44, -80);
         if (this.currentEmail.getAttribute('data-previewing') !== 'true') {
           document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
           this.currentEmail.setAttribute('data-previewing', true);
@@ -100,7 +101,10 @@ export default {
           document.querySelectorAll('.sticky-bundle-email').forEach(el => removeClass(el, 'sticky-bundle-email'));
           const isBundled = this.currentEmail.parentNode.getAttribute('data-inbox') === 'show-bundled';
           addClass(this.currentEmail.parentNode.parentNode, isBundled ? 'sticky-bundle-email' : 'sticky-email');
-          setTimeout(() => previewScrollTarget.scrollIntoViewIfNeeded({ behavior: 'smooth' }), 0);
+          const focusedEmail = await observeForElement(document, `${PREVIEW_THREAD_ROW}#focused`);
+          // the focused row is zero-size when its message renders expanded
+          const scrollTarget = focusedEmail.offsetHeight ? focusedEmail : document.querySelector('.preview-scroll-target');
+          scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
       this.previewObserver.observe(previewPane, { subtree: true, attributes: true });
@@ -124,12 +128,15 @@ export default {
     }
   },
   hidePreviewPane(previewPane) {
-    const previewingEmail = document.querySelector('[data-previewing]');
-    if (previewingEmail) {
-      previewingEmail.removeAttribute('data-previewing');
-    }
+    document.querySelectorAll('[data-previewing]').forEach(el => el.removeAttribute('data-previewing'));
+    document.querySelectorAll('.sticky-email').forEach(el => removeClass(el, 'sticky-email'));
+    document.querySelectorAll('.sticky-bundle-email').forEach(el => removeClass(el, 'sticky-bundle-email'));
     if (previewPane) {
       removeClass(previewPane, 'show-preview');
+      // clear inline sizing so the native reading pane isn't constrained while our styling is inactive
+      previewPane.style.height = null;
+      previewPane.style.width = null;
+      previewPane.style.top = null;
     }
     this.previewShowing = false;
     const previewPlaceholder = document.querySelector('.preview-placeholder');
@@ -173,7 +180,8 @@ export default {
     replaceClass(previewPane, 'show-preview', 'preview-compose');
     this.hideIfCurrentEmailRemoved(previewPane);
 
-    const nothingSelected = previewPane.querySelector('.QYrHp');
+    // the conversation container only exists once an email is selected
+    const nothingSelected = !previewPane.querySelector(PREVIEW_CONVERSATION_CONTAINER);
     const selectedEmails = document.querySelectorAll(`${EMAIL_CONTAINER} [aria-selected="true"]:not(.${BUNDLE_WRAPPER_CLASS}):not(button)`);
     if (selectedEmails.length === 1 && !nothingSelected) {
       const selectedEmail = selectedEmails[0];

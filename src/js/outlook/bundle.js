@@ -10,19 +10,19 @@ const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const {
   EMAIL_ROW_OUTER_CONTAINER_PRIMARY,
   EMAIL_ROW_OUTER_CONTAINER_SECONDARY,
+  EMAIL_ROW_OUTER_CONTAINER_BACKGROUND,
   EMAIL_ROW_INNER_CONTAINER,
   EMAIL_COLUMN_CONTAINER,
   EMAIL_DATE,
   EMAIL_PARTICIPANT_CONTAINERS,
   EMAIL_ROW,
-  HIDE_AVATAR,
   SELECTED_ROW,
-  UNSELECTED_ROW,
   UNREAD_EMAIL_ROW,
 } = OUTLOOK_CLASSES;
 const {
   EMAIL_COLUMN_CONTAINER: EMAIL_COLUMN_CONTAINER_SELECTOR,
   EMAIL_ROW_INNER_CONTAINER: EMAIL_ROW_INNER_CONTAINER_SELECTOR,
+  EMAIL_ROW_OUTER_CONTAINER,
   EMAIL_CONTAINER,
 } = OUTLOOK_SELECTORS;
 
@@ -81,21 +81,19 @@ export default class Bundle {
         data-inbox=${encodedId}
         data-show-emails="false"
       >
-        <div class="${EMAIL_ROW_OUTER_CONTAINER_PRIMARY} ${EMAIL_ROW_OUTER_CONTAINER_SECONDARY}">
+        <div class="${EMAIL_ROW_OUTER_CONTAINER_PRIMARY} ${EMAIL_ROW_OUTER_CONTAINER_SECONDARY} ${EMAIL_ROW_OUTER_CONTAINER_BACKGROUND}">
           <div draggable="true">
             <div
-              class="${EMAIL_ROW_INNER_CONTAINER} G1NES lHRXq IjQyD JCRRb DLvHz hDNlA"
+              class="${EMAIL_ROW_INNER_CONTAINER} CgZeR DLvHz"
               tabindex="-1"
             >
               <div class="X1bn0"><button tabindex="-1" class="Es7y_" title="Mark as unread"></button></div>
-              <div class="ZTnQq">
-                <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd zItCb">
-                  <div class="DMjcl BevFE XG5Jd gi0cv" style="width: ${columnWidths[0].width}; max-width: ${columnWidths[0].width};">
-                    <div class="XG5Jd XJ3XJ q0f8X XW8cf"
+              <div class="XG5Jd ap3u6 WO8ox Yhp01 ORB1S jO6nB">
+                    <div class="XG5Jd XJ3XJ q0f8X XW8cf DoCKv vbEPJ"
                       tabindex="-1" role="checkbox" aria-checked="false" aria-label="Select a conversation"
                     >
                       <span
-                        role="img" id="avatar-${encodedId}" class="fui-Avatar r81b29z mP9b0 oWYiS BQOiO ___15c0rxp f1w9dchk fxldao9 fy9rknc" aria-label="${title}"
+                        role="img" id="avatar-${encodedId}" class="fui-Avatar r81b29z mP9b0 ___15c0rxp f1w9dchk fxldao9 fy9rknc" aria-label="${title}"
                       >
                         <span id="avatar-${encodedId}__initials" class="fui-Avatar__initials rip04v ___456t1b0"
                         style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}"
@@ -111,21 +109,25 @@ export default class Bundle {
                         </label>
                       </div>
                     </div>
-                    <div class="${EMAIL_PARTICIPANT_CONTAINERS} W3BHj Dc0o9 Ejrkd">
+                  </div>
+              <div class="ZTnQq XG5Jd Wamaz ap3u6 WO8ox">
+                <div class="${EMAIL_COLUMN_CONTAINER} XG5Jd hQj7T">
+                  <div class="mn28d BevFE XG5Jd mXLG_" style="width: ${columnWidths[0].width}; max-width: ${columnWidths[0].width};">
+                    <div class="${EMAIL_PARTICIPANT_CONTAINERS} gy2aJ Ejrkd">
                       <span class="label-link"
                       style="color: ${label.textColor}; background-color: ${label.backgroundColor}; border-color: ${label.borderColor}">
                         ${title}
                       </span>
                     </div>
                   </div>
-                  <div class="dTBo0 XW8cf XG5Jd oegl4"
+                  <div class="dTBo0 XW8cf XG5Jd Gts_D"
                     style="width: ${columnWidths[1].width}; max-width: ${columnWidths[1].width}; padding-left: ${columnWidths[1].paddingLeft};">
                     <div class="gmffI ovvvr">
                       <div class="gy2aJ Ejrkd bundle-senders">
                       </div>
                       <div class="YH9yX">
-                        <div class="Zgp3k">
-                          <span class="FqgPc gy2aJ Ejrkd"></span>
+                        <div class="En7p5">
+                          <span class="ASFJj gy2aJ Ejrkd"></span>
                         </div>
                       </div>
                     </div>
@@ -133,7 +135,7 @@ export default class Bundle {
                   <div class="VuThs" style="width: ${columnWidths[2].width}; max-width: ${columnWidths[2].width}; margin-left: ${columnWidths[2].marginLeft};">
                     <div class="lulAg">
                       <span
-                        class="${EMAIL_DATE} B3KmY qq2gS IHjSF D8iyG _rWRU Ejrkd hwyHQ B3KmY"
+                        class="${EMAIL_DATE} qq2gS _rWRU Ejrkd cbNn0"
                       >
                         ${email.getDate()}
                       </span>
@@ -141,7 +143,6 @@ export default class Bundle {
                   </div>
                 </div>
               </div>
-              <div class="QpoLy"></div>
             </div>
           </div>
           <span class="hidden-selector"></span>
@@ -178,7 +179,7 @@ export default class Bundle {
         });
         bundleRow.setAttribute('data-show-emails', !currentlyShowing);
         setSelectedRow(bundleRow);
-        replaceClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), SELECTED_ROW, UNSELECTED_ROW);
+        removeClass(bundleRow.querySelector(EMAIL_ROW_OUTER_CONTAINER), SELECTED_ROW);
       }
     } else {
       const bundledEmails = document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`);
@@ -189,7 +190,7 @@ export default class Bundle {
           setSelectedRow(emailRow);
         }
       });
-      replaceClass(bundleRow.querySelector(EMAIL_ROW_INNER_CONTAINER_SELECTOR), UNSELECTED_ROW, SELECTED_ROW);
+      addClass(bundleRow.querySelector(EMAIL_ROW_OUTER_CONTAINER), SELECTED_ROW);
       bundleRow.setAttribute('data-show-emails', !currentlyShowing);
     }
   }
@@ -213,12 +214,6 @@ export default class Bundle {
 
     const checkboxContainer = this.element.querySelector('[role="checkbox"]');
     checkboxContainer.setAttribute('aria-checked', anyEmailsChecked);
-    const avatarContainer = this.element.querySelector('.fui-Avatar');
-    if (anyEmailsChecked) {
-      addClass(avatarContainer, HIDE_AVATAR);
-    } else {
-      removeClass(avatarContainer, HIDE_AVATAR);
-    }
     const { CHECKED_CHECKBOX_CLASSES, UNCHECKED_CHECKBOX_CLASSES } = getCheckboxClasses();
     const addClasses = allEmailsChecked ? CHECKED_CHECKBOX_CLASSES : UNCHECKED_CHECKBOX_CLASSES;
     const removeClasses = allEmailsChecked ? UNCHECKED_CHECKBOX_CLASSES : CHECKED_CHECKBOX_CLASSES;

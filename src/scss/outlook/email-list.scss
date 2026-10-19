@@ -1,17 +1,9 @@
 html[dir='ltr'] {
-  body {
+  //native-list-fallback is a kill-switch: restores outlook's fixed-height list
+  //if it floods our full-height list with rows
+  body:not(.native-list-fallback) {
     //main inbox element, has data-max-width on it
     .q9iRC {
-      .G8_Dc {
-        overflow-y: auto;
-        height: auto;
-        .rRhzD {
-          height: unset;
-          max-height: unset;
-          // min-height: calc(100vh - 140px);
-        }
-      }
-
       // element directly inside of data-max-width
       .HOVUa {
         max-width: 2400px;
@@ -20,6 +12,17 @@ html[dir='ltr'] {
 
         //wrapper around email list and preview pane
         .G8_Dc {
+          overflow-y: auto;
+          height: auto;
+          //email list stacking wrapper: above the preview pane (z-index: 10) so
+          //pinned rows can cover it, below the compose popup (z-index: 15);
+          //click-transparent so its box doesn't eat clicks where it overlaps
+          //the top of the preview (email rows re-enable pointer events)
+          .rRhzD {
+            z-index: 11;
+            pointer-events: none;
+          }
+
           //main email list
           .XW2m0 {
             // min-height: calc(100% - 41px);
@@ -36,6 +39,13 @@ html[dir='ltr'] {
 
             .Cz7T5,
             .ONAp_ {
+              overflow: visible;
+              background: transparent;
+            }
+
+            //scrollbar wrapper: its overflow: hidden breaks pinned rows (wrong
+            //sticky scrollport) and its background covers the email preview
+            .zXLz3 {
               overflow: visible;
               background: transparent;
             }
@@ -62,7 +72,7 @@ html[dir='ltr'] {
             }
 
             // background covering the email preview
-            .X4w2q {
+            .Xhguk {
               overflow: visible;
               background: transparent;
             }
@@ -79,11 +89,12 @@ html[dir='ltr'] {
 
               //email rows container
               > div {
-                display: flex;
+                min-height: calc(100vh - 170px);
                 height: unset !important;
-                flex-direction: column;
-                position: initial;
+                position: initial !important;
                 > div {
+                  display: flex;
+                  flex-direction: column;
                   position: unset !important;
                 }
               }
@@ -96,13 +107,14 @@ html[dir='ltr'] {
                 z-index: 10;
               }
               .sticky-bundle-email {
-                top: 36px !important;
+                top: 37px !important;
               }
             }
 
             // email column headers
             > div:nth-child(2) {
               box-shadow: rgb(0 0 0 / 24%) -2px -2px 4px;
+              // fallback; emailPreview.js sets the measured height inline
               padding: 0 !important;
             }
 

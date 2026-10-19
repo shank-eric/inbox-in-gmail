@@ -1,4 +1,4 @@
-import { addClass, encodeBundleId, hasClass, removeClass, runObserver } from '../shared/utils.js';
+import { addClass, encodeBundleId, removeClass, runObserver } from '../shared/utils.js';
 import { getOptions, reloadOptions } from '../shared/options.js';
 
 import { isInInbox, isSearchResults } from './outlookUtils.js';
@@ -22,7 +22,14 @@ export default {
       options,
       async () => {
         reloadOptions();
-        await emailPreview.checkPreview();
+        // kill-switch: if outlook floods our full-height list with rows, fall back to its native list before the page locks up
+        const runawayRows = document.querySelectorAll(EMAIL_ROW).length > 300;
+        document.body.classList.toggle('native-list-fallback', runawayRows);
+        if (runawayRows) {
+          await emailPreview.hidePreview();
+        } else {
+          await emailPreview.checkPreview();
+        }
         this.processEmails();
       },
       true
@@ -73,10 +80,13 @@ export default {
                 },
               ],
             };
-            if (!hasClass(email.emailEl, 'bundle-last-email')) {
-              removeClass(document.querySelector(`[data-${encodedId}].bundle-last-email`), 'bundle-last-email');
-              addClass(email.emailEl, 'bundle-last-email');
-            }
+            // new mail lands last in the dom and moves later; clear the class from every other row
+            document.querySelectorAll(`[data-${encodedId}].bundle-last-email`).forEach(el => {
+              if (el !== email.emailEl) {
+                removeClass(el, 'bundle-last-email');
+              }
+            });
+            addClass(email.emailEl, 'bundle-last-email');
           } else {
             labelStats[encodedId].count++;
             labelStats[encodedId].senders.push({
