@@ -3,7 +3,7 @@ import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { getOptions } from '../shared/options.js';
 import emailPreview from './emailPreview.js';
 import { isInInbox, isProgrammaticSelection, isSearchResults, matchesMyEmail, setSelectedRow } from './outlookUtils.js';
-import { encodeBundleId, querySelectorText, querySelectorWithText, hasClass, queryParentSelector } from '../shared/utils.js';
+import { encodeBundleId, querySelectorText, querySelectorWithText, hasClass, queryParentSelector, removeClass } from '../shared/utils.js';
 
 const { REMINDER_EMAIL_CLASS } = CLASSES;
 const { UNREAD_EMAIL_ROW } = OUTLOOK_CLASSES;
@@ -99,24 +99,37 @@ export default class Email {
     const isStarred = this.emailEl.querySelector('[data-icon-name="PinFilled"]');
     const isUnbundled = labels.some(label => label.title.includes(CLASSES.UNBUNDLED_PARENT_LABEL));
 
-    if (labels.length && !isStarred && !isUnbundled) {
-      let showEmail = this.emailEl.getAttribute('data-inbox') === 'show-bundled';
-      const bundles = labels
-        .map(label => {
-          const bundleId = encodeBundleId(label.title);
-          this.emailEl.setAttribute(`data-${bundleId}`, true);
-          const bundle = document.querySelector(`[data-inbox="${bundleId}"]`);
-          if (bundle && !showEmail) {
-            showEmail = bundle.getAttribute('data-show-emails') === 'true';
-          }
-          return bundleId;
-        })
-        .join('||');
+    const bundleIds = labels.length && !isStarred && !isUnbundled ? labels.map(label => encodeBundleId(label.title)) : [];
+    const bundles = bundleIds.join('||');
+    const previousBundles = this.emailEl.getAttribute('data-bundles') || '';
+    const bundlesChanged = bundles !== previousBundles;
+
+    // the email left a bundle (category removed or changed): drop that bundle's markers so its
+    // stats, checkbox and row ordering stop treating the email as one of theirs
+    previousBundles
+      .split('||')
+      .filter(bundleId => bundleId && !bundleIds.includes(bundleId))
+      .forEach(bundleId => this.emailEl.removeAttribute(`data-${bundleId}`));
+    if (bundlesChanged) {
+      removeClass(this.emailEl, 'bundle-last-email');
+    }
+
+    if (bundleIds.length) {
+      // an expanded email stays visible only while it stays in the same bundle; a moved email follows its new bundle's state
+      let showEmail = !bundlesChanged && this.emailEl.getAttribute('data-inbox') === 'show-bundled';
+      bundleIds.forEach(bundleId => {
+        this.emailEl.setAttribute(`data-${bundleId}`, true);
+        const bundle = document.querySelector(`[data-inbox="${bundleId}"]`);
+        if (bundle && !showEmail) {
+          showEmail = bundle.getAttribute('data-show-emails') === 'true';
+        }
+      });
 
       this.emailEl.setAttribute('data-inbox', showEmail ? 'show-bundled' : 'bundled');
-      this.emailEl.setAttribute('data-bundles', bundles); // labels.map(label => encodeBundleId(label.title)).join('||'));
+      this.emailEl.setAttribute('data-bundles', bundles);
     } else {
       this.emailEl.setAttribute('data-inbox', 'email');
+      this.emailEl.removeAttribute('data-bundles');
       this.emailEl.parentNode.style.order = this.order;
       if (isUnbundled) {
         labels.forEach(label => {
