@@ -18,6 +18,23 @@ const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const SELECTION_HOLD_MS = 600;
 // the placeholder's height transition, defined once in email-preview.scss
 const previewResizeMs = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--inbox-reborn-preview-resize')) || 0;
+// outlook's dark message mode swaps an email's own backgrounds for a mid grey (inline !important, original kept in
+// data-ogsb / data-ogab) that dark reader can't darken; give dark reader the originals back
+const restoreMessageBackgrounds = previewPane => {
+  if (document.documentElement.getAttribute('data-darkreader-scheme') !== 'dark') {
+    return;
+  }
+  previewPane.querySelectorAll('[data-ogsb]').forEach(el => {
+    if (el.style.getPropertyPriority('background-color') === 'important') {
+      el.style.setProperty('background-color', el.getAttribute('data-ogsb'));
+    }
+  });
+  previewPane.querySelectorAll('[data-ogab]').forEach(el => {
+    if (el.getAttribute('bgcolor') !== el.getAttribute('data-ogab')) {
+      el.setAttribute('bgcolor', el.getAttribute('data-ogab'));
+    }
+  });
+};
 const {
   PREVIEW_CALENDAR_CONFLICT_CONTAINER,
   PREVIEW_COMPOSE,
@@ -99,6 +116,8 @@ export default {
       if (!this.previewShowing) {
         return;
       }
+      // every pass: message bodies render (and re-render on a new message) after the pane opens
+      restoreMessageBackgrounds(previewPane);
       if (hasClass(previewPane, 'preview-compose')) {
         document.querySelectorAll('[data-previewing="true"]').forEach(el => el.setAttribute('data-previewing', false));
         previewPlaceholder.style.height = null;
@@ -140,6 +159,7 @@ export default {
           if (!this.previewShowing) {
             return;
           }
+          restoreMessageBackgrounds(previewPane);
           this.scrollMessageIntoView(focusedEmail, previewPane);
         } else if (Date.now() - this.previewOpenedAt < 2000) {
           // the body usually renders after the first size pass; follow it
