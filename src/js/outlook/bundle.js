@@ -30,25 +30,32 @@ export default class Bundle {
   constructor(attrs) {
     this.attrs = attrs;
     this.element = document.querySelector(`${EMAIL_CONTAINER} .${BUNDLE_WRAPPER_CLASS}[data-inbox="${attrs.encodedId}"]`);
-    if (attrs.count === 0 && this.element) {
-      this.element.parentNode.remove();
+    if (attrs.count === 0 || this.showsSingleEmail()) {
+      // nothing to bundle: drop a row left over from when the bundle had more emails
+      this.element?.parentNode.remove();
+      this.element = null;
+      // a lone email sits in the list as itself
+      document.querySelectorAll(`[data-inbox="bundled"][data-${attrs.encodedId}]`).forEach(emailRow => {
+        emailRow.setAttribute('data-inbox', 'show-bundled');
+      });
     } else if (!this.element) {
       this.element = this.buildBundleWrapper();
     }
+  }
+
+  // a bundle of one shows the email itself unless the user asked to bundle single emails too
+  showsSingleEmail() {
+    return this.attrs.count === 1 && !getOptions().bundleOne;
   }
 
   buildBundleWrapper() {
     const { email, emailEl, encodedId, title } = this.attrs;
     const labels = email.getLabels();
     const label = labels.find(lab => lab.encodedId === encodedId);
-    const options = getOptions();
-    const showEmail = this.attrs.count === 1 && !options.bundleOne;
-    if (showEmail) {
-      document.querySelectorAll(`[data-inbox="bundled"][data-${encodedId}]`).forEach(emailRow => {
-        emailRow.setAttribute('data-inbox', 'show-bundled');
-      });
-      return;
-    }
+    // a new bundle row starts collapsed, so tuck away emails that were on show before it existed
+    document.querySelectorAll(`[data-inbox="show-bundled"][data-${encodedId}]`).forEach(emailRow => {
+      emailRow.setAttribute('data-inbox', 'bundled');
+    });
 
     emailEl.style.width = '100%';
 
@@ -234,6 +241,11 @@ export default class Bundle {
   updateStats({ email, emailEl }) {
     this.email = email;
     this.emailEl = emailEl;
+    if (!this.element) {
+      // no bundle row: a lone email takes its natural place in the list
+      emailEl.parentNode.style.order = email.order;
+      return;
+    }
     this.element.parentNode.style.order = email.order - 1;
     const { encodedId } = this.attrs;
     const order = parseInt(this.element.parentNode.style.order);
@@ -241,11 +253,6 @@ export default class Bundle {
       emailRow.parentNode.style.order = order + index + 1;
     });
 
-    const options = getOptions();
-    const showEmail = this.attrs.count === 1 && !options.bundleOne;
-    if (this.attrs.count === 0 || showEmail) {
-      return;
-    }
     this.addCount();
     this.addSenders();
     this.checkUnread();
