@@ -1,16 +1,13 @@
-import { addClass, hasClass, isTypable, observeForElement, removeClass } from '../shared/utils.js';
+import { addClass, isTypable, observeForElement, removeClass } from '../shared/utils.js';
 import emailPreview from './emailPreview.js';
-import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
-import { findNextVisibleRow } from './outlookUtils.js';
+import { bundleWrapperFor, findNextVisibleRow, isBundleWrapper, setSelectedRow, visibleRows } from './outlookUtils.js';
 
-const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const {
   COMPOSE_NEW_MAIL_BUTTON,
   COMPOSE_SUBJECT_LINE,
   COMPOSE_TO_ADDRESS_CONTAINER,
   LIST_SCROLL_CONTAINER,
-  SELECTED_EMAIL,
   EMAIL_ROW,
   EMAIL_ROW_OUTER_CONTAINER,
 } = OUTLOOK_SELECTORS;
@@ -21,11 +18,9 @@ export default {
   },
   handleKeyboardEvents(event) {
     const currentRow = document.querySelector(`${EMAIL_ROW}[data-selected="true"]`);
-    const currentBundle = document.querySelector(`${SELECTED_EMAIL}.${BUNDLE_WRAPPER_CLASS}`);
     const mainContainer = document.querySelector(LIST_SCROLL_CONTAINER);
     const parameters = {
       ...this,
-      currentBundle,
       currentRow,
       currentTarget: event.currentTarget,
       event,
@@ -49,22 +44,19 @@ export default {
     }
   },
   handlers: {
-    Enter: ({ currentRow, currentBundle }) => {
-      if (currentRow.getAttribute('data-inbox') === 'bundled') {
-        currentBundle.click();
-      } else {
-        currentRow.click();
+    // opens the email; on a bundle row (or an email hidden behind one) expands or collapses the bundle
+    Enter: ({ currentRow }) => {
+      if (!currentRow) {
+        return;
       }
+      const row = currentRow.getAttribute('data-inbox') === 'bundled' ? bundleWrapperFor(currentRow) : currentRow;
+      row?.click();
     },
     Escape: ({ currentRow }) => {
       if (emailPreview.previewShowing) {
         emailPreview.emailClicked(currentRow);
-      } else {
-        const currentBundle = currentRow?.getAttribute('data-bundles');
-        if (currentBundle) {
-          const bundleRow = document.querySelector(`[data-inbox="${currentBundle}"]`);
-          bundleRow.click();
-        }
+      } else if (currentRow) {
+        bundleWrapperFor(currentRow)?.click();
       }
     },
     KeyC: ({ removeReminderClass }) => removeReminderClass(),
@@ -96,9 +88,15 @@ export default {
   },
   async navigate({ currentRow, keyCode }) {
     const searchNext = ['ArrowDown', 'KeyJ'].includes(keyCode);
-    const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : document.querySelector(`${EMAIL_ROW}:not(.${BUNDLE_WRAPPER_CLASS})`);
-    if (hasClass(rowToSelect, BUNDLE_WRAPPER_CLASS)) {
-      rowToSelect.click();
+    // nothing selected yet: start from the first row on screen
+    const rowToSelect = currentRow ? findNextVisibleRow(currentRow, searchNext) : visibleRows()[0];
+    if (!rowToSelect) {
+      return;
+    }
+    if (isBundleWrapper(rowToSelect)) {
+      // highlight the bundle row without toggling it; enter expands or collapses
+      emailPreview.hidePreview();
+      setSelectedRow(rowToSelect);
       return;
     }
     const convId = rowToSelect ? rowToSelect.querySelector('[data-convid]')?.getAttribute('data-convid') : null;

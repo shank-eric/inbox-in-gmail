@@ -1,8 +1,10 @@
 import { OUTLOOK_CLASSES, OUTLOOK_SELECTORS } from './constants.js';
 import { addClass, hasClass, removeClass } from '../shared/utils.js';
 import { getOptions } from '../shared/options.js';
+import { CLASSES } from '../shared/constants.js';
 
-const { SELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS, BUNDLE_WRAPPER_CLASS } = OUTLOOK_CLASSES;
+const { SELECTED_ROW, EMAIL_ROW: EMAIL_ROW_CLASS } = OUTLOOK_CLASSES;
+const { BUNDLE_WRAPPER_CLASS } = CLASSES;
 const { EMAIL_ROW_OUTER_CONTAINER } = OUTLOOK_SELECTORS;
 
 let foundEmail;
@@ -114,28 +116,50 @@ export const setSelectedRow = row => {
   addClass(outerContainer, SELECTED_ROW);
 };
 
-const selectableRow = (row, currentBundle) => {
-  const isSameBundle = row.getAttribute('data-bundles') === currentBundle;
-  const isInCollapsedBundle = row.getAttribute('data-inbox') === 'bundled';
-  const isEmail = hasClass(row, EMAIL_ROW_CLASS) && !hasClass(row, BUNDLE_WRAPPER_CLASS);
-  const hasOuterContainer = row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
-  return row && isEmail && hasOuterContainer && isSameBundle && !isInCollapsedBundle;
+export const isBundleWrapper = row => hasClass(row, BUNDLE_WRAPPER_CLASS);
+// hidden behind a collapsed bundle row
+const isCollapsedEmail = row => row.getAttribute('data-inbox') === 'bundled';
+const isEmailRow = row => hasClass(row, EMAIL_ROW_CLASS) && !isBundleWrapper(row) && !!row.querySelector(EMAIL_ROW_OUTER_CONTAINER);
+
+// the bundle row a bundled email belongs to (the first of its labels)
+export const bundleWrapperFor = row => {
+  const [bundleId] = (row.getAttribute('data-bundles') || '').split('||');
+  return bundleId ? document.querySelector(`.${BUNDLE_WRAPPER_CLASS}[data-inbox="${bundleId}"]`) : null;
 };
 
 // rows are laid out by flex order, not dom order (outlook appends new mail at the end of the dom)
 export const rowOrder = row => parseFloat(row.parentNode?.style.order) || 0;
+const byOrder = rows => rows.sort((a, b) => rowOrder(a) - rowOrder(b));
+const allRows = () => Array.from(document.querySelectorAll(`.${EMAIL_ROW_CLASS}`));
 
+// every row the user can see, in visual order: loose emails, bundle rows and the emails of expanded bundles
+export const visibleRows = () =>
+  byOrder(allRows().filter(row => (isBundleWrapper(row) ? row.style.display !== 'none' : isEmailRow(row) && !isCollapsedEmail(row))));
+
+// the visible neighbour of a row; a collapsed email navigates from the bundle row hiding it.
+// neighbours are taken by position so rows sharing a flex order are not skipped
 export const findNextVisibleRow = (currentRow, searchNext = true) => {
-  const currentBundle = currentRow.getAttribute('data-bundles');
-  const currentOrder = rowOrder(currentRow);
-  const rows = Array.from(document.querySelectorAll(`.${EMAIL_ROW_CLASS}`))
-    .filter(row => selectableRow(row, currentBundle))
-    .sort((a, b) => rowOrder(a) - rowOrder(b));
-  return searchNext ? rows.find(row => rowOrder(row) > currentOrder) : rows.filter(row => rowOrder(row) < currentOrder).pop();
+  const rows = visibleRows();
+  const anchor = (isCollapsedEmail(currentRow) && bundleWrapperFor(currentRow)) || currentRow;
+  const index = rows.indexOf(anchor);
+  if (index >= 0) {
+    return rows[index + (searchNext ? 1 : -1)];
+  }
+  // the anchor is not visible (e.g. removed): fall back to the nearest row by order
+  const anchorOrder = rowOrder(anchor);
+  return searchNext ? rows.find(row => rowOrder(row) > anchorOrder) : rows.filter(row => rowOrder(row) < anchorOrder).pop();
+};
+
+// the visible email neighbour of a row within the same bundle (or among loose emails)
+const findNeighbourInBundle = (row, searchNext) => {
+  const bundles = row.getAttribute('data-bundles');
+  const order = rowOrder(row);
+  const rows = byOrder(allRows().filter(r => isEmailRow(r) && !isCollapsedEmail(r) && r.getAttribute('data-bundles') === bundles));
+  return searchNext ? rows.find(r => rowOrder(r) > order) : rows.filter(r => rowOrder(r) < order).pop();
 };
 
 // the neighbour that takes a removed (archived, deleted) row's place within its bundle
-export const findReplacementRow = removedRow => findNextVisibleRow(removedRow, true) || findNextVisibleRow(removedRow, false);
+export const findReplacementRow = removedRow => findNeighbourInBundle(removedRow, true) || findNeighbourInBundle(removedRow, false);
 
 // true while selectRow dispatches its click, so the row's click handler can leave the preview alone
 let programmaticSelection = false;
