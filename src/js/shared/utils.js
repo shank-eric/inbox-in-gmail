@@ -99,6 +99,9 @@ export const objectMap = (obj, fn) => Object.fromEntries(Object.entries(obj).map
 export const buildSelectors = classObject => objectMap(classObject, ([key, value]) => [key, `.${value.split(' ').join(' .')}`]);
 
 // ---- Classes ---- \\
+// a detached element may have been re-mounted under the same id
+export const doesElementByIdExist = el => !!el && !!document.getElementById(el.getAttribute('id'));
+
 export const hasClass = (element, className) => element && element.classList && element.classList.contains(className);
 
 export const addClass = (element, className) => {

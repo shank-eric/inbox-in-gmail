@@ -1,10 +1,12 @@
+:root {
+  // read by emailPreview.js so the scroll waits for the resize to finish
+  --inbox-reborn-preview-resize: 150ms;
+}
+
 .preview-placeholder {
   position: relative;
   pointer-events: none;
-  .preview-scroll-target {
-    position: absolute;
-    top: -80px;
-  }
+  transition: height var(--inbox-reborn-preview-resize) ease-out;
   &.bundle-preview-placeholder {
     width: calc(100% - 24px);
   }
@@ -76,11 +78,7 @@
     &.show-preview {
       left: 0px;
       z-index: 10;
-    }
-
-    // focused thread message: scroll to just below the pinned email row
-    .SlLx9#focused {
-      scroll-margin-top: 45px;
+      transition: height var(--inbox-reborn-preview-resize) ease-out;
     }
 
     // bodies of non-focused thread messages: outlook mounts collapsed messages
@@ -182,11 +180,6 @@
     &.bundle-preview {
       &:not(.preview-compose) {
         left: 12px;
-      }
-
-      // taller pinned stack: bundle header + email row
-      .SlLx9#focused {
-        scroll-margin-top: 81px;
       }
 
       .AJYpX,
