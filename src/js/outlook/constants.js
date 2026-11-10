@@ -24,9 +24,12 @@ export const OUTLOOK_CLASSES = {
   PREVIEW_CONTAINER: 'Mq3cC',
   PREVIEW_COMPOSE: 'FXtdL',
   PREVIEW_CONVERSATION_CONTAINER: 'MtujV',
-  PREVIEW_THREAD_ROW: 'SlLx9',
+  // one message in the open thread
+  PREVIEW_THREAD_ROW: 'BS0OK',
+  // sender + to/cc of an expanded message
+  PREVIEW_MESSAGE_HEADER: 'mO63H',
   // conversation subject header
-  PREVIEW_CALENDAR_CONFLICT_CONTAINER: 'NTPm6',
+  PREVIEW_CALENDAR_CONFLICT_CONTAINER: 'EklBn',
   SCROLLBAR_ELEMENT: 'zXLz3',
   // set on the outer row container
   SELECTED_ROW: 'epBmH',
