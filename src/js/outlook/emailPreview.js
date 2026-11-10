@@ -35,6 +35,34 @@ const restoreMessageBackgrounds = previewPane => {
     }
   });
 };
+// first ~200 characters of a message body's text, skipping <style> contents
+const messageText = body => {
+  const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+    acceptNode: node => (node.parentElement.closest('style, script') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+  });
+  let text = '';
+  // count only visible text: table mail is full of indentation nodes, preheaders of zero-width padding
+  while (text.length < 200 && walker.nextNode()) {
+    const nodeText = walker.currentNode.nodeValue.replace(/[\s͏​-‍⁠﻿]+/g, ' ').trim();
+    if (nodeText) {
+      text += `${text ? ' ' : ''}${nodeText}`;
+    }
+  }
+  return text.slice(0, 200);
+};
+// a text line under each sender, shown by css while the body is hidden; outlook re-renders headers, so re-add on every pass
+const addMessageSnippets = previewPane => {
+  previewPane.querySelectorAll(OUTLOOK_SELECTORS.PREVIEW_MESSAGE_HEADER).forEach(header => {
+    if (header.querySelector('.thread-snippet')) {
+      return;
+    }
+    const body = header.parentNode.querySelector('[role="document"]');
+    const text = body && messageText(body);
+    if (text) {
+      header.appendChild(htmlToElements('<div class="thread-snippet"></div>')).textContent = text;
+    }
+  });
+};
 const {
   PREVIEW_CALENDAR_CONFLICT_CONTAINER,
   PREVIEW_COMPOSE,
@@ -125,6 +153,13 @@ export default {
         previewPane.style.height = null;
         return;
       }
+      const firstPass = this.currentEmail.getAttribute('data-previewing') !== 'true';
+      // each thread opens collapsed to the focused (newest) message; reset before measuring and labelling
+      if (firstPass) {
+        removeClass(previewPane, 'thread-expanded');
+      }
+      this.updateCollapseButton(previewPane);
+      addMessageSnippets(previewPane);
       // thread + subject header; the copilot summary banner is hidden by css
       const previewEls = Array.from(previewPane.querySelectorAll(`${PREVIEW_WRAPPER} > div,${PREVIEW_CALENDAR_CONFLICT_CONTAINER}`));
       const previewHeight = addPixels(...previewEls.map(el => el.offsetHeight), 12);
@@ -132,7 +167,6 @@ export default {
       const placeholderWidth = getComputedStyle(previewPlaceholder).width;
       const { height: placeholderHeight } = previewPlaceholder.style;
       const sizeChanged = previewHeight !== placeholderHeight;
-      const firstPass = this.currentEmail.getAttribute('data-previewing') !== 'true';
       if (sizeChanged) {
         previewPlaceholder.style.height = previewHeight;
         previewPane.style.height = previewHeight;
@@ -154,18 +188,18 @@ export default {
           }
           this.pinnedHeight = bundleRowHeight + this.currentEmail.getBoundingClientRect().height;
           this.previewOpenedAt = Date.now();
-          const focusedEmail = await observeForElement(document, `${PREVIEW_THREAD_ROW}#focused`);
+          await observeForElement(previewPane, `${PREVIEW_THREAD_ROW} #focused`);
           // hidden while waiting for the message to render
           if (!this.previewShowing) {
             return;
           }
           restoreMessageBackgrounds(previewPane);
-          this.scrollMessageIntoView(focusedEmail, previewPane);
+          this.scrollMessageIntoView(this.openMessage(previewPane), previewPane);
         } else if (Date.now() - this.previewOpenedAt < 2000) {
           // the body usually renders after the first size pass; follow it
-          const focusedEmail = previewPane.querySelector(`${PREVIEW_THREAD_ROW}#focused`);
-          if (focusedEmail) {
-            this.scrollMessageIntoView(focusedEmail, previewPane);
+          const openMessage = this.openMessage(previewPane);
+          if (openMessage) {
+            this.scrollMessageIntoView(openMessage, previewPane);
           }
         }
       }
@@ -175,6 +209,37 @@ export default {
     adjustPreviewSize();
 
     this.setPreviewPosition(previewPane);
+  },
+  // the message whose body css shows: the focused one (newest on open, top or bottom by outlook's order setting)
+  openMessage(previewPane) {
+    const messages = previewPane.querySelectorAll(PREVIEW_THREAD_ROW);
+    return previewPane.querySelector('#focused')?.closest(PREVIEW_THREAD_ROW) || messages[messages.length - 1];
+  },
+  // "Collapse all" / "Expand all" in the subject header: css hides every body but the focused message's unless
+  // the pane has thread-expanded (outlook's own toggles re-render the whole thread per message, ~75ms each);
+  // outlook re-renders the header, so re-add the button on every pass
+  updateCollapseButton(previewPane) {
+    const header = previewPane.querySelector(PREVIEW_CALENDAR_CONFLICT_CONTAINER);
+    if (!header) {
+      return;
+    }
+    let button = header.querySelector('.thread-collapse-toggle');
+    if (previewPane.querySelectorAll(PREVIEW_THREAD_ROW).length < 2) {
+      button?.remove();
+      return;
+    }
+    if (!button) {
+      button = htmlToElements('<button type="button" class="thread-collapse-toggle"></button>');
+      button.addEventListener('click', event => {
+        event.stopPropagation();
+        previewPane.classList.toggle('thread-expanded');
+      });
+      header.appendChild(button);
+    }
+    const label = hasClass(previewPane, 'thread-expanded') ? 'Collapse all' : 'Expand all';
+    if (button.textContent !== label) {
+      button.textContent = label;
+    }
   },
   // scroll only as far as needed to show the opened message below the pinned rows:
   // its bottom if it fits, its top if it is taller than the viewport

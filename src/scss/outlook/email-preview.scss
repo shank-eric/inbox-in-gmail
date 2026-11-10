@@ -81,11 +81,28 @@
       transition: height var(--inbox-reborn-preview-resize) ease-out;
     }
 
-    // bodies of non-focused thread messages: outlook mounts collapsed messages
-    // with bodies rendered because our pane looks tall enough to fit everything;
-    // clicking a row still expands it (#focused follows the click)
-    .SlLx9:not(#focused) .XbIp4 {
+    // thread messages other than the focused one (outlook focuses the newest on open, then whichever is clicked):
+    // sender line only, unless "Expand all" is on
+    &:not(.thread-expanded) .nh5ed:not(#focused) {
+      > :not(.mO63H),
+      .z2TnU {
+        display: none;
+      }
+    }
+
+    // body text line under the sender (emailPreview.js), standing in for the hidden body
+    .thread-snippet {
       display: none;
+    }
+    &:not(.thread-expanded) .nh5ed:not(#focused) .thread-snippet {
+      display: block;
+      margin-top: -4px;
+      padding-left: 48px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      opacity: 0.7;
     }
 
     // "Summary by Copilot" banner
@@ -95,10 +112,33 @@
 
     // conversation header (subject)
     .EklBn {
+      position: relative;
       margin: 0 !important;
       border: none;
       border-radius: 0;
       border-bottom: 1px solid var(--themeLighter);
+    }
+
+    // collapse / expand the thread's messages (emailPreview.js)
+    .thread-collapse-toggle {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      padding: 2px 10px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0.7;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     // custom scrollbar container
