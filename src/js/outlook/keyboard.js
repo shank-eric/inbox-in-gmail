@@ -1,14 +1,16 @@
-import { addClass, isTypable, observeForElement, removeClass } from '../shared/utils.js';
+import { addClass, isTypable, observeForCondition, observeForElement, removeClass } from '../shared/utils.js';
 import emailPreview from './emailPreview.js';
 import { OUTLOOK_SELECTORS } from './constants.js';
 import { bundleWrapperFor, findNextVisibleRow, isBundleWrapper, setSelectedRow, visibleRows } from './outlookUtils.js';
 
 const {
   COMPOSE_NEW_MAIL_BUTTON,
+  COMPOSE_RECIPIENT_SUGGESTION,
   COMPOSE_SUBJECT_LINE,
   COMPOSE_TO_ADDRESS_CONTAINER,
   LIST_SCROLL_CONTAINER,
   EMAIL_ROW,
+  PREVIEW_COMPOSE,
   EMAIL_ROW_OUTER_CONTAINER,
 } = OUTLOOK_SELECTORS;
 
@@ -66,6 +68,7 @@ export default {
       composeButton.click();
       const composeContainer = await observeForElement(document, '.preview-compose');
       addClass(composeContainer, 'reminder-compose');
+      const reminderDraft = await observeForElement(composeContainer, PREVIEW_COMPOSE);
       // const sensitivityMenuButton = await observeForElement(document, '.eU3xR button:nth-child(1)');
       // sensitivityMenuButton.click();
       // const internalOption = await observeForElement(document, '[role="menu"] [role="menuitemcheckbox"]:nth-child(3)');
@@ -75,12 +78,21 @@ export default {
         const toAddressContainer = await observeForElement(document, COMPOSE_TO_ADDRESS_CONTAINER);
         addClass(toAddressContainer, 'to-address');
         const toAddress = await observeForElement(toAddressContainer, '[contenteditable="true"]');
-        toAddress.innerHTML = 'eric@everfi.com';
+        // type through outlook's editor so it tracks the recipient; once outlook suggests the contact, enter picks it as a pill
+        toAddress.focus();
+        document.execCommand('insertText', false, 'eric@everfi.com');
+        await observeForElement(document, COMPOSE_RECIPIENT_SUGGESTION);
+        const enter = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true };
+        toAddress.dispatchEvent(new KeyboardEvent('keydown', enter));
+        toAddress.dispatchEvent(new KeyboardEvent('keyup', enter));
         setTimeout(() => {
           subjectLine.focus();
           subjectLine.value = '';
         }, 0);
       }, 500);
+      // the reading pane outlives the draft; drop the reminder layout once this draft closes or pops out
+      await observeForCondition(composeContainer, () => !composeContainer.contains(reminderDraft));
+      removeClass(composeContainer, 'reminder-compose');
     },
     Quote: ({ mainContainer, shiftKey }) => mainContainer?.scrollBy(0, shiftKey ? -250 : -25),
     Semicolon: ({ mainContainer, shiftKey }) => mainContainer?.scrollBy(0, shiftKey ? 250 : 25),

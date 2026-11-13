@@ -42,10 +42,12 @@ const CLASS_SELECTORS = buildSelectors(OUTLOOK_CLASSES);
 
 export const OUTLOOK_SELECTORS = {
   ...CLASS_SELECTORS,
-  COMPOSE_SUBJECT_LINE: '.Ut9Zz input',
+  COMPOSE_SUBJECT_LINE: `${CLASS_SELECTORS.PREVIEW_COMPOSE} input[aria-label="Subject"]`,
   COMPOSE_NEW_MAIL_BUTTON: 'button[data-unique-id=Ribbon-588]',
   // "To" row: button + recipient editor
   COMPOSE_TO_ADDRESS_CONTAINER: `${CLASS_SELECTORS.PREVIEW_COMPOSE} .fui-Input:has([aria-label="To"])`,
+  // the contact outlook suggests for what's typed in To
+  COMPOSE_RECIPIENT_SUGGESTION: '#FloatingSuggestionsList [role="option"]',
   PREVIEW_PANE: `${CLASS_SELECTORS.PREVIEW_CONTAINER} #ReadingPaneContainerId`,
   // date group headers ("Today", "Yesterday", ...)
   TIME_ROW: '[id^="groupHeader"]',
