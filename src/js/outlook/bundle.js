@@ -1,7 +1,7 @@
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, getCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { addClass, replaceClass, htmlToElements, queryParentSelector, removeClass } from '../shared/utils.js';
+import { addClass, htmlToElements, queryParentSelector, removeClass } from '../shared/utils.js';
 
 import { getOptions } from '../shared/options.js';
 import { setSelectedRow } from './outlookUtils.js';
@@ -60,7 +60,7 @@ export default class Bundle {
     emailEl.style.width = '100%';
 
     const { UNCHECKED_CHECKBOX_CLASSES } = getCheckboxClasses();
-    const { ROOT, INPUT, LABEL, CHECKBOX, CHECKMARK } = UNCHECKED_CHECKBOX_CLASSES;
+    const { ROOT, CHECKMARK, ICON_TEXT } = UNCHECKED_CHECKBOX_CLASSES;
     const columnWidths = Array.from(emailEl.querySelectorAll(`.${EMAIL_COLUMN_CONTAINER} > div`)).map(el => ({
       width: el.style.width,
       paddingLeft: el.style.paddingLeft,
@@ -107,14 +107,12 @@ export default class Bundle {
                         >
                         ${abbrev}</span>
                       </span>
-                      <div class="ms-Checkbox is-enabled to0aR XG5Jd ${ROOT}">
-                        <input class="${INPUT}" type="checkbox" tabindex="-1" id="checkbox-${encodedId}" data-ktp-execute-target="true"/>
-                        <label class="ms-Checkbox-label ${LABEL}" for="${encodedId}">
-                          <div class="ms-Checkbox-checkbox gy2XW i7xzh ${CHECKBOX}" data-ktp-target="true">
-                            <i data-icon-name="CheckMark" aria-hidden="true" class="ms-Checkbox-checkmark M3Q9u ${CHECKMARK}"></i>
-                          </div>
-                        </label>
-                      </div>
+                      <span class="fui-Checkbox ${ROOT}" aria-hidden="true">
+                        <input type="checkbox" tabindex="-1" id="checkbox-${encodedId}" class="fui-Checkbox__input ruo9svu In3UQ ___qlal8r0 f1vgc2s3"/>
+                        <div aria-hidden="true" class="fui-Checkbox__indicator rl7ci6d XrA87">
+                          <i class="fui-Icon-font ${CHECKMARK}" fill="currentColor" aria-hidden="true" data-fui-icon="" style="font-size: 12px;">${ICON_TEXT}</i>
+                        </div>
+                      </span>
                     </div>
                   </div>
               <div class="ZTnQq XG5Jd Wamaz ap3u6 WO8ox">
@@ -170,7 +168,7 @@ export default class Bundle {
 
   async handleBundleClick(e) {
     const bundleRow = e.currentTarget.querySelector('[data-show-emails]');
-    const isCheckClick = queryParentSelector(e.target, '.ms-Checkbox');
+    const isCheckClick = queryParentSelector(e.target, '.fui-Checkbox');
     if (isCheckClick) {
       this.checkEmails();
     }
@@ -222,20 +220,16 @@ export default class Bundle {
     const checkboxContainer = this.element.querySelector('[role="checkbox"]');
     checkboxContainer.setAttribute('aria-checked', anyEmailsChecked);
     const { CHECKED_CHECKBOX_CLASSES, UNCHECKED_CHECKBOX_CLASSES } = getCheckboxClasses();
-    const addClasses = allEmailsChecked ? CHECKED_CHECKBOX_CLASSES : UNCHECKED_CHECKBOX_CLASSES;
-    const removeClasses = allEmailsChecked ? UNCHECKED_CHECKBOX_CLASSES : CHECKED_CHECKBOX_CLASSES;
+    const classes = allEmailsChecked ? CHECKED_CHECKBOX_CLASSES : UNCHECKED_CHECKBOX_CLASSES;
 
-    const checkboxEl = this.element.querySelector('.ms-Checkbox');
-    if (allEmailsChecked) {
-      addClass(checkboxEl, 'is-checked');
-    } else {
-      removeClass(checkboxEl, 'is-checked');
+    const checkboxEl = this.element.querySelector('.fui-Checkbox');
+    if (classes.ROOT) {
+      checkboxEl.className = classes.ROOT;
+      const icon = checkboxEl.querySelector('.fui-Checkbox__indicator i');
+      icon.className = classes.CHECKMARK;
+      icon.textContent = classes.ICON_TEXT;
     }
-    replaceClass(checkboxEl, addClasses.ROOT, removeClasses.ROOT);
-    replaceClass(checkboxEl.querySelector('input'), addClasses.INPUT, removeClasses.INPUT);
-    replaceClass(checkboxEl.querySelector('label'), addClasses.LABEL, removeClasses.LABEL);
-    replaceClass(checkboxEl.querySelector('.ms-Checkbox-checkbox'), addClasses.CHECKBOX, removeClasses.CHECKBOX);
-    replaceClass(checkboxEl.querySelector('.ms-Checkbox-checkmark'), addClasses.CHECKMARK, removeClasses.CHECKMARK);
+    checkboxEl.querySelector('input').checked = allEmailsChecked;
   }
 
   updateStats({ email, emailEl }) {

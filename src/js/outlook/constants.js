@@ -1,4 +1,4 @@
-import { addClass, buildSelectors, observeForElement } from '../shared/utils.js';
+import { buildSelectors, observeForElement } from '../shared/utils.js';
 import { CLASSES } from '../shared/constants.js';
 
 export const DEFAULT_PROFILE_URL = '';
@@ -57,29 +57,16 @@ export const OUTLOOK_SELECTORS = {
   EMAIL_ROW_OUTER_CONTAINER: `${CLASS_SELECTORS.EMAIL_ROW_OUTER_CONTAINER_PRIMARY}, ${CLASS_SELECTORS.EMAIL_ROW_OUTER_CONTAINER_SECONDARY}`,
 };
 
-const findPrefixedClass = (el, prefix) => el && Array.from(el?.classList).find(c => c.startsWith(prefix));
+// outlook's fluent v9 checkbox keeps its state on the outer span and the check icon, so we copy their whole classNames
+// (and the icon font's glyph)
+const CHECKED_CHECKBOX_CLASSES = { ROOT: '', CHECKMARK: '', ICON_TEXT: '' };
+const UNCHECKED_CHECKBOX_CLASSES = { ROOT: '', CHECKMARK: '', ICON_TEXT: '' };
 
-const CHECKED_CHECKBOX_CLASSES = {
-  ROOT: '',
-  INPUT: '',
-  LABEL: '',
-  CHECKBOX: '',
-  CHECKMARK: '',
-};
-const UNCHECKED_CHECKBOX_CLASSES = {
-  ROOT: '',
-  INPUT: '',
-  LABEL: '',
-  CHECKBOX: '',
-  CHECKMARK: '',
-};
-
-const findClasses = (firstEmailCheckbox, classesObj) => {
-  classesObj.ROOT = findPrefixedClass(firstEmailCheckbox.querySelector('.ms-Checkbox'), 'root-');
-  classesObj.INPUT = findPrefixedClass(firstEmailCheckbox.querySelector('input'), 'input-');
-  classesObj.LABEL = findPrefixedClass(firstEmailCheckbox.querySelector('label'), 'label-');
-  classesObj.CHECKBOX = findPrefixedClass(firstEmailCheckbox.querySelector('.ms-Checkbox-checkbox'), 'checkbox-');
-  classesObj.CHECKMARK = findPrefixedClass(firstEmailCheckbox.querySelector('.ms-Checkbox-checkmark'), 'checkmark-');
+const findClasses = (row, classesObj) => {
+  classesObj.ROOT = row.querySelector('.fui-Checkbox').className;
+  const icon = row.querySelector('.fui-Checkbox__indicator i');
+  classesObj.CHECKMARK = icon.className;
+  classesObj.ICON_TEXT = icon.textContent;
 };
 
 export const getCheckboxClasses = () => ({ CHECKED_CHECKBOX_CLASSES, UNCHECKED_CHECKBOX_CLASSES });
@@ -87,18 +74,18 @@ export const findCheckboxClasses = async () => {
   if (!!CHECKED_CHECKBOX_CLASSES.ROOT) {
     return;
   }
-  const firstEmailCheckbox = await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [role="checkbox"]`);
+  const rowSelector = `${CLASS_SELECTORS.EMAIL_ROW}:not(.${CLASSES.BUNDLE_WRAPPER_CLASS})`;
+  const firstEmailCheckbox = await observeForElement(document, `${rowSelector} [role="checkbox"]`);
   firstEmailCheckbox.click();
-  const checkedCheckbox = await observeForElement(document, `${CLASS_SELECTORS.EMAIL_ROW} [aria-checked="true"] .is-checked.ms-Checkbox[class*="root-"]`);
+  const checkedCheckbox = await observeForElement(document, `${rowSelector} [role="checkbox"][aria-checked="true"]:has(.fui-Checkbox input:checked)`);
   findClasses(checkedCheckbox, CHECKED_CHECKBOX_CLASSES);
-  const uncheckedCheckbox = document.querySelector(`${CLASS_SELECTORS.EMAIL_ROW}:not(.bundle-wrapper) [role="checkbox"][aria-checked="false"]`);
+  const uncheckedCheckbox = document.querySelector(`${rowSelector} [role="checkbox"][aria-checked="false"]`);
   findClasses(uncheckedCheckbox, UNCHECKED_CHECKBOX_CLASSES);
   checkedCheckbox.click();
-  document.querySelectorAll(`.${CLASSES.BUNDLE_WRAPPER_CLASS} .ms-Checkbox`).forEach(el => {
-    addClass(el, UNCHECKED_CHECKBOX_CLASSES.ROOT);
-    addClass(el.querySelector('input'), UNCHECKED_CHECKBOX_CLASSES.INPUT);
-    addClass(el.querySelector('label'), UNCHECKED_CHECKBOX_CLASSES.LABEL);
-    addClass(el.querySelector('.ms-Checkbox-checkbox'), UNCHECKED_CHECKBOX_CLASSES.CHECKBOX);
-    addClass(el.querySelector('.ms-Checkbox-checkmark'), UNCHECKED_CHECKBOX_CLASSES.CHECKMARK);
+  document.querySelectorAll(`.${CLASSES.BUNDLE_WRAPPER_CLASS} .fui-Checkbox`).forEach(el => {
+    el.className = UNCHECKED_CHECKBOX_CLASSES.ROOT;
+    const icon = el.querySelector('.fui-Checkbox__indicator i');
+    icon.className = UNCHECKED_CHECKBOX_CLASSES.CHECKMARK;
+    icon.textContent = UNCHECKED_CHECKBOX_CLASSES.ICON_TEXT;
   });
 };
