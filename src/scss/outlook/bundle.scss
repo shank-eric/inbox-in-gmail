@@ -15,7 +15,7 @@
     }
   }
 
-  [aria-checked='false'] .ms-Checkbox {
+  [aria-checked='false'] .fui-Checkbox {
     display: none;
   }
 
@@ -26,8 +26,8 @@
       display: none;
     }
 
-    .ms-Checkbox {
-      display: block;
+    .fui-Checkbox {
+      display: inline-flex;
     }
   }
 
