@@ -1,7 +1,7 @@
 import { CLASSES } from '../shared/constants.js';
 import { OUTLOOK_CLASSES, getCheckboxClasses, OUTLOOK_SELECTORS } from './constants.js';
 import emailPreview from './emailPreview.js';
-import { addClass, htmlToElements, queryParentSelector, removeClass } from '../shared/utils.js';
+import { addClass, htmlToElements, removeClass } from '../shared/utils.js';
 
 import { getOptions } from '../shared/options.js';
 import { setSelectedRow } from './outlookUtils.js';
@@ -168,7 +168,8 @@ export default class Bundle {
 
   async handleBundleClick(e) {
     const bundleRow = e.currentTarget.querySelector('[data-show-emails]');
-    const isCheckClick = queryParentSelector(e.target, '.fui-Checkbox');
+    // outlook's checkbox input has pointer-events: none, so real clicks land on the checkbox span or its container
+    const isCheckClick = !!e.target.closest('[role="checkbox"]');
     if (isCheckClick) {
       this.checkEmails();
     }
